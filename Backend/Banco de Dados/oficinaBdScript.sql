@@ -3,83 +3,84 @@ CREATE DATABASE bdacvans;
 USE bdacvans;
 
 CREATE TABLE oficina(
-	id_oficina INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_oficina INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100) NOT NULL UNIQUE,
     ativo BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE usuario(
-	id_usuario BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_usuario BIGINT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL UNIQUE,
     senha VARCHAR(255) NOT NULL,
     primeiro_login BOOLEAN NOT NULL DEFAULT TRUE,
-    fk_oficina INT UNSIGNED NULL,
+    dois_fatores BOOLEAN NOT NULL DEFAULT TRUE,
+    fk_oficina INT NULL,
     CHECK (email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'),
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );
 
 CREATE TABLE role(
-	id_role TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_role INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(30) NOT NULL UNIQUE
 );
 INSERT INTO role (nome) VALUES ('ADMIN'), ('FUNCIONARIO'), ('GERENTE');
 
 CREATE TABLE usuario_role(
-	fk_usuario BIGINT UNSIGNED NOT NULL,
-    fk_role TINYINT UNSIGNED NOT NULL,
+	fk_usuario BIGINT NOT NULL,
+    fk_role INT NOT NULL,
     PRIMARY KEY (fk_usuario, fk_role),
     FOREIGN KEY (fk_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (fk_role) REFERENCES role(id_role) ON DELETE CASCADE
 );
 
 CREATE TABLE auditoria(
-	id_auditoria BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_auditoria BIGINT PRIMARY KEY AUTO_INCREMENT,
     acao VARCHAR(50) NOT NULL,
     entidade VARCHAR(50),
-    id_registro BIGINT UNSIGNED,
+    id_registro BIGINT,
     tempo DATETIME NOT NULL,
     endereco_ip VARCHAR(45),
     detalhes JSON,
-    fk_usuario BIGINT UNSIGNED NOT NULL,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_usuario BIGINT NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );
 
 CREATE TABLE cliente (
-	id_cliente BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_cliente BIGINT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(50) NOT NULL,
     celular VARCHAR(14) NOT NULL,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );
 
 CREATE TABLE veiculo (
-	id_veiculo BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_veiculo BIGINT PRIMARY KEY AUTO_INCREMENT,
     placa VARCHAR(7) NOT NULL,
     marca VARCHAR(20) NOT NULL,
     modelo VARCHAR(20) NOT NULL,
-    fk_cliente BIGINT UNSIGNED NOT NULL,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_cliente BIGINT NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_cliente) REFERENCES cliente(id_cliente) ON DELETE CASCADE,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE,
     UNIQUE (placa, fk_oficina)
 );
 
 CREATE TABLE tipo_servico(
-	id_tipo_servico BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_tipo_servico BIGINT PRIMARY KEY AUTO_INCREMENT,
     descricao VARCHAR(100),
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );
 
 CREATE TABLE etapa_servico (
-    id_etapa_servico BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id_etapa_servico BIGINT PRIMARY KEY AUTO_INCREMENT,
     ordem INT NOT NULL DEFAULT 100,
     titulo VARCHAR(20) NOT NULL,
     descricao VARCHAR(200) NOT NULL,
-    fk_tipo_servico BIGINT UNSIGNED NOT NULL,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_tipo_servico BIGINT NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_tipo_servico)
         REFERENCES tipo_servico (id_tipo_servico)
         ON DELETE CASCADE,
@@ -90,24 +91,24 @@ CREATE TABLE etapa_servico (
 );
 
 CREATE TABLE status_servico(
-	id_status_servico TINYINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+	id_status_servico INT PRIMARY KEY AUTO_INCREMENT,
 	descricao VARCHAR(20)
 );
 
 INSERT INTO status_servico (descricao) VALUES ('AGENDADO'), ('INICIADO'), ('FINALIZADO');
 
 CREATE TABLE Servico (
-    id_servico BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id_servico BIGINT PRIMARY KEY AUTO_INCREMENT,
     receber_notificacao BOOLEAN DEFAULT TRUE,
     data_inicio DATETIME NOT NULL,
     data_fim DATETIME NOT NULL,
     token_atualizacao VARCHAR(32) NOT NULL UNIQUE,
     token_consulta VARCHAR(6) NOT NULL UNIQUE,
-    fk_veiculo BIGINT UNSIGNED NOT NULL,
-	fk_tipo_servico BIGINT UNSIGNED NOT NULL,
-    fk_status_servico TINYINT UNSIGNED NOT NULL,
-    fk_etapa_servico BIGINT UNSIGNED,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_veiculo BIGINT NOT NULL,
+	fk_tipo_servico BIGINT NOT NULL,
+    fk_status_servico INT NOT NULL,
+    fk_etapa_servico BIGINT,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_veiculo) REFERENCES veiculo (id_veiculo) ON DELETE CASCADE,
     FOREIGN KEY (fk_tipo_servico) REFERENCES tipo_servico(id_tipo_servico) ON DELETE CASCADE,
     FOREIGN KEY (fk_status_servico) REFERENCES status_servico(id_status_servico) ON DELETE CASCADE,
@@ -116,13 +117,13 @@ CREATE TABLE Servico (
 );
 
 CREATE TABLE historico_etapa_servico (
-    id_historico BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    id_historico BIGINT PRIMARY KEY AUTO_INCREMENT,
     data_inicio DATETIME NOT NULL,
     data_fim DATETIME NOT NULL,
     tempo_minutos INT NOT NULL,
-    fk_servico BIGINT UNSIGNED NOT NULL,
-    fK_etapa_servico BIGINT UNSIGNED NOT NULL,
-    fk_oficina INT UNSIGNED NOT NULL,
+    fk_servico BIGINT NOT NULL,
+    fK_etapa_servico BIGINT NOT NULL,
+    fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_servico) REFERENCES servico(id_servico) ON DELETE CASCADE,
     FOREIGN KEY (fk_etapa_servico) REFERENCES etapa_servico(id_etapa_servico) ON DELETE CASCADE,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE

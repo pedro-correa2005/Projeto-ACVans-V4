@@ -1,11 +1,16 @@
 package com.fooengineers.projetoAcVansV4.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,4 +41,12 @@ public class Usuario {
 	@ManyToOne
 	@JoinColumn(name = "fk_oficina", nullable = true)
 	private Oficina oficina;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "usuario_role",
+			joinColumns = @JoinColumn(name = "fk_usuario"),
+			inverseJoinColumns = @JoinColumn(name = "fk_role")
+	)
+	private Set<Role> roles;
 }

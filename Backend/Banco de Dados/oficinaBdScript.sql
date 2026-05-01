@@ -69,7 +69,7 @@ CREATE TABLE veiculo (
 
 CREATE TABLE tipo_servico(
 	id_tipo_servico BIGINT PRIMARY KEY AUTO_INCREMENT,
-    descricao VARCHAR(100),
+    descricao VARCHAR(100) NOT NULL,
     fk_oficina INT NOT NULL,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );

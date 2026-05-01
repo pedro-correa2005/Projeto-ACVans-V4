@@ -9,5 +9,5 @@ import com.fooengineers.projetoAcVansV4.entity.Oficina;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	//Filtro de tenant
-	Optional<Cliente> findByIdClienteAndOficina(Long idCliente, Oficina oficina);
+	Optional<Cliente> findByIdAndOficina(Long id, Oficina oficina);
 }

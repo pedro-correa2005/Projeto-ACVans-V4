@@ -101,7 +101,7 @@ CREATE TABLE Servico (
     id_servico BIGINT PRIMARY KEY AUTO_INCREMENT,
     receber_notificacao BOOLEAN DEFAULT TRUE,
     data_inicio DATETIME NOT NULL,
-    data_fim DATETIME NOT NULL,
+    data_fim DATETIME NULL,
     token_atualizacao VARCHAR(32) NOT NULL UNIQUE,
     token_consulta VARCHAR(6) NOT NULL UNIQUE,
     fk_veiculo BIGINT NOT NULL,

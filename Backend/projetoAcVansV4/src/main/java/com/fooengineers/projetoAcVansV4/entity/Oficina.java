@@ -17,7 +17,7 @@ public class Oficina {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_oficina")
-	private int id;
+	private Integer id;
 	
 	@Column(nullable = false)
 	private String nome;

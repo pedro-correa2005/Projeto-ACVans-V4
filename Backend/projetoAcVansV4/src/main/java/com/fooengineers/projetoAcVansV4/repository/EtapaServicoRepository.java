@@ -15,4 +15,9 @@ public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long
 		Integer ordem,
 		Oficina oficina
 	);
+	
+	Optional<EtapaServico> findFirstByTipoServicoOrderByOrdemAsc(TipoServico tipoServico);
+	Optional<EtapaServico> findFirstByTipoServicoAndOrdemLessThanOrderByOrdemDesc(TipoServico tipoServico,Integer ordem);
+	Optional<EtapaServico> findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(TipoServico tipoServico, Integer ordem);
+	
 }

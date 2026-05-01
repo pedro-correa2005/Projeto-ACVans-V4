@@ -24,4 +24,7 @@ public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long
 	//Encontra a etapa cuja ordem corresponde à próxima ordem
 	Optional<EtapaServico> findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(TipoServico tipoServico, Integer ordem);
 	
+	//Listagem por tipo de serviço (filtrado por tenant)
+	List<EtapaServico> findByTipoServicoAndOficina(TipoServico tipoServico, Oficina oficina);
+	
 }

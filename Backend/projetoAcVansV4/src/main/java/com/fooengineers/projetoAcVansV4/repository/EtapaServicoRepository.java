@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +17,11 @@ public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long
 		Oficina oficina
 	);
 	
+	//Encontra a etapa de menor ordem (primeira)
 	Optional<EtapaServico> findFirstByTipoServicoOrderByOrdemAsc(TipoServico tipoServico);
+	//Encontra a etapa cuja ordem corresponde à ordem anterior 
 	Optional<EtapaServico> findFirstByTipoServicoAndOrdemLessThanOrderByOrdemDesc(TipoServico tipoServico,Integer ordem);
+	//Encontra a etapa cuja ordem corresponde à próxima ordem
 	Optional<EtapaServico> findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(TipoServico tipoServico, Integer ordem);
 	
 }

@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.fooengineers.projetoAcVansV4.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long>{
+	//Query para pesquisa por nome
+	Optional<Role> findByNome(String nome);
 }

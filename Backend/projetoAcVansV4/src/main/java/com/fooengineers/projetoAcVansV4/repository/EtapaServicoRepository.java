@@ -10,12 +10,6 @@ import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 
 public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long> {
-	//Pesquisa por tipo de servico e ordem (filtrado por tenant)
-	Optional<EtapaServico> findByTipoServicoAndOrdemAndOficina(
-		TipoServico tipoServico,
-		Integer ordem,
-		Oficina oficina
-	);
 	
 	//Encontra a etapa de menor ordem (primeira)
 	Optional<EtapaServico> findFirstByTipoServicoOrderByOrdemAsc(TipoServico tipoServico);
@@ -26,5 +20,6 @@ public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long
 	
 	//Listagem por tipo de serviço (filtrado por tenant)
 	List<EtapaServico> findByTipoServicoAndOficina(TipoServico tipoServico, Oficina oficina);
+	
 	
 }

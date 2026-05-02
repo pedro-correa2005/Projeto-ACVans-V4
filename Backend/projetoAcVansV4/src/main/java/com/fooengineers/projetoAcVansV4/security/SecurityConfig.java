@@ -34,7 +34,13 @@ public class SecurityConfig {
 				//Regras de acesso
 				.authorizeHttpRequests(auth -> auth
 					//endpoints públicos
-					.requestMatchers("/api/", "/api/login").permitAll()
+					.requestMatchers(
+							"/api/",
+							"/api/login", 
+							"/api/refresh",
+							"/v3/api-docs/**",
+						    "/swagger-ui/**",
+						    "/swagger-ui.html").permitAll()
 					//Qualquer outr endpoint
 					.anyRequest().authenticated()
 				)

@@ -13,7 +13,6 @@ import com.fooengineers.projetoAcVansV4.entity.Usuario;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -29,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	//Filtro de requisições
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String token = getTokenFromCookies(request); //Pega token do cookie enviado pela request
+		String token = jwtService.getTokenFromCookies(request, "access_token"); //Pega token do cookie enviado pela request
 		
 		if(token != null) {
 			try {
@@ -57,16 +56,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 		}
 		filterChain.doFilter(request, response);
-	}
-	
-	private String getTokenFromCookies(HttpServletRequest request) {
-		if (request.getCookies() == null) return null;
-		
-		for (Cookie cookie : request.getCookies()) {
-			if("access_token".equals(cookie.getName())) {
-				return cookie.getValue();
-			}
-		}
-		return null;
 	}
 }

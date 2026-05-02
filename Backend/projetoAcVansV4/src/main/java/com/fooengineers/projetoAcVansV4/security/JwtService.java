@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 /*
  * Service para geração e validação de tokens JWT
  * extração de informações do token e checagem de expiração
@@ -76,5 +78,16 @@ public class JwtService {
 			.getPayload()
 			.getExpiration();
 		return expiration.before(new Date()); //Verifica se a data de expiração já passou
+	}
+
+	public String getTokenFromCookies(HttpServletRequest request, String string) {
+		if (request.getCookies() == null) return null;
+		
+		for (Cookie cookie : request.getCookies()) {
+			if("access_token".equals(cookie.getName())) {
+				return cookie.getValue();
+			}
+		}
+		return null;
 	}
 }

@@ -33,16 +33,26 @@ public class AuthController {
 						loginDto.getSenha()
 						)
 				);
-		String accessToken = jwtService.generateAccessToken(loginDto.getEmail());
+		String email = loginDto.getEmail();
 		
-		ResponseCookie cookie = ResponseCookie.from("access_token", accessToken)
+		String accessToken = jwtService.generateAccessToken(email);
+		String refreshToken = jwtService.generateRefreshToken(email);
+		
+		ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
+				.httpOnly(true)
+				.path("/")
+				.maxAge(60 * 10)
+				.build();
+		
+		ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
 				.httpOnly(true)
 				.path("/")
 				.maxAge(60 * 10)
 				.build();
 		
 		return ResponseEntity.ok()
-				.header(HttpHeaders.SET_COOKIE , cookie.toString())
+				.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
+				.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
 				.body("Login Ok");
 	}
 	
@@ -54,9 +64,9 @@ public class AuthController {
 			return ResponseEntity.status(401).body("Refresh token ausente");
 		}
 		
-		String username = jwtService.extractUsername(refreshToken);
+		String username = jwtService.extractUsername(refreshToken, "refresh_token");
 		
-		if(!jwtService.isValid(refreshToken, username)) {
+		if(!jwtService.isValid(refreshToken, username, "refresh_token")) {
 			return ResponseEntity.status(401).body("Refresh token inválido");
 		}
 		

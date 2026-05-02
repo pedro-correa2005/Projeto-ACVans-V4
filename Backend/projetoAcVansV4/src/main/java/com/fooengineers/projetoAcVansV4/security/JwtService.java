@@ -19,16 +19,19 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class JwtService {
 	
-	//Chave de codificação do JWT
-	private final SecretKey key;
+	//Chave de codificação do JWT (acesso)
+	private final SecretKey accessKey;
+	//Chave de codificação do JWT (refresh)
+	private final SecretKey refreshKey;
 	
 	/*
 	 * A chave é extraída de application.properties, que por sua vez é extraída
 	 * de variável de ambiente
 	 * A chave é transformada de String para bytes criptografados
 	 */
-	public JwtService(@Value("${jwt.secret}") String secretKey) {
-		this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));;
+	public JwtService(@Value("${jwt.access.secret}") String secretAccessKey, @Value("${jwt.refresh.secret}") String secretRefreshKey) {
+		this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretAccessKey));;
+		this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretRefreshKey));;
 	}
 	
 	// Método de geração de token de acesso
@@ -37,7 +40,7 @@ public class JwtService {
 			.subject(username) //Insere nome de usuário no token
 			.issuedAt(new Date()) //Momento de ciração do token
 			.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) //Seta expiração de 10 minutos
-			.signWith(key) //Insere chave JWT que valida o token
+			.signWith(accessKey) //Insere chave JWT que valida o token
 			.compact();
 	}
 	
@@ -47,12 +50,13 @@ public class JwtService {
 			.subject(username)
 			.issuedAt(new Date())
 			.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
-			.signWith(key)
+			.signWith(refreshKey)
 			.compact();
 	}
 	
 	// Método de extração de nome de usuário do token
-	public String extractUsername(String token) {
+	public String extractUsername(String token, String tokenType) {
+		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey; 
 	    return Jwts.parser()
 	        .verifyWith(key) // Verifica se o token é válido pela chave
 	        .build()
@@ -62,15 +66,16 @@ public class JwtService {
 	}
 	
 	// Método de validação do token
-	public boolean isValid(String token, String username) {
+	public boolean isValid(String token, String username, String tokenType) {
 		//Extrai o username do token
-		String extractedUsername = extractUsername(token);
+		String extractedUsername = extractUsername(token, tokenType);
 		//Verifica se token pertence ao usuário e não está expirado
-		return extractedUsername.equals(username) && !isExpired(token);
+		return extractedUsername.equals(username) && !isExpired(token, tokenType);
 	}
 	
 	//Método de verificação de expiração do token
-	public boolean isExpired(String token) {
+	public boolean isExpired(String token, String tokenType) {
+		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey;
 		Date expiration = Jwts.parser() //Extrai data de expiração do token
 			.verifyWith(key)
 			.build()
@@ -80,11 +85,11 @@ public class JwtService {
 		return expiration.before(new Date()); //Verifica se a data de expiração já passou
 	}
 
-	public String getTokenFromCookies(HttpServletRequest request, String string) {
+	public String getTokenFromCookies(HttpServletRequest request, String tokenType) {
 		if (request.getCookies() == null) return null;
 		
 		for (Cookie cookie : request.getCookies()) {
-			if("access_token".equals(cookie.getName())) {
+			if(tokenType.equals(cookie.getName())) {
 				return cookie.getValue();
 			}
 		}

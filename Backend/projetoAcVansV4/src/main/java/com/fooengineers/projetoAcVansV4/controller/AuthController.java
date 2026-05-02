@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class AuthController {
 	@Autowired
 	private JwtService jwtService;
 	
+	@Value("${app.security.cookie.secure}")
+	private boolean secure;
+	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto){
 		authenticationManager.authenticate(
@@ -40,6 +44,8 @@ public class AuthController {
 		
 		ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
 				.httpOnly(true)
+				.secure(secure)
+				.sameSite("None")
 				.path("/")
 				.maxAge(60 * 10)
 				.build();
@@ -47,6 +53,8 @@ public class AuthController {
 		ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
 				.httpOnly(true)
 				.path("/")
+				.secure(secure)
+				.sameSite("None")
 				.maxAge(60 * 10)
 				.build();
 		
@@ -74,6 +82,8 @@ public class AuthController {
 		
 		ResponseCookie cookie = ResponseCookie.from("access_token", newAccessToken)
 				.httpOnly(true)
+				.secure(secure)
+				.sameSite("None")
 				.path("/")
 				.maxAge(60 * 10)
 				.build();

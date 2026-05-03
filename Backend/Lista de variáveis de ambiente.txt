@@ -1,0 +1,21 @@
+IP_FRONTEND
+
+AMBIENTE_ATIVO = "dev" ou "prod"
+Algumas configurações da aplicação mudam se ela estiver rodando num servidor já pra uso
+
+CHAVE_JWT_ACESSO
+CHAVE_JWT_REFRESH
+Chaves de criptografia, não podem estar hardcoded no código
+
+MARIADB_IP_PORT
+ip e porta do banco
+MARIADB_PASSWORD
+Senha do banco
+
+REDIS_HOST_IP
+ip do redis
+REDIS_PORT
+porta do redis
+
+API_URL
+link da api

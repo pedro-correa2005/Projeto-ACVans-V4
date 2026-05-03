@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -95,18 +97,23 @@ public class JwtService {
 			.getPayload();
 	}
 	
-	// Método de validação do token
-	public boolean isValid(String token, String username, String tokenType) {
-		//Extrai o username do token
-		String extractedUsername = extractUsername(token, tokenType);
-		//Verifica se token pertence ao usuário e não está expirado
-		return extractedUsername.equals(username) && !isExpired(token, tokenType);
-	}
-	
-	//Método de verificação de expiração do token
-	public boolean isExpired(String token, String tokenType) {
-		Date expiration = extractAllClaims(token, tokenType).getExpiration();
-		return expiration.before(new Date()); //Verifica se a data de expiração já passou
+	// Método de validação do token verifica se é válido e se já não está expirado;
+	public boolean isValid(String token, String tokenType) {
+	    try {
+	        SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey;
+	        //Parser verifica automaticamente a validez
+	        Jwts.parser()
+	            .verifyWith(key)
+	            .build()
+	            .parseSignedClaims(token);
+	        return true;
+	        //Se extiver expirado lança exceção
+	    } catch (ExpiredJwtException e) {
+	        return false; // expirado
+	        //Se chave for inválida lança exceção
+	    } catch (JwtException | IllegalArgumentException e) {
+	        return false; // inválido
+	    }
 	}
 
 	public String getTokenFromCookies(HttpServletRequest request, String tokenType) {

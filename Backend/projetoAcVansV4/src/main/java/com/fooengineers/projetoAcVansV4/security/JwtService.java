@@ -1,12 +1,16 @@
 package com.fooengineers.projetoAcVansV4.security;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -46,10 +50,21 @@ public class JwtService {
 	
 	// Método de geração de token de refresh (mesmo conceito, duração maior, expira em um dia) 
 	public String generateRefreshToken(String username) {
+		Map<String, Object> claims = new HashMap<>();
+		
+		String jti = UUID.randomUUID().toString();
+		
+		claims.put("jti", jti);
+		claims.put("type", "refresh");
+		
+		long now = System.currentTimeMillis();
+		long expiration = now + (1000 * 60 * 60 * 24);
+		
 		return Jwts.builder()
+			.claims(claims)
 			.subject(username)
-			.issuedAt(new Date())
-			.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+			.issuedAt(new Date(now))
+			.expiration(new Date(expiration))
 			.signWith(refreshKey)
 			.compact();
 	}
@@ -65,6 +80,21 @@ public class JwtService {
 	        .getSubject(); //Extrai usuário
 	}
 	
+	//Método para extrair o identificador único do refresh token
+	public String extractJti(String token) {
+		return extractAllClaims(token, "refresh_token").get("jti", String.class);
+	}
+	
+	//Método para extrair claims do token
+	public Claims extractAllClaims(String token, String tokenType) {
+		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey;
+		return Jwts.parser()
+			.verifyWith(key)
+			.build()
+			.parseSignedClaims(token)
+			.getPayload();
+	}
+	
 	// Método de validação do token
 	public boolean isValid(String token, String username, String tokenType) {
 		//Extrai o username do token
@@ -75,13 +105,7 @@ public class JwtService {
 	
 	//Método de verificação de expiração do token
 	public boolean isExpired(String token, String tokenType) {
-		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey;
-		Date expiration = Jwts.parser() //Extrai data de expiração do token
-			.verifyWith(key)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.getExpiration();
+		Date expiration = extractAllClaims(token, tokenType).getExpiration();
 		return expiration.before(new Date()); //Verifica se a data de expiração já passou
 	}
 

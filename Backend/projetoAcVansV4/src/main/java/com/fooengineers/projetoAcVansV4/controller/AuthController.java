@@ -34,13 +34,13 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto){
+		String email = loginDto.getEmail();
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(
-						loginDto.getEmail(),
+						email,
 						loginDto.getSenha()
 						)
 				);
-		String email = loginDto.getEmail();
 		
 		String accessToken = jwtService.generateAccessToken(email);
 		String refreshToken = jwtService.generateRefreshToken(email);

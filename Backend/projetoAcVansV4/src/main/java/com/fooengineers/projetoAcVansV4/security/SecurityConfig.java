@@ -41,8 +41,9 @@ public class SecurityConfig {
 					//endpoints públicos
 					.requestMatchers(
 							"/api/",
-							"/api/login", 
-							"/api/refresh",
+							"/api/auth/login", 
+							"/api/auth/refresh",
+							"/api/auth/2fa/verify",
 							"/v3/api-docs/**",
 						    "/swagger-ui/**",
 						    "/swagger-ui.html").permitAll()
@@ -50,7 +51,7 @@ public class SecurityConfig {
 					.anyRequest().authenticated()
 				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-				.addFilterBefore(csrfFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterAfter(csrfFilter, JwtAuthenticationFilter.class)
 				.build();
 	}
 	

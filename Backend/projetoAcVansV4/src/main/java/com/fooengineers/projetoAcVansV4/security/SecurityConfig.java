@@ -50,6 +50,7 @@ public class SecurityConfig {
 					.anyRequest().authenticated()
 				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(csrfFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 	
@@ -62,7 +63,6 @@ public class SecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-}
 	
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {

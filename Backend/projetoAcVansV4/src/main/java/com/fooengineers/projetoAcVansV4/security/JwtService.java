@@ -7,8 +7,12 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+
+import com.fooengineers.projetoAcVansV4.service.RedisService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,15 +33,25 @@ public class JwtService {
 	private final SecretKey accessKey;
 	//Chave de codificação do JWT (refresh)
 	private final SecretKey refreshKey;
+	private final boolean secure;
+	private final long accessTime;
+	private final long refreshTime;
+	
+	@Autowired
+	private RedisService redisService;
+	
 	
 	/*
 	 * A chave é extraída de application.properties, que por sua vez é extraída
 	 * de variável de ambiente
 	 * A chave é transformada de String para bytes criptografados
 	 */
-	public JwtService(@Value("${jwt.access.secret}") String secretAccessKey, @Value("${jwt.refresh.secret}") String secretRefreshKey) {
-		this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretAccessKey));;
-		this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretRefreshKey));;
+	public JwtService(@Value("${jwt.access.secret}") String secretAccessKey, @Value("${jwt.refresh.secret}") String secretRefreshKey, @Value("${app.security.cookie.secure}") boolean secure) {
+		this.accessKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretAccessKey));
+		this.refreshKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretRefreshKey));
+		this.secure = secure;
+		accessTime = 60 * 10;
+		refreshTime = 60 * 60 * 24;
 	}
 	
 	// Método de geração de token de acesso
@@ -45,7 +59,7 @@ public class JwtService {
 		return Jwts.builder()
 			.subject(username) //Insere nome de usuário no token
 			.issuedAt(new Date()) //Momento de ciração do token
-			.expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) //Seta expiração de 10 minutos
+			.expiration(new Date(System.currentTimeMillis() + 1000 * accessTime)) //Seta expiração de 10 minutos
 			.signWith(accessKey) //Insere chave JWT que valida o token
 			.compact();
 	}
@@ -60,7 +74,7 @@ public class JwtService {
 		claims.put("type", "refresh");
 		
 		long now = System.currentTimeMillis();
-		long expiration = now + (1000 * 60 * 60 * 24);
+		long expiration = now + (1000 * refreshTime);
 		
 		return Jwts.builder()
 			.claims(claims)
@@ -115,7 +129,8 @@ public class JwtService {
 	        return false; // inválido
 	    }
 	}
-
+	
+	//Método de extrair token do cookie
 	public String getTokenFromCookies(HttpServletRequest request, String tokenType) {
 		if (request.getCookies() == null) return null;
 		
@@ -125,5 +140,74 @@ public class JwtService {
 			}
 		}
 		return null;
+	}
+	
+	//Método de geração de cookie de acesso
+	public ResponseCookie gerarAccessCookie(String email) {
+		String accessToken = generateAccessToken(email);
+		return ResponseCookie.from("access_token", accessToken)
+				.httpOnly(true)
+				.secure(secure)
+				.sameSite("None")
+				.path("/")
+				.maxAge(accessTime)
+				.build();
+	}
+	
+	//Método de geração de cooke de refresh
+	public ResponseCookie gerarRefreshCookie(String email, Long createdAt) {
+		//Gera token
+		String refreshToken = generateRefreshToken(email);
+		
+		//Salva no redis o identificador único jti:email com tempo de expiração igual ao token
+		String jti = extractJti(refreshToken);
+		long ttl = 60 * 60 * 24;
+		redisService.saveRefreshToken(jti, email, createdAt, ttl);
+		
+		return ResponseCookie.from("refresh_token", refreshToken)
+				.httpOnly(true)
+				.path("/")
+				.secure(secure)
+				.sameSite("None")
+				.maxAge(refreshTime)
+				.build();
+	}
+	public ResponseCookie gerarCsrfCookie() {
+		String csrfToken = UUID.randomUUID().toString();
+		return ResponseCookie.from("csrf_token", csrfToken)
+				.httpOnly(false)
+				.path("/")
+				.secure(secure)
+				.sameSite("None")
+				.maxAge(refreshTime)
+				.build();
+	}
+	
+	public boolean validaRedis(String refreshToken) {
+		//Verifica se o token existe no redis
+		String jti = extractJti(refreshToken);
+		if(!redisService.exists(jti)) {
+			return false;
+		}
+		
+		//Verifica tempo máximo de sessão(milissegundos)
+		long maxSessionTime = 1000 * refreshTime;
+		long createdAt = redisService.getCreatedAt(jti);
+		if(System.currentTimeMillis() - createdAt > maxSessionTime) {
+			redisService.delete(jti);
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public void deleteToken(String refreshToken) {
+		String jti = extractJti(refreshToken);
+		redisService.delete(jti);
+	}
+	
+	public long getCreatedAt(String refreshToken) {
+		String jti = extractJti(refreshToken);
+		return redisService.getCreatedAt(jti);
 	}
 }

@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.security;
 
+import java.security.SecureRandom;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,12 @@ import com.fooengineers.projetoAcVansV4.service.RedisService;
 public class MFAService {
 	@Autowired
 	private RedisService redisService;
+	@Autowired
+	private static SecureRandom random;
 	
 	//Gera código aleatório de 6 dígitos
 	public String gerarCodigo() {
-		return String.valueOf((int)(Math.random() * 900000) + 100000);
+		return String.valueOf(100000 + random.nextInt(900000));
 	}
 
 	//Salva códgio no redis com duração de 5 minutos

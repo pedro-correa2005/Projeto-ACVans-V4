@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -71,7 +71,7 @@ public class AuthController {
 		}
 		
 		//Validação no redis, caso ambas validações tenham sido burladas
-		if(jwtService.validaRedis(refreshToken)) {
+		if(!jwtService.validaRedis(refreshToken)) {
 			return ResponseEntity.status(401).body("Refresh token revogado ou expirado");
 		}
 		

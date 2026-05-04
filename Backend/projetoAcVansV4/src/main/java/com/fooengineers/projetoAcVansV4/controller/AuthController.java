@@ -104,4 +104,36 @@ public class AuthController {
 				.header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
 				.body("Token Renovado");
 	}
+	
+	@PostMapping("/2fa/verify")
+	public ResponseEntity<?> verify2FA(@RequestBody Map<String, String> body){
+		String tempToken = body.get("tempToken");
+		String code = body.get("code");
+		String email;
+
+		//Verifica token
+		if(tempToken == null || (email = mfaService.verificarTempToken(tempToken)) == null) {
+			return ResponseEntity.status(401).body("Sessão inválida");
+		}
+		//Incrementa e valida número de tentativas
+		if(!mfaService.verificarAttempts(tempToken)) {
+			mfaService.delete2FA(email, tempToken);//Se expirado deleta tudo e exige novo login
+			return ResponseEntity.status(429).body("Número de tentativas expirado");
+		}
+		//Verifica código
+		if(!mfaService.verificarCodigo(email, code)) {
+			return ResponseEntity.status(401).body("Código inválido ou expirado");
+		}
+		//Código válido
+		mfaService.delete2FA(email, tempToken);
+		//Gera JWT
+		ResponseCookie accessCookie = jwtService.gerarAccessCookie(email);
+		ResponseCookie refreshCookie = jwtService.gerarRefreshCookie(email, System.currentTimeMillis());
+		ResponseCookie csrfCookie =  jwtService.gerarCsrfCookie();
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
+				.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
+				.header(HttpHeaders.SET_COOKIE , csrfCookie.toString())
+				.body("Login Ok");
+	}
 }

@@ -1,5 +1,8 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -15,6 +18,7 @@ import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.CustomUserDetailsService;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
+import com.fooengineers.projetoAcVansV4.security.MFAService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,6 +32,8 @@ public class AuthController {
 	private CustomUserDetailsService userDetailsService;
 	@Autowired
 	private JwtService jwtService;
+	@Autowired
+	private MFAService mfaService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto){
@@ -52,7 +58,15 @@ public class AuthController {
 					.header(HttpHeaders.SET_COOKIE , csrfCookie.toString())
 					.body("Login Ok");
 		}
-		return null;
+		
+		//Salva o código e gera token temporário
+		String tempToken = mfaService.salvarCodigo(email, mfaService.gerarCodigo());
+		
+		Map<String, String> body = new HashMap<>();
+		body.put("status", "2FA_required");
+		body.put("tempToken", tempToken);
+		
+		return ResponseEntity.status(202).body(body);
 	}
 	
 	@PostMapping("/refresh")

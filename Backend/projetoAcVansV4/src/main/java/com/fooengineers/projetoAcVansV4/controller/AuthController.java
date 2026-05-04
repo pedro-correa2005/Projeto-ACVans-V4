@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -66,9 +68,20 @@ public class AuthController {
 				.maxAge(60 * 60 * 24)
 				.build();
 		
+		//Envia cookie anti-csrf
+		String csrfToken = UUID.randomUUID().toString();
+		ResponseCookie csrfCookie = ResponseCookie.from("csrf_token", csrfToken)
+				.httpOnly(false)
+				.path("/")
+				.secure(secure)
+				.sameSite("None")
+				.maxAge(60 * 10)
+				.build();
+		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
 				.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
+				.header(HttpHeaders.SET_COOKIE , csrfCookie.toString())
 				.body("Login Ok");
 	}
 	

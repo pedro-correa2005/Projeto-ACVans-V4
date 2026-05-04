@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
@@ -21,6 +24,8 @@ public class SecurityConfig {
 	
 	@Autowired
 	private JwtAuthenticationFilter jwtFilter;
+	@Autowired
+	private CsrfFilter csrfFilter;
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -58,3 +63,19 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 }
+	
+	@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Value("${frontend.ip}") 
+			String frontendIp;
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**")
+						.allowedOrigins(frontendIp)
+						.allowedMethods("*")
+						.allowCredentials(true);
+			}
+		};
+	}
+	

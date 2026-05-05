@@ -32,9 +32,14 @@ public class AuthController {
 	private MFAService mfaService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto){
+	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto, HttpServletRequest request){
+		//Verifica número de tentativas de login
+		String email = loginDto.getEmail().toLowerCase();
 		
-		String email = loginDto.getEmail();
+		if(!authService.validarTentativas(request.getRemoteAddr(), email)) {
+			return ResponseEntity.status(429).body("Muitas tentativas. Tente mais tarde.");
+		}
+		
 		Usuario usuario = authService.validarCredenciais(email, loginDto.getSenha());
 		
 		if(usuario == null) {

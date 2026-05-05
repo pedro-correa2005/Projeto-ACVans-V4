@@ -14,12 +14,11 @@ public class MFAService {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private static SecureRandom random;
-	@Autowired
 	private EmailService emailService;
 	
 	//Gera código aleatório de 6 dígitos
 	public String gerarCodigo() {
+		SecureRandom random = new SecureRandom();
 		return String.valueOf(100000 + random.nextInt(900000));
 	}
 

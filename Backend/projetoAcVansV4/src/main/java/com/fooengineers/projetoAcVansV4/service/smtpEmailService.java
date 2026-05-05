@@ -5,24 +5,27 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class smtpEmailService {
 	@Autowired
 	private JavaMailSender mailSender;
 	
-	public void enviar2FACode(String email, String code) {
-		SimpleMailMessage message = new SimpleMailMessage();
+	public void enviar2FACode(String email, String code) throws MessagingException, IOException {
+		MimeMessage message = mailSender.createMimeMessage();
 		
-		message.setTo(email);
-		message.setSubject("Seu código de verificação");
-		message.setText("Seu código 2FA é: " + code + "\n"
-				+ "Expira em 5 minutos.");
+		MimeMessageHelper helper = new MimeMessageHelper(message, true);
+		helper.setTo(email);
+		helper.setSubject("Seu código de verificação");
+		helper.setText(load2FATemplate(code), true);
 		
-		mailSender.send();
+		mailSender.send(message);
 	}
 	
 	public String load2FATemplate(String code) throws IOException{

@@ -1,20 +1,23 @@
 package com.fooengineers.projetoAcVansV4.security;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.service.EmailService;
 import com.fooengineers.projetoAcVansV4.service.RedisService;
+import com.fooengineers.projetoAcVansV4.service.smtpEmailService;
+
+import jakarta.mail.MessagingException;
 
 @Service
 public class MFAService {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private EmailService emailService;
+	private smtpEmailService smtpEmailService;
 	
 	//Gera código aleatório de 6 dígitos
 	public String gerarCodigo() {
@@ -36,7 +39,13 @@ public class MFAService {
 	
 	//Envia email
 	public void enviarEmail(String email, String code) {
-		emailService.enviar2FACode(email, code);
+		try {
+			smtpEmailService.enviar2FACode(email, code);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//Verifica código

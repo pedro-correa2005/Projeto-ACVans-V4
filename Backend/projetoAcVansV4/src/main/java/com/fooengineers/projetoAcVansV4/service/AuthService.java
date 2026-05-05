@@ -38,4 +38,12 @@ public class AuthService {
 		}
 		return true;
 	}
+	
+	//TODO complexar validação
+	public boolean validarNovaSenha(String senha) {
+		if(senha.length() < 8) {
+			return false;
+		}
+		return true;
+	}
 }

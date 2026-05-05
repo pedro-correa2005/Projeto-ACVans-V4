@@ -146,7 +146,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/mudar-senha")
-	public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDTO dto, Authentication authentication){
+	public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDTO dto, Authentication authentication, HttpServletRequest request){
 		String email = authentication.getName();
 		String senhaAtual = dto.getSenhaAtual();
 		String novaSenha = dto.getNovaSenha();
@@ -166,7 +166,9 @@ public class AuthController {
 		}
 		
 		usuarioService.alterarSenha(usuario, novaSenha);
-		// TODO invalidar todos os refresh tokens
+		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
+		jwtService.deleteToken(refreshToken);
+		
 		return ResponseEntity.ok("Senha alterada com sucesso.");
 	}
 }

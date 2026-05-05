@@ -35,9 +35,18 @@ public class RedisService {
 		integerRedisTemplate.opsForValue().set(key, 0, ttlSeconds, TimeUnit.SECONDS);
 	}
 	
-	public long increment2FAAttempts(String tempToken) {
+	public Long increment2FAAttempts(String tempToken) {
 		String key = "2fa_attempts:" + tempToken;
 		return integerRedisTemplate.opsForValue().increment(key);
+	}
+	
+	public Long increment(String key, long ttlSeconds) {
+		Long attempts = integerRedisTemplate.opsForValue().increment(key);
+		if(attempts == 1) {
+			integerRedisTemplate.expire(key, ttlSeconds, TimeUnit.SECONDS);
+		}
+		
+		return attempts;
 	}
 	
 	public long getCreatedAt(String jti) {

@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
-import com.fooengineers.projetoAcVansV4.security.CustomUserDetailsService;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
+import com.fooengineers.projetoAcVansV4.service.AuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -27,9 +25,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
-	private AuthenticationManager authenticationManager;
-	@Autowired
-	private CustomUserDetailsService userDetailsService;
+	private AuthService authService;
 	@Autowired
 	private JwtService jwtService;
 	@Autowired
@@ -37,15 +33,13 @@ public class AuthController {
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto){
-		//Verifica credenciais e pega usuário
+		
 		String email = loginDto.getEmail();
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(
-						email,
-						loginDto.getSenha()
-						)
-				);
-		Usuario usuario = (Usuario) userDetailsService.loadUserByUsername(email);
+		Usuario usuario = authService.validarCredenciais(email, loginDto.getSenha());
+		
+		if(usuario == null) {
+			return ResponseEntity.status(401).body("Email ou senha incorretos");
+		}
 		
 		//Se autenticação de dois fatores estiver desligada gera cookies e envia
 		if (!usuario.isDoisFatores()) {

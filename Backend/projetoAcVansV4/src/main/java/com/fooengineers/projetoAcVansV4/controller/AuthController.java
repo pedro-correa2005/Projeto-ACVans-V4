@@ -7,16 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.dto.ChangePasswordDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
 import com.fooengineers.projetoAcVansV4.service.AuthService;
+import com.fooengineers.projetoAcVansV4.service.UsuarioService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,6 +33,8 @@ public class AuthController {
 	private JwtService jwtService;
 	@Autowired
 	private MFAService mfaService;
+	@Autowired
+	private UsuarioService usuarioService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto, HttpServletRequest request){
@@ -138,5 +143,30 @@ public class AuthController {
 				.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
 				.header(HttpHeaders.SET_COOKIE , csrfCookie.toString())
 				.body("Login Ok");
+	}
+	
+	@PostMapping("/mudar-senha")
+	public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDTO dto, Authentication authentication){
+		String email = authentication.getName();
+		String senhaAtual = dto.getSenhaAtual();
+		String novaSenha = dto.getNovaSenha();
+		String repetirNovaSenha = dto.getRepetirNovaSenha();
+		
+		Usuario usuario = authService.validarCredenciais(email, senhaAtual);
+		if(usuario == null) {
+			return ResponseEntity.status(401).body("Senha atual incorreta.");
+		}
+		
+		if(!novaSenha.equals(repetirNovaSenha)) {
+			return ResponseEntity.badRequest().body("As senhas não coincidem.");
+		}
+		
+		if(!authService.validarNovaSenha(novaSenha)) {
+			return ResponseEntity.badRequest().body("Senha muito fraca");
+		}
+		
+		usuarioService.alterarSenha(usuario, novaSenha);
+		// TODO invalidar todos os refresh tokens
+		return ResponseEntity.ok("Senha alterada com sucesso.");
 	}
 }

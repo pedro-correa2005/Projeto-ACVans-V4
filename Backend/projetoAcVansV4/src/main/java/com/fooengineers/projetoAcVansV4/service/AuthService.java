@@ -16,6 +16,8 @@ public class AuthService {
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
+	@Autowired
+	private RedisService redisService;
 	
 	public Usuario validarCredenciais(String email, String senha) {
 		//Verifica credenciais e pega usuário
@@ -25,5 +27,15 @@ public class AuthService {
 			return null;
 		}
 		return (Usuario) userDetailsService.loadUserByUsername(email);
+	}
+	
+	public boolean validarTentativas(String ip, String email) {
+		Long ipAttempts = redisService.increment("login:ip:" + ip, 60);
+		Long userAttempts = redisService.increment("login:user:" + email, 300);
+		
+		if(ipAttempts > 20 || userAttempts > 5) {
+			return false;
+		}
+		return true;
 	}
 }

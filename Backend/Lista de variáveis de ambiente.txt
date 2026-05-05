@@ -19,3 +19,7 @@ porta do redis
 
 API_URL
 link da api
+
+EMAIL_USERNAME
+EMAIL_PASSWORD
+email e senha para envio de emails

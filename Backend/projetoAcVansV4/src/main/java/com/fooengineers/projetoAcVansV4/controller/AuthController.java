@@ -60,7 +60,11 @@ public class AuthController {
 		}
 		
 		//Salva o código e gera token temporário
-		String tempToken = mfaService.salvarCodigo(email, mfaService.gerarCodigo());
+		String code = mfaService.gerarCodigo();
+		String tempToken = mfaService.salvarCodigo(email, code);
+		
+		//Encia código no email
+		mfaService.enviarEmail(email, code);
 		
 		Map<String, String> body = new HashMap<>();
 		body.put("status", "2FA_required");

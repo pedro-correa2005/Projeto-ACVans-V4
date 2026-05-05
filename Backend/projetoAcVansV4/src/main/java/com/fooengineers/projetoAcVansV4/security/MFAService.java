@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.service.EmailService;
 import com.fooengineers.projetoAcVansV4.service.RedisService;
 
 @Service
@@ -14,6 +15,8 @@ public class MFAService {
 	private RedisService redisService;
 	@Autowired
 	private static SecureRandom random;
+	@Autowired
+	private EmailService emailService;
 	
 	//Gera código aleatório de 6 dígitos
 	public String gerarCodigo() {
@@ -34,7 +37,7 @@ public class MFAService {
 	
 	//Envia email
 	public void enviarEmail(String email, String code) {
-		System.out.println("Seu código é " + code);
+		emailService.enviar2FACode(email, code);
 	}
 	
 	//Verifica código

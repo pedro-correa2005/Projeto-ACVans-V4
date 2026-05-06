@@ -172,7 +172,11 @@ public class AuthController {
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		jwtService.deleteToken(refreshToken);
 		
-		return ResponseEntity.ok("Senha alterada com sucesso.");
+		return ResponseEntity.ok()
+				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("access_token").toString())
+				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("refresh_token").toString())
+				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("csrf_token").toString())
+				.body("Senha alterada com sucesso.");
 	}
 	
 	@PostMapping("/esqueci-a-senha")

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.ChangePasswordDTO;
+import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
+import com.fooengineers.projetoAcVansV4.dto.ResetPasswordDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
@@ -67,7 +69,7 @@ public class AuthController {
 		String code = mfaService.gerarCodigo();
 		String tempToken = mfaService.salvarCodigo(email, code);
 		
-		//Encia código no email
+		//Envia código no email
 		mfaService.enviarEmail(email, code);
 		
 		Map<String, String> body = new HashMap<>();
@@ -169,6 +171,35 @@ public class AuthController {
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		jwtService.deleteToken(refreshToken);
 		
+		return ResponseEntity.ok("Senha alterada com sucesso.");
+	}
+	
+	@PostMapping("/esqueci-a-senha")
+	public ResponseEntity<?> esqueciSenha(@RequestBody EmailDTO dto){
+		authService.esqueciSenha(dto.getEmail());
+		return ResponseEntity.ok("Se o email existir, enviaremos instruções de recuperação");
+	}
+	
+	@PostMapping("/reset-senha")
+	public ResponseEntity<?> resetSenha(@RequestBody @Valid ResetPasswordDTO dto){
+		String token = dto.getToken();
+		String novaSenha = dto.getNovaSenha();
+		String repetirNovaSenha = dto.getRepetirNovaSenha();
+		
+		Usuario usuario = authService.validarResetToken(token);
+		if(usuario == null) {
+			return ResponseEntity.status(401).body("Token inválido.");
+		}
+		
+		if(!novaSenha.equals(repetirNovaSenha)) {
+			return ResponseEntity.badRequest().body("As senhas não coincidem.");
+		}
+		
+		if(!authService.validarNovaSenha(novaSenha)) {
+			return ResponseEntity.badRequest().body("Senha muito fraca");
+		}
+		
+		usuarioService.alterarSenha(usuario, novaSenha);
 		return ResponseEntity.ok("Senha alterada com sucesso.");
 	}
 }

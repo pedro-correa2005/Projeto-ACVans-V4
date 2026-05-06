@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.dto.ChangePasswordDTO;
 import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
-import com.fooengineers.projetoAcVansV4.dto.ResetPasswordDTO;
+import com.fooengineers.projetoAcVansV4.dto.MudarSenhaDTO;
+import com.fooengineers.projetoAcVansV4.dto.RedefinirSenhaDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
@@ -81,7 +81,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/refresh")
-	public ResponseEntity<?> refreshToken(HttpServletRequest request){
+	public ResponseEntity<?> refresh(HttpServletRequest request){
 		//Pega o token no cookie da requisição
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		
@@ -96,15 +96,15 @@ public class AuthController {
 		}
 		
 		//Validação no redis, caso ambas validações tenham sido burladas
-		if(!jwtService.validaRedis(refreshToken)) {
+		if(!jwtService.validarRedis(refreshToken)) {
 			return ResponseEntity.status(401).body("Refresh token revogado ou expirado");
 		}
 		
-		String username = jwtService.extractUsername(refreshToken, "refresh_token");
+		String username = jwtService.extrairUsername(refreshToken, "refresh_token");
 		long createdAt = jwtService.getCreatedAt(refreshToken);
 
 		//Rotação: invalida token antigo
-		jwtService.deleteToken(refreshToken);
+		jwtService.deletarToken(refreshToken);
 		
 		//Cria novos cookies
 		ResponseCookie accessCookie = jwtService.gerarAccessCookie(username);
@@ -116,8 +116,8 @@ public class AuthController {
 				.body("Token Renovado");
 	}
 	
-	@PostMapping("/2fa/verify")
-	public ResponseEntity<?> verify2FA(@RequestBody Map<String, String> body){
+	@PostMapping("/2fa/verificar")
+	public ResponseEntity<?> verificar(@RequestBody Map<String, String> body){
 		String tempToken = body.get("tempToken");
 		String code = body.get("code");
 		String email;
@@ -128,7 +128,7 @@ public class AuthController {
 		}
 		//Incrementa e valida número de tentativas
 		if(!mfaService.verificarAttempts(tempToken)) {
-			mfaService.delete2FA(email, tempToken);//Se expirado deleta tudo e exige novo login
+			mfaService.deletar2FA(email, tempToken);//Se expirado deleta tudo e exige novo login
 			return ResponseEntity.status(429).body("Número de tentativas expirado");
 		}
 		//Verifica código
@@ -136,7 +136,7 @@ public class AuthController {
 			return ResponseEntity.status(401).body("Código inválido ou expirado");
 		}
 		//Código válido
-		mfaService.delete2FA(email, tempToken);
+		mfaService.deletar2FA(email, tempToken);
 		//Gera JWT
 		ResponseCookie accessCookie = jwtService.gerarAccessCookie(email);
 		ResponseCookie refreshCookie = jwtService.gerarRefreshCookie(email, System.currentTimeMillis());
@@ -149,7 +149,7 @@ public class AuthController {
 	}
 	
 	@PostMapping("/mudar-senha")
-	public ResponseEntity<?> changePassword(@RequestBody @Valid ChangePasswordDTO dto, Authentication authentication, HttpServletRequest request){
+	public ResponseEntity<?> mudarSenha(@RequestBody @Valid MudarSenhaDTO dto, Authentication authentication, HttpServletRequest request){
 		String email = authentication.getName();
 		String senhaAtual = dto.getSenhaAtual();
 		String novaSenha = dto.getNovaSenha();
@@ -170,7 +170,7 @@ public class AuthController {
 		}
 		usuarioService.alterarSenha(usuario, novaSenha);
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
-		jwtService.deleteToken(refreshToken);
+		jwtService.deletarToken(refreshToken);
 		
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("access_token").toString())
@@ -185,8 +185,8 @@ public class AuthController {
 		return ResponseEntity.ok("Se o email existir, enviaremos instruções de recuperação");
 	}
 	
-	@PostMapping("/reset-senha")
-	public ResponseEntity<?> resetSenha(@RequestBody @Valid ResetPasswordDTO dto){
+	@PostMapping("/redefinir-senha")
+	public ResponseEntity<?> redefinirSenha(@RequestBody @Valid RedefinirSenhaDTO dto){
 		String token = dto.getToken();
 		String novaSenha = dto.getNovaSenha();
 		String repetirNovaSenha = dto.getRepetirNovaSenha();
@@ -214,7 +214,7 @@ public class AuthController {
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		
 		if(refreshToken != null) {
-			jwtService.deleteToken(refreshToken);
+			jwtService.deletarToken(refreshToken);
 		}
 		
 		return ResponseEntity.ok()

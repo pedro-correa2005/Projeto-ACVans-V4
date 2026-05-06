@@ -69,7 +69,7 @@ public class MFAService {
 	public boolean verificarAttempts(String tempToken) {
 		if(redisService.increment2FAAttempts(tempToken) > 5) {
 			//Apaga token
-			delete2FA(redisService.get(tempToken) ,tempToken);
+			deletar2FA(redisService.get(tempToken) ,tempToken);
 			//Retorna falso
 			return false;
 		}
@@ -82,7 +82,7 @@ public class MFAService {
 	}
 	
 	//Deleta tudo
-	public void delete2FA(String email, String tempToken) {
+	public void deletar2FA(String email, String tempToken) {
 		redisService.delete(email);
 		redisService.delete(tempToken);
 		redisService.delete("2fa_attempts:" + tempToken);

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailDTO {
-	@NotBlank(message = "Email é orbigatório")
+	@NotBlank(message = "Email é obrigatório")
 	@Pattern(
 	        regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", 
 	        message = "E-mail inválido"

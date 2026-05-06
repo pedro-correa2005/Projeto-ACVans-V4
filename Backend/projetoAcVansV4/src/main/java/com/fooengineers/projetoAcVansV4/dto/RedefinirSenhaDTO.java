@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChangePasswordDTO {
-	@NotBlank(message = "Senha atual é obrigatória")
-	private String senhaAtual;
+public class RedefinirSenhaDTO {
+	@NotBlank(message = "Token é obrigatório")
+	private String token;
 	@NotBlank(message = "Nova senha é obrigatória")
 	private String novaSenha;
 	@NotBlank(message = "Repetir nova senha é obrigatória")

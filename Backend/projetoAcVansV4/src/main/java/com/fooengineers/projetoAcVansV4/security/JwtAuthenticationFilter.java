@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		if(token != null) {
 			try {
 				//Extrai usuário do token
-				String username = jwtService.extractUsername(token, "access_token");
+				String username = jwtService.extrairUsername(token, "access_token");
 				
 				//Se já está autenticado, não refaz
 				if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

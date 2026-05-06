@@ -55,7 +55,7 @@ public class JwtService {
 	}
 	
 	// Método de geração de token de acesso
-	public String generateAccessToken(String username) {
+	public String gerarAccessToken(String username) {
 		return Jwts.builder()
 			.subject(username) //Insere nome de usuário no token
 			.issuedAt(new Date()) //Momento de ciração do token
@@ -65,7 +65,7 @@ public class JwtService {
 	}
 	
 	// Método de geração de token de refresh (mesmo conceito, duração maior, expira em um dia) 
-	public String generateRefreshToken(String username) {
+	public String gerarRefreshToken(String username) {
 		Map<String, Object> claims = new HashMap<>();
 		
 		String jti = UUID.randomUUID().toString();
@@ -86,7 +86,7 @@ public class JwtService {
 	}
 	
 	// Método de extração de nome de usuário do token
-	public String extractUsername(String token, String tokenType) {
+	public String extrairUsername(String token, String tokenType) {
 		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey; 
 	    return Jwts.parser()
 	        .verifyWith(key) // Verifica se o token é válido pela chave
@@ -97,12 +97,12 @@ public class JwtService {
 	}
 	
 	//Método para extrair o identificador único do refresh token
-	public String extractJti(String token) {
-		return extractAllClaims(token, "refresh_token").get("jti", String.class);
+	public String extrairJti(String token) {
+		return extrairAllClaims(token, "refresh_token").get("jti", String.class);
 	}
 	
 	//Método para extrair claims do token
-	public Claims extractAllClaims(String token, String tokenType) {
+	public Claims extrairAllClaims(String token, String tokenType) {
 		SecretKey key = tokenType.equals("access_token") ? accessKey : refreshKey;
 		return Jwts.parser()
 			.verifyWith(key)
@@ -144,7 +144,7 @@ public class JwtService {
 	
 	//Método de geração de cookie de acesso
 	public ResponseCookie gerarAccessCookie(String email) {
-		String accessToken = generateAccessToken(email);
+		String accessToken = gerarAccessToken(email);
 		return ResponseCookie.from("access_token", accessToken)
 				.httpOnly(true)
 				.secure(secure)
@@ -157,10 +157,10 @@ public class JwtService {
 	//Método de geração de cooke de refresh
 	public ResponseCookie gerarRefreshCookie(String email, Long createdAt) {
 		//Gera token
-		String refreshToken = generateRefreshToken(email);
+		String refreshToken = gerarRefreshToken(email);
 		
 		//Salva no redis o identificador único jti:email com tempo de expiração igual ao token
-		String jti = extractJti(refreshToken);
+		String jti = extrairJti(refreshToken);
 		long ttl = 60 * 60 * 24;
 		redisService.saveRefreshToken(jti, email, createdAt, ttl);
 		
@@ -183,9 +183,9 @@ public class JwtService {
 				.build();
 	}
 	
-	public boolean validaRedis(String refreshToken) {
+	public boolean validarRedis(String refreshToken) {
 		//Verifica se o token existe no redis
-		String jti = extractJti(refreshToken);
+		String jti = extrairJti(refreshToken);
 		if(!redisService.exists(jti)) {
 			return false;
 		}
@@ -201,13 +201,13 @@ public class JwtService {
 		return true;
 	}
 	
-	public void deleteToken(String refreshToken) {
-		String jti = extractJti(refreshToken);
+	public void deletarToken(String refreshToken) {
+		String jti = extrairJti(refreshToken);
 		redisService.delete(jti);
 	}
 	
 	public long getCreatedAt(String refreshToken) {
-		String jti = extractJti(refreshToken);
+		String jti = extrairJti(refreshToken);
 		return redisService.getCreatedAt(jti);
 	}
 	

@@ -1,4 +1,5 @@
 IP_FRONTEND
+URL_SITE
 
 AMBIENTE_ATIVO = "dev" ou "prod"
 Algumas configurações da aplicação mudam se ela estiver rodando num servidor já pra uso

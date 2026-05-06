@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,10 +164,10 @@ public class AuthController {
 			return ResponseEntity.badRequest().body("As senhas não coincidem.");
 		}
 		
-		if(!authService.validarNovaSenha(novaSenha)) {
-			return ResponseEntity.badRequest().body("Senha muito fraca");
+		List<String> errors = authService.validarNovaSenha(novaSenha, usuario);
+		if(!(errors.isEmpty())) {
+			return ResponseEntity.badRequest().body(errors);
 		}
-		
 		usuarioService.alterarSenha(usuario, novaSenha);
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		jwtService.deleteToken(refreshToken);
@@ -195,8 +196,9 @@ public class AuthController {
 			return ResponseEntity.badRequest().body("As senhas não coincidem.");
 		}
 		
-		if(!authService.validarNovaSenha(novaSenha)) {
-			return ResponseEntity.badRequest().body("Senha muito fraca");
+		List<String> errors = authService.validarNovaSenha(novaSenha, usuario);
+		if(!(errors.isEmpty())) {
+			return ResponseEntity.badRequest().body(errors);
 		}
 		
 		usuarioService.alterarSenha(usuario, novaSenha);

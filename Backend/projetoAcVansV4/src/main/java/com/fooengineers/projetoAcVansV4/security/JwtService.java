@@ -210,4 +210,14 @@ public class JwtService {
 		String jti = extractJti(refreshToken);
 		return redisService.getCreatedAt(jti);
 	}
+	
+	public ResponseCookie deletarCookie(String token) {
+		return ResponseCookie.from(token, "")
+				.httpOnly(true)
+				.secure(secure)
+				.sameSite("None")
+				.path("/")
+				.maxAge(0)
+				.build();
+	}
 }

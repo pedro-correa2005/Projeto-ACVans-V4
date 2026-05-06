@@ -17,6 +17,10 @@ public class RedisService {
 	private RedisTemplate<String, Integer> integerRedisTemplate;
 
 	
+	public void save(String key, String value, long ttlSeconds) {
+		stringRedisTemplate.opsForValue().set(key, value, ttlSeconds, TimeUnit.SECONDS);
+	}
+	
 	public void saveRefreshToken(String jti, String username, long createdAt, long ttlSeconds) {
 		String value = username + "|" + createdAt;
 		stringRedisTemplate.opsForValue().set(jti, value, ttlSeconds, TimeUnit.SECONDS);

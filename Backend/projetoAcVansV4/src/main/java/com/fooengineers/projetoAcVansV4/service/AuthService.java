@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class AuthService {
 	private RedisService redisService;
 	@Autowired
 	private smtpEmailService emailService;
+	@Autowired
+	private PasswordPolicyService passwordPolicyService;
 	
 	public Usuario validarCredenciais(String email, String senha) {
 		//Verifica credenciais e pega usuário
@@ -47,12 +50,8 @@ public class AuthService {
 		return true;
 	}
 	
-	//TODO complexar validação
-	public boolean validarNovaSenha(String senha) {
-		if(senha.length() < 8) {
-			return false;
-		}
-		return true;
+	public List<String> validarNovaSenha(String senha, Usuario usuario) {		
+		return passwordPolicyService.validate(senha, usuario.getRoles());
 	}
 	
 	public void esqueciSenha(String email) {

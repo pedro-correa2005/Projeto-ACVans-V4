@@ -14,6 +14,10 @@ public class UsuarioService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	public Usuario buscarPorEmail(String email) {
+		return usuarioRepository.findByEmail(email).orElseThrow();
+	}
+	
 	public Usuario alterarSenha(Usuario u, String novaSenha) {
 		u.setSenha(passwordEncoder.encode(novaSenha));
 		return usuarioRepository.save(u);

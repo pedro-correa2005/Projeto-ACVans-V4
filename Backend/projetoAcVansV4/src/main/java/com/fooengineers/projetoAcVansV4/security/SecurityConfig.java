@@ -44,6 +44,8 @@ public class SecurityConfig {
 							"/api/auth/login", 
 							"/api/auth/refresh",
 							"/api/auth/2fa/verify",
+							"/api/auth/esqueci-a-senha",
+							"/api/auth/reset-senha",
 							"/v3/api-docs/**",
 						    "/swagger-ui/**",
 						    "/swagger-ui.html").permitAll()

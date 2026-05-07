@@ -20,6 +20,9 @@ public class UsuarioService {
 	
 	public Usuario alterarSenha(Usuario u, String novaSenha) {
 		u.setSenha(passwordEncoder.encode(novaSenha));
+		if(u.isPrimeiroLogin()) {
+			u.setPrimeiroLogin(false);
+		}
 		return usuarioRepository.save(u);
 	}
 }

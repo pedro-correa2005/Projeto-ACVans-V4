@@ -14,7 +14,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
-public class smtpEmailService {
+public class SmtpEmailService {
 	@Autowired
 	private JavaMailSender mailSender;
 	@Autowired

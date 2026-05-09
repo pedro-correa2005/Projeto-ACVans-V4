@@ -3,6 +3,7 @@ package com.fooengineers.projetoAcVansV4.dto;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class UsuarioResDTO {
 	private String email;
 	private String doisFatores;
 	private Set<String> roles;
-	private int idOficina;
+	private Integer idOficina;
 	
 	//Constructor a partir de Entity.Usuario
 	public UsuarioResDTO(Usuario usuario) {
@@ -29,7 +30,7 @@ public class UsuarioResDTO {
 		usuario.getRoles().forEach((role) -> {
 			roles.add(role.getNome());
 		});
-		
-		this.idOficina = usuario.getOficina().getId();
+		Oficina oficina = usuario.getOficina();
+		this.idOficina = oficina != null? oficina.getId() : null;
 	}
 }

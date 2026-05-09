@@ -25,4 +25,13 @@ public class UsuarioService {
 		}
 		return usuarioRepository.save(u);
 	}
+	
+	public void ativarAutenticacao(Usuario usuario) {
+		usuario.setDoisFatores(true);
+		usuarioRepository.save(usuario);
+	}
+	public void desativarAutenticacao(Usuario usuario) {
+		usuario.setDoisFatores(false);
+		usuarioRepository.save(usuario);
+	}
 }

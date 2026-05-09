@@ -26,7 +26,7 @@ public class AuthService {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private smtpEmailService emailService;
+	private SmtpEmailService emailService;
 	@Autowired
 	private PasswordPolicyService passwordPolicyService;
 	

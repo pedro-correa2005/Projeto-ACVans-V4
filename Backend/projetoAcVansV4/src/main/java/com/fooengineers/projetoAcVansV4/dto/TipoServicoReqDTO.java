@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TipoServicoReqDTO {
 	@NotBlank(message = "Descricao é obrigatória")
-	String descricao;
+	private String descricao;
 }

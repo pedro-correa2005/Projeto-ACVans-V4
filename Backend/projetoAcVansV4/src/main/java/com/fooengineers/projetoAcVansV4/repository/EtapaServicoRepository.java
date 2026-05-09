@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
-import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 
 public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long> {
@@ -20,7 +19,7 @@ public interface EtapaServicoRepository extends JpaRepository<EtapaServico, Long
 	//Encontra a etapa cuja ordem corresponde à próxima ordem
 	Optional<EtapaServico> findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(TipoServico tipoServico, Integer ordem);
 	
-	//Listagem por tipo de serviço (filtrado por tenant)
-	List<EtapaServico> findByTipoServicoAndOficina(TipoServico tipoServico, Oficina oficina);
+	//Listagem por tipo de serviço
+	List<EtapaServico> findByTipoServico(TipoServico tipoServico);
 	
 }

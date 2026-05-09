@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TipoServicoResDTO {
-	private Long idTipoServico;
+	private Long id;
 	private String descricao;
 	
 	//Constructor a partir de entity.TipoServico
 	public TipoServicoResDTO(TipoServico tipo) {
-		this.idTipoServico = tipo.getId();
+		this.id = tipo.getId();
 		this.descricao = tipo.getDescricao();
 	}
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EtapaServicoReqDTO {
 	@NotBlank(message="Titulo é obrigatorio")
-	String titulo;
+	private String titulo;
 	@NotBlank(message="Descrição obrigatória")
-	String descricao;
+	private String descricao;
 }

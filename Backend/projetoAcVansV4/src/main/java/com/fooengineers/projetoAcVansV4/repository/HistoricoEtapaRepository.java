@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,5 @@ public interface HistoricoEtapaRepository extends JpaRepository<HistoricoEtapa, 
 			EtapaServico etapaServico,
 			Oficina oficina
 	);
+	List<HistoricoEtapa> findByOficina(Oficina oficina);
 }

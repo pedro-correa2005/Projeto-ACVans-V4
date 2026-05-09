@@ -29,6 +29,9 @@ public class EtapaServico {
 	@Column(nullable = false)
 	private String titulo;
 	
+	@Column(nullable = false)
+	private String descricao;
+	
 	@ManyToOne
 	@JoinColumn(name = "fk_tipo_servico", nullable = false)
 	private TipoServico tipoServico;

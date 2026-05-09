@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
-import com.fooengineers.projetoAcVansV4.dto.LoginRequestDTO;
+import com.fooengineers.projetoAcVansV4.dto.LoginReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.MudarSenhaDTO;
 import com.fooengineers.projetoAcVansV4.dto.RedefinirSenhaDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
@@ -40,7 +40,7 @@ public class AuthController {
 	private UsuarioService usuarioService;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginDto, HttpServletRequest request){
+	public ResponseEntity<?> login(@RequestBody @Valid LoginReqDTO loginDto, HttpServletRequest request){
 		//Verifica número de tentativas de login
 		String email = loginDto.getEmail().toLowerCase();
 		

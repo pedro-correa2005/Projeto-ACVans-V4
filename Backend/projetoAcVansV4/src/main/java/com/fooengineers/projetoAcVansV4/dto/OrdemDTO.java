@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrdemDTO {
 	@NotNull(message="Id de etapa é obrigatório")
-	Long idEtapaServico;
+	private Long idEtapaServico;
 	@NotNull(message="Ordem anterior é obrigatória")
-	int ordemAnterior;
+	private int ordemAnterior;
 	@NotNull(message="Próxima ordem é obrigatória")
-	int ordemProxima;
+	private int ordemProxima;
 }

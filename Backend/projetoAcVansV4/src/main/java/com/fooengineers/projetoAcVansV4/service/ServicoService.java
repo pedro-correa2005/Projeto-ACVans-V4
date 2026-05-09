@@ -1,15 +1,11 @@
 package com.fooengineers.projetoAcVansV4.service;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
-import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Servico;
 import com.fooengineers.projetoAcVansV4.exception.ServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.ServicoRepository;

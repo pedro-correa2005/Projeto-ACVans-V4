@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConsultaDTO {
+public class ConsultaResDTO {
 	private String tipoServicoDescricao;
 	private List<EtapaServicoResponseDTO> etapas;
 	private Long idEtapaServico;

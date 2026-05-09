@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 public class UsuarioResDTO {
 	private Long id;
 	private String email;
-	private boolean doisFatores;
+	private String doisFatores;
 	private Set<String> roles;
 	
 	//Constructor a partir de Entity.Usuario
 	public UsuarioResDTO(Usuario usuario) {
 		this.id = usuario.getId();
 		this.email = usuario.getEmail();
-		this.doisFatores = usuario.isDoisFatores();
+		this.doisFatores = usuario.isDoisFatores()?"Ativada":"Desativada";
 		this.roles = new HashSet<String>();
 		
 		usuario.getRoles().forEach((role) -> {

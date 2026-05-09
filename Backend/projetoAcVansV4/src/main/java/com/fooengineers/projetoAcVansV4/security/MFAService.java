@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.service.RedisService;
-import com.fooengineers.projetoAcVansV4.service.smtpEmailService;
+import com.fooengineers.projetoAcVansV4.service.SmtpEmailService;
 
 import jakarta.mail.MessagingException;
 
@@ -17,7 +17,7 @@ public class MFAService {
 	@Autowired
 	private RedisService redisService;
 	@Autowired
-	private smtpEmailService smtpEmailService;
+	private SmtpEmailService smtpEmailService;
 	
 	//Gera código aleatório de 6 dígitos
 	public String gerarCodigo() {

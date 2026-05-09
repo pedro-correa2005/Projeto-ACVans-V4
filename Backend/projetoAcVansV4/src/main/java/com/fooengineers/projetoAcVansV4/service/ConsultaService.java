@@ -23,5 +23,16 @@ public class ConsultaService {
 		dto.setEtapas(etapaServicoService.listarPorTipo(tipo));
 		return dto;
 	}
+	public ConsultaResDTO consultar(String tokenLongo) {
+		Servico servico = servicoService.buscar(tokenLongo);
+		TipoServico tipo = servico.getTipoServico();
+		
+		ConsultaResDTO dto = new ConsultaResDTO();
+		dto.setTipoServicoDescricao(tipo.getDescricao());
+		dto.setEtapas(etapaServicoService.listarPorTipo(tipo));
+		return dto;
+	}
+	
+	
 	
 }

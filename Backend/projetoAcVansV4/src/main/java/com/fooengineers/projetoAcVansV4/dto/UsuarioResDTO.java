@@ -17,6 +17,7 @@ public class UsuarioResDTO {
 	private String email;
 	private String doisFatores;
 	private Set<String> roles;
+	private int idOficina;
 	
 	//Constructor a partir de Entity.Usuario
 	public UsuarioResDTO(Usuario usuario) {
@@ -28,5 +29,7 @@ public class UsuarioResDTO {
 		usuario.getRoles().forEach((role) -> {
 			roles.add(role.getNome());
 		});
+		
+		this.idOficina = usuario.getOficina().getId();
 	}
 }

@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
+import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.repository.OficinaRepository;
 import com.fooengineers.projetoAcVansV4.specification.OficinaSpecification;
 
@@ -20,5 +22,13 @@ public class OficinaService {
 				.map(OficinaResDTO::new)
 				.collect(Collectors.toList());
 		
+	}
+	
+	public OficinaResDTO criar(OficinaReqDTO dto) {
+		Oficina oficina = new Oficina();
+		oficina.setNome(dto.getNome());
+		oficina.setAtivo(dto.isAtivo());
+		Oficina criado = oficinaRepository.save(oficina);
+		return new OficinaResDTO(criado);
 	}
 }

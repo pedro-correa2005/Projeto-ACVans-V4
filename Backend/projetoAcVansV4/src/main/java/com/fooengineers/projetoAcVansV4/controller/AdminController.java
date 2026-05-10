@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +34,11 @@ public class AdminController {
 	public ResponseEntity<OficinaResDTO> criar(@ModelAttribute @Valid OficinaReqDTO dto){
 		OficinaResDTO criado = oficinaService.criar(dto);
 		return ResponseEntity.ok(criado);
+	}
+	
+	@PutMapping("/oficinas/{idOficina}")
+	public ResponseEntity<OficinaResDTO> atualizar(@ModelAttribute @Valid OficinaReqDTO dto, @PathVariable(required=true) Long idOficina){
+		OficinaResDTO atualizado = oficinaService.atualizar(dto, idOficina);
+		return ResponseEntity.ok(atualizado);
 	}
 }

@@ -40,4 +40,9 @@ public class OficinaService {
 		Oficina atualizado = oficinaRepository.save(oficina);
 		return new OficinaResDTO(atualizado);
 	}
+	
+	public void deletar(Long idOficina) {
+		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
+		oficinaRepository.delete(oficina);
+	}
 }

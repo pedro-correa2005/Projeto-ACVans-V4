@@ -28,7 +28,7 @@ public class OficinaService {
 	public OficinaResDTO criar(OficinaReqDTO dto) {
 		Oficina oficina = new Oficina();
 		oficina.setNome(dto.getNome());
-		oficina.setAtivo(dto.isAtivo());
+		oficina.setAtivo(dto.getAtivo());
 		Oficina criado = oficinaRepository.save(oficina);
 		return new OficinaResDTO(criado);
 	}
@@ -36,7 +36,7 @@ public class OficinaService {
 	public OficinaResDTO atualizar(OficinaReqDTO dto, Long idOficina) {
 		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
 		oficina.setNome(dto.getNome());
-		oficina.setAtivo(dto.isAtivo());
+		oficina.setAtivo(dto.getAtivo());
 		Oficina atualizado = oficinaRepository.save(oficina);
 		return new OficinaResDTO(atualizado);
 	}

@@ -2,6 +2,7 @@ package com.fooengineers.projetoAcVansV4.exception;
 
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,9 +17,20 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
+		ErrorResponse error = new ErrorResponse(
+				HttpStatus.CONFLICT.value(),
+				HttpStatus.CONFLICT.getReasonPhrase(),
+				ex.getMessage(),
+				request.getRequestURI()
+				);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+	}
+	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
-		 String mensagem = ex.getBindingResult()
+		String mensagem = ex.getBindingResult()
 		            .getFieldErrors()
 		            .stream()
 		            .map(fieldError -> fieldError.getDefaultMessage())

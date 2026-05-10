@@ -13,5 +13,5 @@ public class OficinaReqDTO {
 	@NotBlank(message="Nome da oficina é obrigatório")
 	private String nome;
 	@NotNull
-	private boolean ativo = false;
+	private Boolean ativo = false;
 }

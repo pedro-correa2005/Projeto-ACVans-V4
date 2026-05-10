@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 public class OficinaResDTO {
 	private int id;
 	private String nome;
-	private boolean ativo;
+	private String ativo;
 	
 	public OficinaResDTO(Oficina oficina) {
 		this.id = oficina.getId();
 		this.nome = oficina.getNome();
-		this.ativo = oficina.getAtivo();
+		this.ativo = oficina.getAtivo()?"Sim":"Não";
 	}
 }

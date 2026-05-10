@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
+import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.service.OficinaService;
+import com.fooengineers.projetoAcVansV4.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -25,6 +27,8 @@ import jakarta.validation.Valid;
 public class AdminController {
 	@Autowired
 	OficinaService oficinaService;
+	@Autowired
+	UsuarioService usuarioService;
 	
 	@GetMapping("/oficinas")
 	public List<OficinaResDTO> listar(@RequestParam(defaultValue="") String param){
@@ -47,5 +51,10 @@ public class AdminController {
 	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idOficina){
 		oficinaService.deletar(idOficina);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/oficinas/{idOficina}/usuarios")
+	public List<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String param){
+		return usuarioService.listarPorOficina(idOficina, param);
 	}
 }

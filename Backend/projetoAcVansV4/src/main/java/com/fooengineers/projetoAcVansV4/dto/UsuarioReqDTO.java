@@ -4,6 +4,7 @@ import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class UsuarioReqDTO {
 	        message = "E-mail inválido"
 	    )
 	private String email;
+	@NotNull(message = "Autenticação de dois fatores: Escolha uma opção")
+	private Boolean doisFatores;
 	@NotEmpty(message = "Ao menos uma role é obrigatória")
 	private Set<String> roles;
 }

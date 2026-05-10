@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
+import com.fooengineers.projetoAcVansV4.dto.UsuarioReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.service.OficinaService;
 import com.fooengineers.projetoAcVansV4.service.UsuarioService;
@@ -56,5 +57,11 @@ public class AdminController {
 	@GetMapping("/oficinas/{idOficina}/usuarios")
 	public List<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String param){
 		return usuarioService.listarPorOficina(idOficina, param);
+	}
+	
+	@PostMapping("/oficinas/{idOficina}/usuarios")
+	public ResponseEntity<UsuarioResDTO> criar(@PathVariable Long idOficina, @ModelAttribute @Valid UsuarioReqDTO dto){
+		UsuarioResDTO criado = usuarioService.criar(idOficina, dto);
+		return ResponseEntity.ok(criado);
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
+import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.repository.OficinaRepository;
 import com.fooengineers.projetoAcVansV4.specification.OficinaSpecification;
 
@@ -30,5 +31,13 @@ public class OficinaService {
 		oficina.setAtivo(dto.isAtivo());
 		Oficina criado = oficinaRepository.save(oficina);
 		return new OficinaResDTO(criado);
+	}
+	
+	public OficinaResDTO atualizar(OficinaReqDTO dto, Long idOficina) {
+		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
+		oficina.setNome(dto.getNome());
+		oficina.setAtivo(dto.isAtivo());
+		Oficina atualizado = oficinaRepository.save(oficina);
+		return new OficinaResDTO(atualizado);
 	}
 }

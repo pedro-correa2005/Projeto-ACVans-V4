@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +23,8 @@ import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
 import com.fooengineers.projetoAcVansV4.specification.UsuarioSpecification;
 import com.fooengineers.projetoAcVansV4.util.SenhaUtil;
 
+import jakarta.mail.MessagingException;
+
 @Service
 public class UsuarioService {
 	@Autowired
@@ -32,6 +35,8 @@ public class UsuarioService {
 	private OficinaRepository oficinaRepository;
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	private SmtpEmailService emailService;
 	
 	public List<UsuarioResDTO> listarPorOficina(Long idOficina, String param){
 		return usuarioRepository.findAll(UsuarioSpecification.filtroGeral(idOficina, param)).stream()
@@ -49,7 +54,7 @@ public class UsuarioService {
 		
 		String email = dto.getEmail();
 		
-		if(usuarioRepository.existsByEmail(email)) throw new EmailEmUsoException("E-mail já está em uso");
+		if(usuarioRepository.existsByEmail(email)) throw new EmailEmUsoException(email);
 		
 		String senhaInicial = SenhaUtil.gerarSenha(12);
 		
@@ -61,6 +66,15 @@ public class UsuarioService {
 		usuario.setRoles(roles);
 		usuario.setOficina(oficina);
 		Usuario criado = usuarioRepository.save(usuario);
+		
+		try{
+			emailService.enviarSenhaInicial(email, senhaInicial);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		return new UsuarioResDTO(criado);
 	}
 	

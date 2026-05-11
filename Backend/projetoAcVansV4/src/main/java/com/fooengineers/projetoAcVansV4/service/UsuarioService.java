@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.dto.RolesDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
@@ -16,11 +17,14 @@ import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.exception.EmailEmUsoException;
 import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.RoleInvalidoException;
+import com.fooengineers.projetoAcVansV4.exception.UsuarioNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.OficinaRepository;
 import com.fooengineers.projetoAcVansV4.repository.RoleRepository;
 import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
 import com.fooengineers.projetoAcVansV4.specification.UsuarioSpecification;
 import com.fooengineers.projetoAcVansV4.util.SenhaUtil;
+
+import jakarta.validation.Valid;
 
 @Service
 public class UsuarioService {
@@ -86,5 +90,16 @@ public class UsuarioService {
 	public void desativarAutenticacao(Usuario usuario) {
 		usuario.setDoisFatores(false);
 		usuarioRepository.save(usuario);
+	}
+
+	public UsuarioResDTO atualizarRoles(Long idUsuario, @Valid RolesDTO dto) {
+		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNaoEncontradoException(idUsuario));
+		Set<Role> roles = dto.getRoles().stream()
+				.map(nome -> roleRepository.findByNome(nome)
+						.orElseThrow(() -> new RoleInvalidoException(nome)))
+				.collect(Collectors.toSet());
+		usuario.setRoles(roles);
+		Usuario atualizado = usuarioRepository.save(usuario);
+		return new UsuarioResDTO(atualizado);
 	}
 }

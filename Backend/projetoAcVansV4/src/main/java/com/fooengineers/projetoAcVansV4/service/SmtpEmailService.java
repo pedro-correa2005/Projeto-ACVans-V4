@@ -3,6 +3,7 @@ package com.fooengineers.projetoAcVansV4.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,46 +22,45 @@ public class SmtpEmailService {
 	@Value("${app.base-url}")
 	private String urlSite;
 	
-	
 	public void enviar2FACode(String email, String code) throws MessagingException, IOException {
-		MimeMessage message = mailSender.createMimeMessage();
-		
-		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		helper.setTo(email);
-		helper.setSubject("Seu código de verificação");
-		helper.setText(load2FATemplate(code), true);
-		
-		mailSender.send(message);
-	}
-	
-	public String load2FATemplate(String code) throws IOException{
-		InputStream is = getClass()
-				.getClassLoader()
-				.getResourceAsStream("templates/2fa-template.html");
-		String html = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-		
-		return html.replace("{{CODE}}", code);
+		sendTemplateEmail(email, "Seu código de verificação", "2fa-template.html", Map.of("CODE", code));
 	}
 	
 	public void enviarResetSenha(String email, String token) throws MessagingException, IOException  {
+		String link = urlSite + "/auth/reset-senha?token=" + token;
+		sendTemplateEmail(email, "Redefinição de senha", "reset-senha-template.html", Map.of("LINK", link));
+	}
+	
+	public void enviarSenhaInicial(String email, String senha) throws MessagingException, IOException {
+		sendTemplateEmail(email, "Conta criada", "senha-inicial-template.html", Map.of("EMAIL", email, "SENHA", senha));
+	}
+	
+	private void sendTemplateEmail(String to, String subject, String templateName, Map<String, String> variables) throws MessagingException, IOException {
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
-		helper.setTo(email);
-		helper.setSubject("Redefinição de senha");
 		
-		String link = urlSite + "/auth/reset-senha?token=" + token;
-		
-		helper.setText(loadResetSenhaTemplate(link), true);
+		helper.setTo(to);
+		helper.setSubject(subject);
+		helper.setText(loadTemplate(templateName, variables));
 		
 		mailSender.send(message);
 	}
 	
-	public String loadResetSenhaTemplate(String link) throws IOException{
+	private String loadTemplate(String templateName, Map<String, String> variables) throws IOException{
 		InputStream is = getClass()
 				.getClassLoader()
-				.getResourceAsStream("templates/reset-senha-template.html");
+				.getResourceAsStream("templates/" + templateName);
+		
+		if(is == null) {
+			throw new IOException("Template não encontrado: " + templateName);
+		}
+		
 		String html = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 		
-		return html.replace("{{LINK}}", link);
+		for (Map.Entry<String, String> entry: variables.entrySet()) {
+			html = html.replace("{{" + entry.getKey() + "}}", entry.getValue());
+		}
+		
+		return html;
 	}
 }

@@ -11,6 +11,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.exception.ErroAoEnviarEmailException;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -18,21 +20,32 @@ import jakarta.mail.internet.MimeMessage;
 public class SmtpEmailService {
 	@Autowired
 	private JavaMailSender mailSender;
-	@Autowired
 	@Value("${app.base-url}")
 	private String urlSite;
 	
-	public void enviar2FACode(String email, String code) throws MessagingException, IOException {
-		sendTemplateEmail(email, "Seu código de verificação", "2fa-template.html", Map.of("CODE", code));
+	public void enviar2FACode(String email, String code){
+		try {
+			sendTemplateEmail(email, "Seu código de verificação", "2fa-template.html", Map.of("CODE", code));
+		} catch (MessagingException | IOException e) {
+			throw new ErroAoEnviarEmailException("Erro ao enviar email", e);
+		}
 	}
 	
-	public void enviarResetSenha(String email, String token) throws MessagingException, IOException  {
+	public void enviarResetSenha(String email, String token){
 		String link = urlSite + "/auth/reset-senha?token=" + token;
-		sendTemplateEmail(email, "Redefinição de senha", "reset-senha-template.html", Map.of("LINK", link));
+		try {
+			sendTemplateEmail(email, "Redefinição de senha", "reset-senha-template.html", Map.of("LINK", link));
+		} catch (MessagingException | IOException e) {
+			throw new ErroAoEnviarEmailException("Erro ao enviar email", e);
+		}
 	}
 	
-	public void enviarSenhaInicial(String email, String senha) throws MessagingException, IOException {
-		sendTemplateEmail(email, "Conta criada", "senha-inicial-template.html", Map.of("EMAIL", email, "SENHA", senha));
+	public void enviarSenhaInicial(String email, String senha) {
+		try {
+			sendTemplateEmail(email, "Conta criada", "senha-inicial-template.html", Map.of("EMAIL", email, "SENHA", senha));
+		} catch (MessagingException | IOException e) {
+			throw new ErroAoEnviarEmailException("Erro ao enviar email", e);
+		}
 	}
 	
 	private void sendTemplateEmail(String to, String subject, String templateName, Map<String, String> variables) throws MessagingException, IOException {
@@ -41,7 +54,7 @@ public class SmtpEmailService {
 		
 		helper.setTo(to);
 		helper.setSubject(subject);
-		helper.setText(loadTemplate(templateName, variables));
+		helper.setText(loadTemplate(templateName, variables), true);
 		
 		mailSender.send(message);
 	}

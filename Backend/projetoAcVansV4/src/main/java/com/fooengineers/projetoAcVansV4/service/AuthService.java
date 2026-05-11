@@ -67,13 +67,7 @@ public class AuthService {
 		
 		redisService.save("reset:" + token, email, 900);
 		//Envia o email de recuperação
-		try {
-			emailService.enviarResetSenha(email, token);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		emailService.enviarResetSenha(email, token);
 	}
 	
 	public Usuario validarResetToken(String token) {

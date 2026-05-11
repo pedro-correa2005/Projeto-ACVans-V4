@@ -92,7 +92,7 @@ public class UsuarioService {
 		usuarioRepository.save(usuario);
 	}
 
-	public UsuarioResDTO atualizarRoles(Long idUsuario, @Valid RolesDTO dto) {
+	public UsuarioResDTO atualizarRoles(Long idUsuario, RolesDTO dto) {
 		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNaoEncontradoException(idUsuario));
 		Set<Role> roles = dto.getRoles().stream()
 				.map(nome -> roleRepository.findByNome(nome)

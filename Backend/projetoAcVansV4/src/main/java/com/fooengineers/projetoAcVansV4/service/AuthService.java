@@ -1,6 +1,5 @@
 package com.fooengineers.projetoAcVansV4.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.CustomUserDetailsService;
-
-import jakarta.mail.MessagingException;
 
 
 @Service

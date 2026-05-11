@@ -6,7 +6,7 @@ public class OficinaNaoEncontradaException extends RuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public OficinaNaoEncontradaException(Long id) {
+	public OficinaNaoEncontradaException(Integer id) {
 		super("Não foi encontrada oficina com o id: " + id);
 	}
 }

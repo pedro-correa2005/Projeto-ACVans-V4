@@ -33,7 +33,7 @@ public class OficinaService {
 		return new OficinaResDTO(criado);
 	}
 	
-	public OficinaResDTO atualizar(OficinaReqDTO dto, Long idOficina) {
+	public OficinaResDTO atualizar(OficinaReqDTO dto, Integer idOficina) {
 		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
 		oficina.setNome(dto.getNome());
 		oficina.setAtivo(dto.getAtivo());
@@ -41,7 +41,7 @@ public class OficinaService {
 		return new OficinaResDTO(atualizado);
 	}
 	
-	public void deletar(Long idOficina) {
+	public void deletar(Integer idOficina) {
 		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
 		oficinaRepository.delete(oficina);
 	}

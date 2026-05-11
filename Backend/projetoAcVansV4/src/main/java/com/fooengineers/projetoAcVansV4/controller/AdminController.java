@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
+import com.fooengineers.projetoAcVansV4.dto.RolesDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.service.OficinaService;
@@ -43,13 +44,13 @@ public class AdminController {
 	}
 	
 	@PutMapping("/oficinas/{idOficina}")
-	public ResponseEntity<OficinaResDTO> atualizar(@ModelAttribute @Valid OficinaReqDTO dto, @PathVariable(required=true) Long idOficina){
+	public ResponseEntity<OficinaResDTO> atualizar(@ModelAttribute @Valid OficinaReqDTO dto, @PathVariable(required=true) Integer idOficina){
 		OficinaResDTO atualizado = oficinaService.atualizar(dto, idOficina);
 		return ResponseEntity.ok(atualizado);
 	}
 	
 	@DeleteMapping("/oficinas/{idOficina}")
-	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idOficina){
+	public ResponseEntity<?> deletar(@PathVariable(required=true) Integer idOficina){
 		oficinaService.deletar(idOficina);
 		return ResponseEntity.ok().build();
 	}
@@ -60,7 +61,7 @@ public class AdminController {
 	}
 	
 	@PostMapping("/oficinas/{idOficina}/usuarios")
-	public ResponseEntity<UsuarioResDTO> criar(@PathVariable Long idOficina, @ModelAttribute @Valid UsuarioReqDTO dto){
+	public ResponseEntity<UsuarioResDTO> criar(@PathVariable Integer idOficina, @ModelAttribute @Valid UsuarioReqDTO dto){
 		UsuarioResDTO criado = usuarioService.criar(idOficina, dto);
 		return ResponseEntity.ok(criado);
 	}

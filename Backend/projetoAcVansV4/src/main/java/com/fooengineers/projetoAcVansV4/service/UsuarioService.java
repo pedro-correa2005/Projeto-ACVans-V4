@@ -41,7 +41,7 @@ public class UsuarioService {
 				.collect(Collectors.toList());
 	}
 	
-	public UsuarioResDTO criar(Long idOficina, UsuarioReqDTO dto) {
+	public UsuarioResDTO criar(Integer idOficina, UsuarioReqDTO dto) {
 		Oficina oficina = oficinaRepository.findById(idOficina).orElseThrow(() -> new OficinaNaoEncontradaException(idOficina));
 
 		Set<Role> roles = dto.getRoles().stream()

@@ -24,8 +24,6 @@ import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
 import com.fooengineers.projetoAcVansV4.specification.UsuarioSpecification;
 import com.fooengineers.projetoAcVansV4.util.SenhaUtil;
 
-import jakarta.validation.Valid;
-
 @Service
 public class UsuarioService {
 	@Autowired

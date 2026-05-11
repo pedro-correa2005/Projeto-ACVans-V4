@@ -1,6 +1,5 @@
 package com.fooengineers.projetoAcVansV4.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,7 +14,6 @@ import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Role;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.exception.EmailEmUsoException;
-import com.fooengineers.projetoAcVansV4.exception.ErroAoEnviarEmailException;
 import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.RoleInvalidoException;
 import com.fooengineers.projetoAcVansV4.repository.OficinaRepository;
@@ -23,8 +21,6 @@ import com.fooengineers.projetoAcVansV4.repository.RoleRepository;
 import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
 import com.fooengineers.projetoAcVansV4.specification.UsuarioSpecification;
 import com.fooengineers.projetoAcVansV4.util.SenhaUtil;
-
-import jakarta.mail.MessagingException;
 
 @Service
 public class UsuarioService {

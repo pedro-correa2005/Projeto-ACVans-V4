@@ -1,6 +1,5 @@
 package com.fooengineers.projetoAcVansV4.security;
 
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.UUID;
 
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.service.RedisService;
 import com.fooengineers.projetoAcVansV4.service.SmtpEmailService;
-
-import jakarta.mail.MessagingException;
 
 @Service
 public class MFAService {

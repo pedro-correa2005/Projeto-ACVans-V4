@@ -71,4 +71,10 @@ public class AdminController {
 		UsuarioResDTO atualizado = usuarioService.atualizarRoles(idUsuario, dto);
 		return ResponseEntity.ok(atualizado);
 	}
+	
+	@DeleteMapping("/usuarios/{idUsuario}")
+	public ResponseEntity<?> deletarUsuario(@PathVariable(required=true) Long idUsuario){
+		usuarioService.deletar(idUsuario);
+		return ResponseEntity.ok().build();
+	}
 }

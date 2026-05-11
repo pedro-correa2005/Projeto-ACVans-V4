@@ -39,13 +39,7 @@ public class MFAService {
 	
 	//Envia email
 	public void enviarEmail(String email, String code) {
-		try {
-			smtpEmailService.enviar2FACode(email, code);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		smtpEmailService.enviar2FACode(email, code);
 	}
 	
 	//Verifica código

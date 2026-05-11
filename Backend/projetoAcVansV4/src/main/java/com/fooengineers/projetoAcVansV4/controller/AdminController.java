@@ -65,4 +65,10 @@ public class AdminController {
 		UsuarioResDTO criado = usuarioService.criar(idOficina, dto);
 		return ResponseEntity.ok(criado);
 	}
+	
+	@PutMapping("/usuarios/{idUsuario}/atualizar-roles")
+	public ResponseEntity<UsuarioResDTO> atualizarRoles(@PathVariable Long idUsuario, @ModelAttribute @Valid RolesDTO dto){
+		UsuarioResDTO atualizado = usuarioService.atualizarRoles(idUsuario, dto);
+		return ResponseEntity.ok(atualizado);
+	}
 }

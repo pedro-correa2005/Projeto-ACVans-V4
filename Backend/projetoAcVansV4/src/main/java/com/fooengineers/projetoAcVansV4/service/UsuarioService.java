@@ -15,6 +15,7 @@ import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Role;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.exception.EmailEmUsoException;
+import com.fooengineers.projetoAcVansV4.exception.ErroAoEnviarEmailException;
 import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.RoleInvalidoException;
 import com.fooengineers.projetoAcVansV4.repository.OficinaRepository;
@@ -66,15 +67,7 @@ public class UsuarioService {
 		usuario.setRoles(roles);
 		usuario.setOficina(oficina);
 		Usuario criado = usuarioRepository.save(usuario);
-		
-		try{
-			emailService.enviarSenhaInicial(email, senhaInicial);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		emailService.enviarSenhaInicial(email, senhaInicial);
 		return new UsuarioResDTO(criado);
 	}
 	

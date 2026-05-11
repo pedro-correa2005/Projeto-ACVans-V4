@@ -100,4 +100,9 @@ public class UsuarioService {
 		Usuario atualizado = usuarioRepository.save(usuario);
 		return new UsuarioResDTO(atualizado);
 	}
+
+	public void deletar(Long idUsuario) {
+		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNaoEncontradoException(idUsuario));
+		usuarioRepository.delete(usuario);
+	}
 }

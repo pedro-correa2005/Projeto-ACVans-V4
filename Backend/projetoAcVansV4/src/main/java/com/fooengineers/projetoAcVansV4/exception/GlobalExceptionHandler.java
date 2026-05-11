@@ -17,6 +17,17 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	@ExceptionHandler(ErroAoEnviarEmailException.class)
+	public ResponseEntity<ErrorResponse> handleErroAoEnviarEmailException(ErroAoEnviarEmailException ex, HttpServletRequest request){
+		ErrorResponse error = new ErrorResponse(
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+				ex.getMessage(),
+				request.getRequestURI()
+				);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+	}
+	
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
 		ErrorResponse error = new ErrorResponse(

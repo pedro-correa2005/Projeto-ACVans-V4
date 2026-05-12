@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +38,17 @@ public class ClienteController {
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		ClienteResDTO criado = clienteService.criar(dto, usuario.getOficina());
 		return ResponseEntity.ok().body(criado);
+	}
+	
+	@PutMapping("/{idCliente}")
+	public ResponseEntity<ClienteResDTO> atualizar(@ModelAttribute @Valid ClienteReqDTO dto,@PathVariable(required=true) Long idCliente){
+		ClienteResDTO atualizado = clienteService.atualizar(dto, idCliente);
+		return ResponseEntity.ok().body(atualizado);
+	}
+
+	@DeleteMapping("/{idCliente}")
+	public ResponseEntity<ClienteResDTO> deletar(@PathVariable(required=true) Long idCliente){
+		clienteService.deletar(idCliente);
+		return ResponseEntity.ok().build();
 	}
 }

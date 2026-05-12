@@ -21,6 +21,11 @@ public class ClienteService {
 		return clienteRepository.findByOficina(oficina, pageable).map(ClienteResDTO::new);
 	}
 	
+	public ClienteResDTO buscar(Long idCliente) {
+		Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
+		return new ClienteResDTO(cliente);
+	}
+	
 	public ClienteResDTO criar(ClienteReqDTO dto, Oficina oficina) {
 		Cliente cliente = new Cliente();
 		cliente.setNome(dto.getNome());

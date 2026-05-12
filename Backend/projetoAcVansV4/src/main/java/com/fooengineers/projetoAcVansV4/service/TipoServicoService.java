@@ -10,6 +10,7 @@ import com.fooengineers.projetoAcVansV4.dto.TipoServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.TipoServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
+import com.fooengineers.projetoAcVansV4.exception.TipoServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.TipoServicoRepository;
 
 @Service
@@ -29,5 +30,12 @@ public class TipoServicoService {
 		tipo.setOficina(oficina);
 		TipoServico criado = tipoServicoRepository.save(tipo);
 		return new TipoServicoResDTO(criado);
+	}
+	
+	public TipoServicoResDTO atualizar(TipoServicoReqDTO dto, Long idTipoServico) {
+		TipoServico tipo = tipoServicoRepository.findById(idTipoServico).orElseThrow(() -> new TipoServicoNaoEncontradoException(idTipoServico));
+		tipo.setDescricao(dto.getDescricao());
+		TipoServico atualizado = tipoServicoRepository.save(tipo);
+		return new TipoServicoResDTO(atualizado);
 	}
 }

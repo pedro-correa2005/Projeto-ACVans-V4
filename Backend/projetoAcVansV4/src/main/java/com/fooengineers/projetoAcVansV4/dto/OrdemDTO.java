@@ -1,6 +1,5 @@
 package com.fooengineers.projetoAcVansV4.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,10 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdemDTO {
-	@NotNull(message="Id de etapa é obrigatório")
-	private Long idEtapaServico;
-	@NotNull(message="Ordem anterior é obrigatória")
-	private int ordemAnterior;
-	@NotNull(message="Próxima ordem é obrigatória")
-	private int ordemProxima;
+	private Integer ordemAnterior;
+	private Integer ordemProxima;
 }

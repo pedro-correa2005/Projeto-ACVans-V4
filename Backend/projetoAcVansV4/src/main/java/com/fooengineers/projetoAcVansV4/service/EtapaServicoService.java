@@ -96,4 +96,9 @@ public class EtapaServicoService {
 		}
 		return etapaServicoRepository.findById(etapa.getId()).get().getOrdem();
 	}
+	
+	public void deletar(Long idEtapaServico) {
+		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));		
+		etapaServicoRepository.delete(etapa);
+	}
 }

@@ -17,7 +17,7 @@ public class ClienteService {
 	ClienteRepository clienteRepository;
 	
 	public Page<ClienteResDTO> listar(Oficina oficina, Pageable pageable){
-		return null;
+		return clienteRepository.findByOficina(oficina, pageable).map(ClienteResDTO::new);
 	}
 	
 	public ClienteResDTO criar(ClienteReqDTO dto, Oficina oficina) {

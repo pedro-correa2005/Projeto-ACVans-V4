@@ -33,6 +33,12 @@ public class ClienteController {
 		return clienteService.listar(usuario.getOficina(), pageable);
 	}
 	
+	@GetMapping("/{idCliente}")
+	public ResponseEntity<ClienteResDTO> buscar(@PathVariable(required=true) Long idCliente){
+		ClienteResDTO cliente = clienteService.buscar(idCliente);
+		return ResponseEntity.ok().body(cliente);
+	}
+	
 	@PostMapping
 	public ResponseEntity<ClienteResDTO> criar(@ModelAttribute @Valid ClienteReqDTO dto, Authentication authentication){
 		Usuario usuario = (Usuario) authentication.getPrincipal();

@@ -10,6 +10,7 @@ import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
+import com.fooengineers.projetoAcVansV4.exception.EtapaServicoNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.TipoServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.EtapaServicoRepository;
 import com.fooengineers.projetoAcVansV4.repository.TipoServicoRepository;
@@ -50,5 +51,13 @@ public class EtapaServicoService {
 		EtapaServico criado = etapaServicoRepository.save(etapa);
 		
 		return new EtapaServicoResDTO(criado);
+	}
+	
+	public EtapaServicoResDTO atualizar(EtapaServicoReqDTO dto, Long idEtapaServico) {
+		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
+		etapa.setTitulo(dto.getTitulo());
+		etapa.setDescricao(dto.getDescricao());
+		EtapaServico atualizado = etapaServicoRepository.save(etapa);
+		return new EtapaServicoResDTO(atualizado);
 	}
 }

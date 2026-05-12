@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
+import com.fooengineers.projetoAcVansV4.dto.OrdemDTO;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 import com.fooengineers.projetoAcVansV4.exception.EtapaServicoNaoEncontradaException;
@@ -59,5 +60,40 @@ public class EtapaServicoService {
 		etapa.setDescricao(dto.getDescricao());
 		EtapaServico atualizado = etapaServicoRepository.save(etapa);
 		return new EtapaServicoResDTO(atualizado);
+	}
+	
+	public EtapaServicoResDTO atualizarOrdem(OrdemDTO dto, Long idEtapaServico) {
+		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
+		Integer novaOrdem;
+		if(dto.getOrdemAnterior() == null) {
+			novaOrdem = (dto.getOrdemProxima() - 100);
+		}else if(dto.getOrdemProxima() == null) {
+			novaOrdem = (dto.getOrdemAnterior() + 100);
+		}else {
+			novaOrdem = ((dto.getOrdemAnterior() + dto.getOrdemProxima()) / 2);
+		}
+		
+		if(novaOrdem.equals(dto.getOrdemAnterior()) || novaOrdem.equals(dto.getOrdemProxima())) {
+			novaOrdem = reindexar(etapa);
+		}
+		
+		etapa.setOrdem(novaOrdem);
+		
+		return new EtapaServicoResDTO(etapaServicoRepository.save(etapa));
+	}
+	
+	private Integer reindexar(EtapaServico etapa) {
+		List<EtapaServico> etapas = etapaServicoRepository.findByTipoServico(etapa.getTipoServico());
+		
+		int ordem = 100;
+		for(EtapaServico e: etapas) {
+			EtapaServicoReqDTO dto = new EtapaServicoReqDTO();
+			dto.setTitulo(e.getTitulo());
+			dto.setDescricao(e.getDescricao());
+			e.setOrdem(ordem);
+			atualizar(dto, e.getId());
+			ordem += 100;
+		}
+		return etapaServicoRepository.findById(etapa.getId()).get().getOrdem();
 	}
 }

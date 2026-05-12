@@ -38,4 +38,9 @@ public class TipoServicoService {
 		TipoServico atualizado = tipoServicoRepository.save(tipo);
 		return new TipoServicoResDTO(atualizado);
 	}
+	
+	public void deletar(Long idTipoServico) {
+		TipoServico tipo = tipoServicoRepository.findById(idTipoServico).orElseThrow(() -> new TipoServicoNaoEncontradoException(idTipoServico));
+		tipoServicoRepository.delete(tipo);
+	}
 }

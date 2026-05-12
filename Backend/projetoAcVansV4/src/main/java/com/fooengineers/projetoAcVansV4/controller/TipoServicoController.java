@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +35,10 @@ public class TipoServicoController {
 	public TipoServicoResDTO criar(@ModelAttribute @Valid TipoServicoReqDTO dto, Authentication authentication) {
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		return tipoServicoService.criar(dto, usuario.getOficina());
+	}
+	
+	@PutMapping("/{idTipoServico}")
+	public TipoServicoResDTO atualizar(@ModelAttribute @Valid TipoServicoReqDTO dto, @PathVariable(required=true) Long idTipoServico) {
+		return tipoServicoService.atualizar(dto, idTipoServico);
 	}
 }

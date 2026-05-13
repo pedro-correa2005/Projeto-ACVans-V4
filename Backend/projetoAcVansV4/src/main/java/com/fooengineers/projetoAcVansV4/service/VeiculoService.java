@@ -8,7 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.dto.VeiculoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
+import com.fooengineers.projetoAcVansV4.entity.Cliente;
+import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 import com.fooengineers.projetoAcVansV4.exception.ClienteNaoEncontradoExcepiton;
 import com.fooengineers.projetoAcVansV4.repository.ClienteRepository;
@@ -30,5 +33,17 @@ public class VeiculoService {
 		clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
 		List<Veiculo> veiculos = veiculoRepository.findAll(VeiculoSpecification.filtrarPorCliente(termo, idCliente));
 		return veiculos.stream().map(VeiculoResDTO::new).collect(Collectors.toList());
+	}
+	
+	public VeiculoResDTO criar(VeiculoReqDTO dto, Oficina oficina) {
+		Cliente cliente = clienteRepository.findById(dto.getIdCliente()).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(dto.getIdCliente()));
+		Veiculo veiculo = new Veiculo();
+		veiculo.setPlaca(dto.getPlaca());
+		veiculo.setMarca(dto.getMarca());
+		veiculo.setModelo(dto.getModelo());
+		veiculo.setCliente(cliente);
+		veiculo.setOficina(oficina);
+		
+		return new VeiculoResDTO(veiculoRepository.save(veiculo));
 	}
 }

@@ -11,6 +11,7 @@ import com.fooengineers.projetoAcVansV4.entity.Cliente;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.exception.ClienteNaoEncontradoExcepiton;
 import com.fooengineers.projetoAcVansV4.repository.ClienteRepository;
+import com.fooengineers.projetoAcVansV4.specification.ClienteSpecification;
 
 @Service
 public class ClienteService {
@@ -24,6 +25,11 @@ public class ClienteService {
 	public ClienteResDTO buscar(Long idCliente) {
 		Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
 		return new ClienteResDTO(cliente);
+	}
+	
+	public Page<ClienteResDTO> buscar(Integer idOficina, String termo, Pageable pageable){
+		Page<Cliente> clientes = clienteRepository.findAll(ClienteSpecification.filtroGeral(termo, idOficina), pageable);
+		return clientes.map(ClienteResDTO::new);
 	}
 	
 	public ClienteResDTO criar(ClienteReqDTO dto, Oficina oficina) {

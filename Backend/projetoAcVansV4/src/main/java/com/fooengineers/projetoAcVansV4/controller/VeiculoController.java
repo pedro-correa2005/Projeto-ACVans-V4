@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
+import com.fooengineers.projetoAcVansV4.service.ServicoService;
 import com.fooengineers.projetoAcVansV4.service.VeiculoService;
 
 import jakarta.validation.Valid;
@@ -27,6 +31,8 @@ import jakarta.validation.Valid;
 public class VeiculoController {
 	@Autowired
 	private VeiculoService veiculoService;
+	@Autowired
+	private ServicoService servicoService;
 	
 	@GetMapping
 	public Page<VeiculoResDTO> listar(Authentication authentication, @RequestParam(defaultValue="") String termo, Pageable pageable){
@@ -57,5 +63,10 @@ public class VeiculoController {
 	public ResponseEntity<?> delete(@PathVariable(required=true) Long idVeiculo){
 		veiculoService.deletar(idVeiculo);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/{idVeiculo}/servicos")
+	public List<ServicoResDTO> buscar(@PathVariable(required=true) Long idVeiculo, @RequestParam(defaultValue="") String termo){
+		return servicoService.buscarPorVeiculo(idVeiculo, termo);
 	}
 }

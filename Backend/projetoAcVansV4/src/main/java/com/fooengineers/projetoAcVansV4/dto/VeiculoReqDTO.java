@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,4 +20,6 @@ public class VeiculoReqDTO {
 	private String marca;
 	@NotBlank(message = "O modelo é obriatório")
 	private String modelo;
+	@NotNull(message = "Cliente é obrigatório")
+	private Long idCliente;
 }

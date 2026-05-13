@@ -3,6 +3,7 @@ package com.fooengineers.projetoAcVansV4.exception;
 import java.util.stream.Collectors;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -99,6 +100,17 @@ public class GlobalExceptionHandler {
 				request.getRequestURI()
 		);
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+	}
+	
+	@ExceptionHandler(RedisConnectionFailureException.class)
+	public ResponseEntity<ErrorResponse> handleRedisConnectionFailureException(RedisConnectionFailureException ex, HttpServletRequest request){
+		ErrorResponse error = new ErrorResponse(
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+				"Erro no servidor: conexão de Redis",
+				request.getRequestURI()
+		);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
 	}
 		
 	@ExceptionHandler(Exception.class)

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,5 +45,11 @@ public class VeiculoController {
 	public ResponseEntity<VeiculoResDTO> atualizar(@ModelAttribute @Valid VeiculoReqDTO dto, @PathVariable(required=true) Long idVeiculo) {
 		VeiculoResDTO atualizado = veiculoService.atualizar(dto, idVeiculo);
 		return ResponseEntity.ok(atualizado);
+	}
+	
+	@DeleteMapping("/{idVeiculo}")
+	public ResponseEntity<?> delete(@PathVariable(required=true) Long idVeiculo){
+		veiculoService.deletar(idVeiculo);
+		return ResponseEntity.ok().build();
 	}
 }

@@ -1,14 +1,18 @@
 package com.fooengineers.projetoAcVansV4.service;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Servico;
 import com.fooengineers.projetoAcVansV4.exception.ServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.ServicoRepository;
+import com.fooengineers.projetoAcVansV4.specification.ServicoSpecification;
 import com.fooengineers.projetoAcVansV4.util.QrCodeUtil;
 import com.google.zxing.WriterException;
 
@@ -30,6 +34,11 @@ public class ServicoService {
 	
 	public Servico buscar(String tokenLongo) {
 		return servicoRepository.findByTokenAtualizacao(tokenLongo).orElseThrow(() -> new ServicoNaoEncontradoException());
+	}
+	
+	public List<ServicoResDTO> buscarPorVeiculo(Long idVeiculo, String termo){
+		return servicoRepository.findAll(ServicoSpecification.filtrarPorVeiculo(termo, idVeiculo))
+				.stream().map(ServicoResDTO::new).collect(Collectors.toList());
 	}
 	
 	public byte[] gerarQrCode(Long idServico) throws WriterException, IOException {

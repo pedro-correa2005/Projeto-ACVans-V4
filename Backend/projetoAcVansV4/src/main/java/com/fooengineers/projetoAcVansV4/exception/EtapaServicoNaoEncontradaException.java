@@ -11,5 +11,8 @@ public class EtapaServicoNaoEncontradaException extends RuntimeException{
 	}
 	public EtapaServicoNaoEncontradaException(String tipoServico, int ordem) {
 		super("Etapa de serviço com ordem " + ordem + " não econtrada para o tipo de serviço: " + tipoServico);
+	}
+	public EtapaServicoNaoEncontradaException(String message) {
+		super(message);
 	}	
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.ClienteReqDTO;
@@ -26,11 +27,11 @@ import jakarta.validation.Valid;
 public class ClienteController {
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	@GetMapping
-	public Page<ClienteResDTO> listar(Authentication authentication, Pageable pageable){
+	public Page<ClienteResDTO> buscar(Authentication authentication, @RequestParam(defaultValue="") String termo, Pageable pageable){
 		Usuario usuario = (Usuario) authentication.getPrincipal();
-		return clienteService.listar(usuario.getOficina(), pageable);
+		return clienteService.buscar(usuario.getOficina().getId(), termo, pageable);
 	}
 	
 	@GetMapping("/{idCliente}")

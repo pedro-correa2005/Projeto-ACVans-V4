@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.ClienteReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ClienteResDTO;
+import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.service.ClienteService;
+import com.fooengineers.projetoAcVansV4.service.VeiculoService;
 
 import jakarta.validation.Valid;
 
@@ -27,6 +31,9 @@ import jakarta.validation.Valid;
 public class ClienteController {
 	@Autowired
 	private ClienteService clienteService;
+	@Autowired
+	private VeiculoService veiculoService;
+	
 
 	@GetMapping
 	public Page<ClienteResDTO> buscar(Authentication authentication, @RequestParam(defaultValue="") String termo, Pageable pageable){
@@ -57,5 +64,10 @@ public class ClienteController {
 	public ResponseEntity<ClienteResDTO> deletar(@PathVariable(required=true) Long idCliente){
 		clienteService.deletar(idCliente);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/{idCliente}/veiculos")
+	public List<VeiculoResDTO> buscarVeiculos(@PathVariable(required=true) Long idCliente, @RequestParam(defaultValue="") String termo){
+		return veiculoService.buscarPorCliente(idCliente, termo);
 	}
 }

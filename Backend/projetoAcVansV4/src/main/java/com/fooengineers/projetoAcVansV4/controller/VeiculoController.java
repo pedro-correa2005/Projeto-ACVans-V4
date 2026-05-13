@@ -34,6 +34,12 @@ public class VeiculoController {
 		return veiculoService.listar(usuario.getOficina().getId(), termo, pageable);
 	}
 	
+	@GetMapping("/{idVeiculo}")
+	public ResponseEntity<VeiculoResDTO> buscar(@PathVariable(required=true) Long idVeiculo){
+		VeiculoResDTO veiculo = veiculoService.buscar(idVeiculo);
+		return ResponseEntity.ok(veiculo);
+	}
+	
 	@PostMapping
 	public ResponseEntity<VeiculoResDTO> criar(Authentication authentication, @ModelAttribute @Valid VeiculoReqDTO dto) {
 		Usuario usuario = (Usuario) authentication.getPrincipal();

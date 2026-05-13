@@ -41,7 +41,7 @@ public class CadastroResDTO {
 		this.receberNotificacao = servico.getReceberNotificacao()?"Sim":"Não";
 		this.dataInicio = servico.getDataInicio();
 		EtapaServico etapa = servico.getEtapaServico();
-		this.etapaTitulo = etapa.getTitulo();
+		this.etapaTitulo = etapa != null? etapa.getTitulo():null;
 		this.dataFim = servico.getDataFim();
 	}
 }

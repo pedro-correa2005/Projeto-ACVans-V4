@@ -14,6 +14,9 @@ public class ServicoResDTO {
 	private String receberNotificacao;
 	private String dataInicio;
 	private String dataFIm;
+	private String tipoServico;
+	private String statusServico;
+	private String etapaServico;
 	
 	//Constructor a partir de entity.Servico
 	public ServicoResDTO(Servico servico) {
@@ -21,5 +24,8 @@ public class ServicoResDTO {
 		this.receberNotificacao = servico.getReceberNotificacao()?"Sim":"Não";
 		this.dataInicio = servico.getDataInicio().toString();
 		this.dataFIm = servico.getDataFim().toString();
+		this.tipoServico = servico.getTipoServico().getDescricao();
+		this.statusServico = servico.getStatusServico().getDescricao();
+		this.etapaServico = servico.getEtapaServico() != null ? servico.getEtapaServico().getTitulo():null;
 	}
 }

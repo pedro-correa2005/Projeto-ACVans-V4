@@ -51,7 +51,7 @@ public class Servico {
 	private StatusServico statusServico;
 	
 	@ManyToOne
-	@JoinColumn(name = "fk_etapa_servico", nullable = false)
+	@JoinColumn(name = "fk_etapa_servico", nullable = true)
 	private EtapaServico etapaServico;
 	
 	@ManyToOne

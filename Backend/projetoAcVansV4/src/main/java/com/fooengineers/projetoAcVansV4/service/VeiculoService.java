@@ -14,6 +14,7 @@ import com.fooengineers.projetoAcVansV4.entity.Cliente;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 import com.fooengineers.projetoAcVansV4.exception.ClienteNaoEncontradoExcepiton;
+import com.fooengineers.projetoAcVansV4.exception.VeiculoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.ClienteRepository;
 import com.fooengineers.projetoAcVansV4.repository.VeiculoRepository;
 import com.fooengineers.projetoAcVansV4.specification.VeiculoSpecification;
@@ -44,6 +45,13 @@ public class VeiculoService {
 		veiculo.setCliente(cliente);
 		veiculo.setOficina(oficina);
 		
+		return new VeiculoResDTO(veiculoRepository.save(veiculo));
+	}
+	public VeiculoResDTO atualizar(VeiculoReqDTO dto, Long idVeiculo) {
+		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
+		veiculo.setPlaca(dto.getPlaca());
+		veiculo.setMarca(dto.getMarca());
+		veiculo.setModelo(dto.getModelo());
 		return new VeiculoResDTO(veiculoRepository.save(veiculo));
 	}
 }

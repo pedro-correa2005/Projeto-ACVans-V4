@@ -54,4 +54,8 @@ public class VeiculoService {
 		veiculo.setModelo(dto.getModelo());
 		return new VeiculoResDTO(veiculoRepository.save(veiculo));
 	}
+	public void deletar(Long idVeiculo) {
+		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
+		veiculoRepository.delete(veiculo);
+	}
 }

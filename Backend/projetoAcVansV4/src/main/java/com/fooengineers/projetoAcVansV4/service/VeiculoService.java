@@ -29,6 +29,11 @@ public class VeiculoService {
 	public Page<VeiculoResDTO> listar(Integer idOficina, String termo, Pageable pageable) {
 		return veiculoRepository.findAll(VeiculoSpecification.filtroGeral(termo, idOficina), pageable).map(VeiculoResDTO::new);
 	}
+	
+	public VeiculoResDTO buscar(Long idVeiculo) {
+		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
+		return new VeiculoResDTO(veiculo);
+	}
 
 	public List<VeiculoResDTO> buscarPorCliente(Long idCliente, String termo) {
 		clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));

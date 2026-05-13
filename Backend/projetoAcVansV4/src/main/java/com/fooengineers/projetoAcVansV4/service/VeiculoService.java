@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
-import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 import com.fooengineers.projetoAcVansV4.exception.ClienteNaoEncontradoExcepiton;
 import com.fooengineers.projetoAcVansV4.repository.ClienteRepository;
@@ -23,8 +22,8 @@ public class VeiculoService {
 	@Autowired
 	ClienteRepository clienteRepository;
 	
-	public Page<VeiculoResDTO> listar(Oficina oficina, Pageable pageable) {
-		return null;
+	public Page<VeiculoResDTO> listar(Integer idOficina, String termo, Pageable pageable) {
+		return veiculoRepository.findAll(VeiculoSpecification.filtroGeral(termo, idOficina), pageable).map(VeiculoResDTO::new);
 	}
 
 	public List<VeiculoResDTO> buscarPorCliente(Long idCliente, String termo) {

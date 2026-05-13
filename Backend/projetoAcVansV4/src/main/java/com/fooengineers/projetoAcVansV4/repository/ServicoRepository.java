@@ -19,6 +19,8 @@ public interface ServicoRepository extends JpaRepository<Servico, Long>, JpaSpec
 	
 	//Contar serviços por veículo
 	int countByVeiculoPlacaAndOficina(String placa, Oficina oficina);
-	//Filtrar por oficina
+	//Filtrar por oficina e termo
 	Page<Servico> findAll(Specification<Servico> specification, Pageable pageable);
+	
+	Page<Servico> findByOficina(Oficina oficina, Pageable pageable);
 }

@@ -12,6 +12,7 @@ import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 
 public class ServicoSpecification {
@@ -21,17 +22,21 @@ public class ServicoSpecification {
 			
 			Join<Servico, Veiculo> veiculo = root.join("veiculo");
 			veiculo.join("cliente");
+			
 			root.join("tipoServico");
-			root.join("etapaServico");
+			root.join("etapaServico", JoinType.LEFT);
 			
 			List <Predicate> predicates = new ArrayList<>();
 			
 			predicates.add(
 					cb.equal(root.get("oficina").get("id"), idOficina)
+			);
+			
+			if(idStatusServico != null) {
+				predicates.add(
+						cb.equal(root.get("statusServico").get("id"), idStatusServico)
 					);
-			predicates.add(
-					cb.equal(root.get("statusServico").get("id"), idStatusServico)
-					);
+			}
 			
 			if(termo != null && !termo.isBlank()) {
 				String like = "%" + termo.toLowerCase() + "%";

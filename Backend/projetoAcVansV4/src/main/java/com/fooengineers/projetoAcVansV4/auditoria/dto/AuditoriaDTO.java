@@ -1,4 +1,4 @@
-package com.fooengineers.projetoAcVansV4.dto;
+package com.fooengineers.projetoAcVansV4.auditoria.dto;
 
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Auditoria;
 
@@ -15,7 +15,7 @@ public class AuditoriaDTO {
 	private Long idRegistro;
 	private String tempo;
 	private String enderecoIp;
-	private String detalhes;
+	private Detalhes detalhes;
 	private String email;
 	
 	//Constructor a partir de entity.Auditoria
@@ -31,7 +31,7 @@ public class AuditoriaDTO {
 		this.enderecoIp = auditoria.getEnderecoIp();
 		
 		if(auditoria.getDetalhes() != null)
-			this.detalhes = auditoria.getDetalhes().getAntes().toString() + auditoria.getDetalhes().getDepois().toString();
+			this.detalhes = auditoria.getDetalhes();
 		
 		if(auditoria.getUsuario() != null)
 			this.email = auditoria.getUsuario().getEmail();

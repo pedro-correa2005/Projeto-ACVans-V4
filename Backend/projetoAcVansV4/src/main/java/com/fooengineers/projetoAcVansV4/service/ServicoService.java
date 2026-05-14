@@ -100,6 +100,28 @@ public class ServicoService {
 		return new ServicoResDTO(servicoRepository.save(servico));
 	}
 	
+	public ServicoResDTO atualizar(ServicoReqDTO dto, Long idServico) {
+		Servico servico = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException(idServico)); 
+		StatusServico status = statusServicoRepository.findById(dto.getIdStatusServico()).orElseThrow(() -> new StatusServicoNaoEncontradoException(dto.getIdStatusServico()));
+		
+		servico.setReceberNotificacao(dto.isReceberNotificacao());
+		servico.setDataFim(dto.getDataFim());
+		servico.setStatusServico(status);
+		
+		if(status.getDescricao().equals("INICIADO")) {
+			TipoServico tipo = servico.getTipoServico();
+			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
+			servico.setEtapaServico(etapa);
+		}
+		
+		return new ServicoResDTO(servicoRepository.save(servico));
+	}
+	
+	public void deletar(Long idServico) {
+		Servico servico = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException(idServico));
+		servicoRepository.delete(servico);
+	}
+	
 	public byte[] gerarQrCode(Long idServico) throws WriterException, IOException {
 		Servico s = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException());
 		

@@ -3,6 +3,7 @@ package com.fooengineers.projetoAcVansV4.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,10 +53,9 @@ public class ServicoController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/baixar-qrcode")
-	public ResponseEntity<byte[]> baixarQrCode(@RequestParam(required=true) Long idServico){
-		byte [] qrCode = servicoService.gerarQrCode(idServico);
-		return ResponseEntity.ok(qrCode);
+	@GetMapping(value="/baixar-qrcode", produces=MediaType.IMAGE_PNG_VALUE)
+	public byte[] baixarQrCode(@RequestParam(required=true) Long idServico){
+		return servicoService.gerarQrCode(idServico);
 	}
 	
 }

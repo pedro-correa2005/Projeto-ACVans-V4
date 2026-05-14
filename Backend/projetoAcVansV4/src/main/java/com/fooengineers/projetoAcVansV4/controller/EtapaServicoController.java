@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
 import com.fooengineers.projetoAcVansV4.dto.OrdemDTO;
@@ -33,6 +36,7 @@ public class EtapaServicoController {
 	}
 	
 	@PostMapping("/tipos-servico/{idTipoServico}/etapas-servico")
+	@Auditavel(acao = Acao.CREATE, entidade = Entidade.ETAPA_SERVICO)
 	public ResponseEntity<EtapaServicoResDTO> criar(@ModelAttribute @Valid EtapaServicoReqDTO dto, @PathVariable(required=true) Long idTipoServico) {
 		EtapaServicoResDTO criado = etapaServicoService.criar(dto, idTipoServico);
 		return ResponseEntity.ok().body(criado);
@@ -51,6 +55,7 @@ public class EtapaServicoController {
 	}
 	
 	@DeleteMapping("/etapas-servico/{idEtapaServico}")
+	@Auditavel(acao = Acao.DELETE, entidade = Entidade.ETAPA_SERVICO)
 	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idEtapaServico){
 		etapaServicoService.deletar(idEtapaServico);
 		return ResponseEntity.ok().build();

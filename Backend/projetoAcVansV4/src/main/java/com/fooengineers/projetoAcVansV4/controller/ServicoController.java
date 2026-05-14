@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,4 +38,17 @@ public class ServicoController {
 		ServicoResDTO criado = servicoService.criar(dto, usuario.getOficina().getId());
 		return ResponseEntity.ok(criado);
 	}
+	
+	@PutMapping("/{idServico}")
+	public ResponseEntity<ServicoResDTO> criar(@ModelAttribute @Valid ServicoReqDTO dto, @PathVariable(required=true) Long idServico){
+		ServicoResDTO atualizado = servicoService.atualizar(dto, idServico);
+		return ResponseEntity.ok(atualizado);
+	}
+	
+	@DeleteMapping("/{idServico}")
+	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idServico){
+		servicoService.deletar(idServico);
+		return ResponseEntity.ok().build();
+	}
+	
 }

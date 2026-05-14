@@ -79,4 +79,15 @@ public class ServicoSpecification {
 					cb.or(porTipo, porStatus, porEtapa));
 		};
 	}
+	public static Specification<Servico> filtroDeConsulta(String token, String placa){
+		return(root, query, cb) -> {
+			query.distinct(true);
+			Join<Servico, Veiculo> veiculo = root.join("veiculo");
+			
+			Predicate porToken = cb.equal(root.get("tokenConsulta"), token);
+			Predicate porPlaca = cb.equal(veiculo.get("placa"), placa);
+			
+			return cb.and(porToken, porPlaca);
+		};
+	}
 }

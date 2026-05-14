@@ -3,6 +3,7 @@ package com.fooengineers.projetoAcVansV4.service;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
@@ -54,6 +61,11 @@ public class ServicoService {
 	private VeiculoRepository veiculoRepository;
 	@Value("${app.base-url}")
 	private String baseUrl;
+	
+	@Autowired
+	private AuditoriaService auditoriaService;
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public Page<ServicoResDTO> listar(Oficina oficina, Pageable pageable) {
 		return servicoRepository.findByOficina(oficina, pageable).map(ServicoResDTO::new);
@@ -92,6 +104,12 @@ public class ServicoService {
 		Servico servico = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException(idServico)); 
 		StatusServico status = statusServicoRepository.findById(dto.getIdStatusServico()).orElseThrow(() -> new StatusServicoNaoEncontradoException(dto.getIdStatusServico()));
 		
+		Map<String, Object> antes =
+				objectMapper.convertValue(
+						new ServicoResDTO(servico),
+						new TypeReference<Map<String, Object>>() {}
+						);
+		
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
 		servico.setDataFim(dto.getDataFim());
 		servico.setStatusServico(status);
@@ -101,8 +119,22 @@ public class ServicoService {
 			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
 			servico.setEtapaServico(etapa);
 		}
+		Servico atualizado = servicoRepository.save(servico);
+		Map<String, Object> depois =
+				objectMapper.convertValue(
+						new ServicoResDTO(atualizado),
+						new TypeReference<Map<String, Object>>() {}
+						);
 		
-		return new ServicoResDTO(servicoRepository.save(servico));
+		Detalhes detalhes = new Detalhes(antes, depois);
+		
+		auditoriaService.registrar(
+				Acao.UPDATE,
+				Entidade.SERVICO,
+				idServico,
+				detalhes);
+		
+		return new ServicoResDTO(atualizado);
 	}
 	
 	public void deletar(Long idServico) {

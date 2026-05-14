@@ -1,4 +1,4 @@
-package com.fooengineers.projetoAcVansV4.domain;
+package com.fooengineers.projetoAcVansV4.auditoria.dto;
 
 import java.util.Map;
 

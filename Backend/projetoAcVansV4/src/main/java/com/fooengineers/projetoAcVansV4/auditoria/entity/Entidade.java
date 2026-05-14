@@ -1,6 +1,7 @@
-package com.fooengineers.projetoAcVansV4.domain;
+package com.fooengineers.projetoAcVansV4.auditoria.entity;
 
 public enum Entidade {
+	USUARIO("usuario"),
 	CLIENTE("Cliente"), 
 	VEICULO("Veículo"), 
 	TIPO_SERVICO("Tipo de Serviço"),

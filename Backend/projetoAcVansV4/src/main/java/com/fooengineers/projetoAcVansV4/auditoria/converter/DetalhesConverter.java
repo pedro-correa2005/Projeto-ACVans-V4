@@ -1,7 +1,7 @@
-package com.fooengineers.projetoAcVansV4.converter;
+package com.fooengineers.projetoAcVansV4.auditoria.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fooengineers.projetoAcVansV4.domain.Detalhes;
+import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

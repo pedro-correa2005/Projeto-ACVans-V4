@@ -59,19 +59,6 @@ public class ServicoService {
 		return servicoRepository.findByOficina(oficina, pageable).map(ServicoResDTO::new);
 	}
 	
-	public Servico buscar(String token, String placa) {
-		Servico s = servicoRepository.findByTokenConsulta(token).orElseThrow(() -> new ServicoNaoEncontradoException());
-		if(placa.equals(s.getVeiculo().getPlaca())) {
-			return s;
-		}else{
-			return null;
-		}
-	}
-	
-	public Servico buscar(String tokenLongo) {
-		return servicoRepository.findByTokenAtualizacao(tokenLongo).orElseThrow(() -> new ServicoNaoEncontradoException());
-	}
-	
 	public List<ServicoResDTO> buscarPorVeiculo(Long idVeiculo, String termo){
 		return servicoRepository.findAll(ServicoSpecification.filtrarPorVeiculo(termo, idVeiculo))
 				.stream().map(ServicoResDTO::new).collect(Collectors.toList());

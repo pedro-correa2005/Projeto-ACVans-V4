@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.ClienteReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ClienteResDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
@@ -48,6 +51,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping
+	@Auditavel(acao = Acao.CREATE, entidade = Entidade.CLIENTE)
 	public ResponseEntity<ClienteResDTO> criar(@ModelAttribute @Valid ClienteReqDTO dto, Authentication authentication){
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		ClienteResDTO criado = clienteService.criar(dto, usuario.getOficina());

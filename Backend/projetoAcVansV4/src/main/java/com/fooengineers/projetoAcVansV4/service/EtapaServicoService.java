@@ -1,11 +1,18 @@
 package com.fooengineers.projetoAcVansV4.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
 import com.fooengineers.projetoAcVansV4.dto.OrdemDTO;
@@ -22,6 +29,11 @@ public class EtapaServicoService {
 	private EtapaServicoRepository etapaServicoRepository;
 	@Autowired
 	private TipoServicoRepository tipoServicoRepository;
+	@Autowired
+	private AuditoriaService auditoriaService;
+	
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	public List<EtapaServicoResDTO> listarPorTipo(TipoServico tipo){
 		return etapaServicoRepository.findByTipoServico(tipo)
@@ -56,14 +68,41 @@ public class EtapaServicoService {
 	
 	public EtapaServicoResDTO atualizar(EtapaServicoReqDTO dto, Long idEtapaServico) {
 		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
+		
+		Map<String, Object> antes = 
+				objectMapper.convertValue(
+						new EtapaServicoResDTO(etapa),
+						new TypeReference<Map<String, Object>> () {}
+				);
+		
 		etapa.setTitulo(dto.getTitulo());
 		etapa.setDescricao(dto.getDescricao());
 		EtapaServico atualizado = etapaServicoRepository.save(etapa);
+		
+		Map<String, Object> depois =
+				objectMapper.convertValue(
+						new EtapaServicoResDTO(atualizado),
+						new TypeReference<Map<String, Object>> () {}
+				);
+
+		Detalhes detalhes = new Detalhes(antes, depois);
+		auditoriaService.registrar(
+				Acao.UPDATE,
+				Entidade.ETAPA_SERVICO,
+				idEtapaServico,
+				detalhes);
+		
 		return new EtapaServicoResDTO(atualizado);
 	}
 	
 	public EtapaServicoResDTO atualizarOrdem(OrdemDTO dto, Long idEtapaServico) {
 		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
+		Map<String, Object> antes = 
+				objectMapper.convertValue(
+						new EtapaServicoResDTO(etapa),
+						new TypeReference<Map<String, Object>> () {}
+				);
+		
 		Integer novaOrdem;
 		if(dto.getOrdemAnterior() == null) {
 			novaOrdem = (dto.getOrdemProxima() - 100);
@@ -79,7 +118,21 @@ public class EtapaServicoService {
 		
 		etapa.setOrdem(novaOrdem);
 		
-		return new EtapaServicoResDTO(etapaServicoRepository.save(etapa));
+		EtapaServico atualizada = etapaServicoRepository.save(etapa);
+		
+		Map<String, Object> depois = 
+				objectMapper.convertValue(
+						new EtapaServicoResDTO(atualizada),
+						new TypeReference<Map<String, Object>> () {}
+				);
+		
+		Detalhes detalhes = new Detalhes(antes, depois);
+		auditoriaService.registrar(
+				Acao.UPDATE,
+				Entidade.ETAPA_SERVICO,
+				idEtapaServico,
+				detalhes);
+		return new EtapaServicoResDTO(atualizada);
 	}
 	
 	private Integer reindexar(EtapaServico etapa) {

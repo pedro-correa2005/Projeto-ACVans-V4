@@ -65,6 +65,7 @@ public class ClienteController {
 	}
 
 	@DeleteMapping("/{idCliente}")
+	@Auditavel(acao = Acao.DELETE, entidade = Entidade.CLIENTE)
 	public ResponseEntity<ClienteResDTO> deletar(@PathVariable(required=true) Long idCliente){
 		clienteService.deletar(idCliente);
 		return ResponseEntity.ok().build();

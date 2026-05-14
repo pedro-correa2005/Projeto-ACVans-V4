@@ -20,6 +20,7 @@ import com.fooengineers.projetoAcVansV4.entity.Servico;
 import com.fooengineers.projetoAcVansV4.entity.StatusServico;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
+import com.fooengineers.projetoAcVansV4.exception.ErroAoGerarQrCode;
 import com.fooengineers.projetoAcVansV4.exception.EtapaServicoNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
 import com.fooengineers.projetoAcVansV4.exception.ServicoNaoEncontradoException;
@@ -122,10 +123,15 @@ public class ServicoService {
 		servicoRepository.delete(servico);
 	}
 	
-	public byte[] gerarQrCode(Long idServico) throws WriterException, IOException {
+	public byte[] gerarQrCode(Long idServico) {
 		Servico s = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException());
 		
 		String url = baseUrl + "/servicos/atualizar-status?token=" + s.getTokenAtualizacao();
-		return QrCodeUtil.gerarQrCode(url);
+		try {
+			return QrCodeUtil.gerarQrCode(url);
+		} catch (WriterException | IOException e) {
+			e.printStackTrace();
+			throw new ErroAoGerarQrCode(e.getMessage());
+		}
 	}
 }

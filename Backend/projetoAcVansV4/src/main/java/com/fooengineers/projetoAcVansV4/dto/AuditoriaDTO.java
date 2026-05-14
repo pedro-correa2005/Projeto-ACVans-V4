@@ -1,6 +1,6 @@
 package com.fooengineers.projetoAcVansV4.dto;
 
-import com.fooengineers.projetoAcVansV4.entity.Auditoria;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Auditoria;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,12 +21,19 @@ public class AuditoriaDTO {
 	//Constructor a partir de entity.Auditoria
 	public AuditoriaDTO(Auditoria auditoria) {
 		this.acao = auditoria.getAcao().getDescricao();
-		this.entidade = auditoria.getEntidade().getDescricao();
+		
+		this.entidade = auditoria.getEntidade() != null? auditoria.getEntidade().getDescricao() : null;
+		
 		this.idRegistro = auditoria.getIdRegistro();
+		
 		this.tempo = auditoria.getTempo().toString();
+		
 		this.enderecoIp = auditoria.getEnderecoIp();
-		this.detalhes = auditoria.getDetalhes().getAntes().toString()
-					+ auditoria.getDetalhes().getDepois().toString();
-		this.email = auditoria.getUsuario().getEmail();
+		
+		if(auditoria.getDetalhes() != null)
+			this.detalhes = auditoria.getDetalhes().getAntes().toString() + auditoria.getDetalhes().getDepois().toString();
+		
+		if(auditoria.getUsuario() != null)
+			this.email = auditoria.getUsuario().getEmail();
 	}
 }

@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,12 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.service.ServicoService;
+import com.google.zxing.WriterException;
 
 import jakarta.validation.Valid;
 
@@ -49,6 +53,12 @@ public class ServicoController {
 	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idServico){
 		servicoService.deletar(idServico);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/baixar-qrcode")
+	public ResponseEntity<byte[]> baixarQrCode(@RequestParam(required=true) Long idServico){
+		byte [] qrCode = servicoService.gerarQrCode(idServico);
+		return ResponseEntity.ok(qrCode);
 	}
 	
 }

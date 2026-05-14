@@ -1,11 +1,11 @@
-package com.fooengineers.projetoAcVansV4.entity;
+package com.fooengineers.projetoAcVansV4.auditoria.entity;
 
 import java.sql.Timestamp;
 
-import com.fooengineers.projetoAcVansV4.converter.DetalhesConverter;
-import com.fooengineers.projetoAcVansV4.domain.Acao;
-import com.fooengineers.projetoAcVansV4.domain.Detalhes;
-import com.fooengineers.projetoAcVansV4.domain.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.converter.DetalhesConverter;
+import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
+import com.fooengineers.projetoAcVansV4.entity.Oficina;
+import com.fooengineers.projetoAcVansV4.entity.Usuario;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

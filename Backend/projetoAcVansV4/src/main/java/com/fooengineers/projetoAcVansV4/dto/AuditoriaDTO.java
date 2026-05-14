@@ -20,8 +20,8 @@ public class AuditoriaDTO {
 	
 	//Constructor a partir de entity.Auditoria
 	public AuditoriaDTO(Auditoria auditoria) {
-		this.acao = auditoria.getAcao();
-		this.entidade = auditoria.getEntidade();
+		this.acao = auditoria.getAcao().getDescricao();
+		this.entidade = auditoria.getEntidade().getDescricao();
 		this.idRegistro = auditoria.getIdRegistro();
 		this.tempo = auditoria.getTempo().toString();
 		this.enderecoIp = auditoria.getEnderecoIp();

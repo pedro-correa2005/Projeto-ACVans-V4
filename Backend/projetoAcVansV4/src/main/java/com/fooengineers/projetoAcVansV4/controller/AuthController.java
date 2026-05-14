@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.domain.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
+import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.MudarSenhaDTO;
@@ -22,10 +24,8 @@ import com.fooengineers.projetoAcVansV4.dto.RedefinirSenhaDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
-import com.fooengineers.projetoAcVansV4.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.service.AuthService;
 import com.fooengineers.projetoAcVansV4.service.UsuarioService;
-import com.fooengineers.projetoAcVansV4.util.IpUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -41,8 +41,6 @@ public class AuthController {
 	private MFAService mfaService;
 	@Autowired
 	private UsuarioService usuarioService;
-	@Autowired
-	private AuditoriaService auditoriaService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginReqDTO loginDto, HttpServletRequest request){
@@ -50,14 +48,12 @@ public class AuthController {
 		String email = loginDto.getEmail().toLowerCase();
 		
 		if(!authService.validarTentativas(request.getRemoteAddr(), email)) {
-			auditoriaService.registrar(Acao.LOGIN_FAIL, null, null, IpUtil.getClientIp(request), null, null, null);
 			return ResponseEntity.status(429).body("Muitas tentativas. Tente mais tarde.");
 		}
 		
 		Usuario usuario = authService.validarCredenciais(email, loginDto.getSenha());
 		
 		if(usuario == null) {
-			auditoriaService.registrar(Acao.LOGIN_FAIL, null, null, IpUtil.getClientIp(request), null, null, null);
 			return ResponseEntity.status(401).body("Email ou senha incorretos");
 		}
 		
@@ -66,7 +62,6 @@ public class AuthController {
 			ResponseCookie accessCookie = jwtService.gerarAccessCookie(email);
 			ResponseCookie refreshCookie = jwtService.gerarRefreshCookie(email, System.currentTimeMillis());
 			ResponseCookie csrfCookie =  jwtService.gerarCsrfCookie();
-			auditoriaService.registrar(Acao.LOGIN, null, null, IpUtil.getClientIp(request), null, usuario, usuario.getOficina());
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
 					.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
@@ -124,6 +119,9 @@ public class AuthController {
 				.body("Token Renovado");
 	}
 	
+	@Auditavel(
+			acao = Acao.LOGIN, entidade = Entidade.USUARIO
+			)
 	@PostMapping("/2fa/verificar")
 	public ResponseEntity<?> verificar(@RequestBody Map<String, String> body, HttpServletRequest request){
 		String tempToken = body.get("tempToken");
@@ -150,8 +148,6 @@ public class AuthController {
 		ResponseCookie refreshCookie = jwtService.gerarRefreshCookie(email, System.currentTimeMillis());
 		ResponseCookie csrfCookie =  jwtService.gerarCsrfCookie();
 		
-		Usuario usuario = usuarioService.buscarPorEmail(email);
-		auditoriaService.registrar(Acao.LOGIN, null, null, IpUtil.getClientIp(request), null, usuario, usuario.getOficina());
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE , accessCookie.toString())
 				.header(HttpHeaders.SET_COOKIE , refreshCookie.toString())
@@ -183,7 +179,6 @@ public class AuthController {
 		String refreshToken = jwtService.getTokenFromCookies(request, "refresh_token");
 		jwtService.deletarToken(refreshToken);
 		
-		auditoriaService.registrar(Acao.PASSWORD_CHANGE, null, null, IpUtil.getClientIp(request), null, usuario, usuario.getOficina());
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("access_token").toString())
 				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("refresh_token").toString())
@@ -219,7 +214,6 @@ public class AuthController {
 		
 		usuarioService.alterarSenha(usuario, novaSenha);
 		
-		auditoriaService.registrar(Acao.PASSWORD_CHANGE, null, null, IpUtil.getClientIp(request), null, usuario, usuario.getOficina());
 		return ResponseEntity.ok("Senha alterada com sucesso.");
 	}
 	

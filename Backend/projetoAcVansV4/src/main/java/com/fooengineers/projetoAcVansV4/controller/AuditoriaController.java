@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.auditoria.dto.AuditoriaDTO;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
-import com.fooengineers.projetoAcVansV4.dto.AuditoriaDTO;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 

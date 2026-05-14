@@ -3,11 +3,15 @@ package com.fooengineers.projetoAcVansV4.entity;
 import java.sql.Timestamp;
 
 import com.fooengineers.projetoAcVansV4.converter.DetalhesConverter;
+import com.fooengineers.projetoAcVansV4.domain.Acao;
 import com.fooengineers.projetoAcVansV4.domain.Detalhes;
+import com.fooengineers.projetoAcVansV4.domain.Entidade;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,10 +32,12 @@ public class Auditoria {
 	private Long id;
 	
 	@Column(nullable = false)
-	private String acao;
+	@Enumerated(EnumType.STRING)
+	private Acao acao;
 	
 	@Column
-	private String entidade;
+	@Enumerated(EnumType.STRING)
+	private Entidade entidade;
 	
 	@Column(name = "id_registro")
 	private Long idRegistro;

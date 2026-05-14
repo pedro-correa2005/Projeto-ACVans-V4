@@ -6,7 +6,8 @@ public enum Acao {
 	UPDATE("Atualização"), 
 	DELETE("Exclusão"),
 	LOGIN_FAIL("Tentativa de Login falha"),
-	LOGIN("Efetuou login");
+	LOGIN("Efetuou login"),
+	PASSWORD_CHANGE("Mudou senha");
 	
 	private String descricao;
 	Acao(String descricao){

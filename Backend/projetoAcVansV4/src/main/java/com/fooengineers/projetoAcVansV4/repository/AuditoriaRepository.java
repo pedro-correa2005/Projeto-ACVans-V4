@@ -8,5 +8,5 @@ import com.fooengineers.projetoAcVansV4.entity.Auditoria;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 
 public interface AuditoriaRepository extends JpaRepository<Auditoria, Long> {
-	Page<Auditoria> findByOficina(Oficina oficina, Pageable pageable);
+	Page<Auditoria> findByOficinaOrderByTempoDesc(Oficina oficina, Pageable pageable);
 }

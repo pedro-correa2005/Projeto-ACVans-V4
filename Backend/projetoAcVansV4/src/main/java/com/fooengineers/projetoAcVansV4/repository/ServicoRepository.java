@@ -15,7 +15,7 @@ public interface ServicoRepository extends JpaRepository<Servico, Long>, JpaSpec
 	//Pesquisar por token de atualização
 	Optional<Servico> findByTokenAtualizacao(String tokenAtualizacao);
 	//Pesquisar por token de consulta
-	Optional<Servico> findByTokenConsulta(String tokenConsulta);
+	Optional<Servico> findOne(Specification<Servico> specification);
 	
 	//Contar serviços por veículo
 	int countByVeiculoPlacaAndOficina(String placa, Oficina oficina);

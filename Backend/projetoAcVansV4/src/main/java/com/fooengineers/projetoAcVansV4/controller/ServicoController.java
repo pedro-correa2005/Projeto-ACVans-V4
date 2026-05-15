@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,6 +62,12 @@ public class ServicoController {
 	@GetMapping(value="/baixar-qrcode", produces=MediaType.IMAGE_PNG_VALUE)
 	public byte[] baixarQrCode(@RequestParam(required=true) Long idServico){
 		return servicoService.gerarQrCode(idServico);
+	}
+	
+	@PatchMapping("/atualizar-etapa/{token}")
+	public ResponseEntity<?> atualizarEtapa(@PathVariable(required=true) String token){
+		servicoService.atualizarEtapa(token);
+		return ResponseEntity.ok().build();
 	}
 	
 }

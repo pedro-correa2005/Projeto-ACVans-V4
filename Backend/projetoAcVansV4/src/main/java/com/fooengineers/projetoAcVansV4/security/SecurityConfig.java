@@ -46,10 +46,21 @@ public class SecurityConfig {
 							"/api/auth/2fa/verificar",
 							"/api/auth/esqueci-a-senha",
 							"/api/auth/redefinir-senha",
+							"/api/consulta",
+							"/api/atualizar-etapa/**",
 							"/v3/api-docs/**",
 						    "/swagger-ui/**",
 						    "/swagger-ui.html").permitAll()
-					//Qualquer outr endpoint
+					.requestMatchers("/api/admin/**").hasRole("ADMIN")
+					.requestMatchers(
+							"/api/relatorios/**",
+							"/api/auditoria",
+							"/api/tipos-servico",
+							"/api/tipos-servico/**",
+							"/api/etapas-servico/**",
+							"/api/etapas-servico"
+							).hasRole("GERENTE")
+					//Qualquer outro endpoint
 					.anyRequest().authenticated()
 				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

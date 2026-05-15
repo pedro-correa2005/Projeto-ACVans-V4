@@ -29,7 +29,9 @@ import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 import com.fooengineers.projetoAcVansV4.exception.ErroAoGerarQrCode;
 import com.fooengineers.projetoAcVansV4.exception.EtapaServicoNaoEncontradaException;
+import com.fooengineers.projetoAcVansV4.exception.OficinaDesativadaException;
 import com.fooengineers.projetoAcVansV4.exception.OficinaNaoEncontradaException;
+import com.fooengineers.projetoAcVansV4.exception.OrdemEtapaNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.exception.ServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.exception.StatusServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.exception.TipoServicoNaoEncontradoException;
@@ -151,6 +153,52 @@ public class ServicoService {
 		} catch (WriterException | IOException e) {
 			e.printStackTrace();
 			throw new ErroAoGerarQrCode(e.getMessage());
+		}
+	}
+
+	public void atualizarEtapa(String token) {
+		Servico servico = servicoRepository.findByTokenAtualizacao(token).orElseThrow(() -> new ServicoNaoEncontradoException(token));
+		
+		if(!servico.getOficina().getAtivo()){
+			throw new OficinaDesativadaException(servico.getOficina().getNome());
+		}
+		
+		if(!servico.getStatusServico().getDescricao().equals("INICIADO")) {
+			return;
+		}
+		
+		Map<String, Object> antes =
+				objectMapper.convertValue(
+						new ServicoResDTO(servico),
+						new TypeReference<Map<String, Object>>() {}
+						);
+		
+		EtapaServico etapaAtual = servico.getEtapaServico();
+		EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
+				servico.getTipoServico(),
+				etapaAtual.getOrdem()
+		).orElseThrow(() -> new OrdemEtapaNaoEncontradoException(etapaAtual.getOrdem(), etapaAtual.getTipoServico().getDescricao()));
+		
+		System.out.println(etapaNova);
+		servico.setEtapaServico(etapaNova);
+		Servico atualizado = servicoRepository.save(servico);
+		
+		Map<String, Object> depois =
+				objectMapper.convertValue(
+						new ServicoResDTO(atualizado),
+						new TypeReference<Map<String, Object>>() {}
+						);
+		
+		Detalhes detalhes = new Detalhes(antes, depois);
+		
+		auditoriaService.registrar(
+				Acao.UPDATE,
+				Entidade.SERVICO,
+				servico.getId(),
+				detalhes);
+		
+		if(servico.getReceberNotificacao()) {
+			//TODO notificar cliente
 		}
 	}
 }

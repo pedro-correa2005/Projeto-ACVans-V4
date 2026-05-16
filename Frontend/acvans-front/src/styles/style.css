@@ -1,0 +1,511 @@
+/* style.css */
+
+/* --- Importação da Fonte e Variáveis de Cor --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-blue: #0052cc;
+    --dark-blue: #0747a6;
+    --light-blue: #deebff;
+    --text-dark: #172b4d;
+    --text-light: #505f79;
+    --background-light: #f4f5f7;
+    --white: #ffffff;
+    --border-color: #dfe1e6;
+    --shadow: 0 4px 8px -2px rgba(9, 30, 66, 0.25), 0 0 1px rgba(9, 30, 66, 0.31);
+}
+
+/* --- Estilos Gerais --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+}
+
+/* --- Estrutura e Cabeçalho (Navbar) --- */
+.navbar {
+    background-color: var(--white);
+    padding: 0 40px;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+
+/* ====================================================== */
+/* ========= INÍCIO DA SEÇÃO DO LOGO CORRIGIDA ========= */
+/* ====================================================== */
+
+/* Container principal do logo */
+.navbar-logo a {
+    display: flex;
+    align-items: center; /* Centraliza verticalmente a imagem e o texto */
+    text-decoration: none;
+    color: var(--primary-blue);
+    height: 60px; /* Define uma altura fixa para a área do logo */
+}
+
+/* Estilo para a imagem do floco de neve */
+.navbar-logo img {
+    height: 100%; /* A imagem ocupará 100% da altura do link (60px) */
+    width: auto;  /* Mantém a proporção da imagem */
+    margin-right: 15px; /* Espaço entre a imagem e o texto */
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+}
+
+/* Estilo para o container do texto (AC VANS e subtítulo) */
+.logo-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.1;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+/* Estilo para o subtítulo "AR CONDICIONADO..." */
+.navbar-logo span {
+    font-size: 0.5em;
+    display: block;
+    color: var(--text-light);
+    font-weight: 400;
+    margin-top: 2px;
+}
+
+/* ====================================================== */
+/* ========== FIM DA SEÇÃO DO LOGO CORRIGIDA ========== */
+/* ====================================================== */
+
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.navbar-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 8px 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.navbar-links a:hover, .navbar-links a.active {
+    color: var(--primary-blue);
+    border-bottom-color: var(--primary-blue);
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+/* --- Estilos de Formulário --- */
+.form-wrapper h1, .main-container h1 {
+    margin-bottom: 30px;
+    color: var(--text-dark);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1em;
+    font-family: 'Poppins', sans-serif;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px var(--light-blue);
+}
+
+/* --- Estilos para Datalist --- */
+.datalist-wrapper {
+    position: relative;
+    width: 100%;
+}
+.datalist-wrapper input {
+    padding-right: 35px !important;
+}
+.datalist-wrapper .dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+.datalist-wrapper input:focus + .dropdown-arrow {
+    color: var(--primary-blue);
+}
+
+/* --- Estilos de Botão --- */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: var(--primary-blue);
+    color: var(--white);
+}
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+}
+
+.btn-secondary {
+    background-color: #e2e6ea;
+    color: var(--text-dark);
+}
+.btn-secondary:hover {
+    background-color: #d3d9df;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+/* --- Estilos de Tabela --- */
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+.controls div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table thead th {
+    background-color: var(--background-light);
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.data-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* --- Alertas (para mensagens flash) --- */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* --- Estilos para o Tracker de Status (Página de Resposta) --- */
+.status-tracker {
+    margin-top: 30px;
+    border-left: 3px solid var(--border-color);
+    padding-left: 20px;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    padding-bottom: 40px;
+}
+
+.step-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--border-color); /* Cinza por padrão */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    margin-right: 20px;
+    flex-shrink: 0;
+    position: relative;
+    left: -35px; /* Alinha o círculo com a borda */
+    border: 3px solid var(--background-light);
+    transition: background-color 0.5s ease;
+}
+
+.step.completed .step-circle {
+    background-color: #28a745; /* Verde quando completo */
+}
+
+.step-title {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.step-desc {
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+/* --- Estilos para a Página de Portfólio --- */
+.portfolio-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.member-card {
+    background-color: var(--background-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-basis: 280px; /* Largura base de cada card */
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.member-icon {
+    font-size: 5em;
+    color: var(--primary-blue);
+    margin-bottom: 15px;
+}
+
+.member-name {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 1.2em;
+}
+
+.member-role {
+    margin-top: 5px;
+    color: var(--text-light);
+    font-size: 0.9em;
+}
+/* Estilo para as novas fotos de membro */
+.member-photo {
+    width: 120px; /* Ajuste o tamanho conforme necessário */
+    height: 120px; /* Deve ser igual ao width para ser um círculo perfeito */
+    border-radius: 50%; /* Torna a imagem circular */
+    object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+    margin-bottom: 15px;
+    border: 3px solid var(--primary-color); /* Opcional: Adicionar uma borda colorida */
+}
+/* --- Estilos para o Rodapé Principal --- */
+.main-footer {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+    background-color: var(--background-light);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-light);
+    font-size: 0.9em;
+}
+
+.main-footer p {
+    margin: 0;
+}
+
+.main-footer a {
+    color: var(--primary-blue);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.main-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Estilos para a Página de Relatórios --- */
+/* Adicione/Verifique estas regras no final de static/style.css */
+
+/* --- Estilos para a Página de Relatórios --- */
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+.report-card {
+    background-color: #fff; /* Fundo branco para destaque */
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.report-card h3 {
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    font-size: 1.2em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.report-card h3 i {
+    margin-right: 10px;
+    color: var(--primary-blue);
+}
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+}
+
+.stats-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.stats-list li:last-child {
+    border-bottom: none;
+}
+
+.stat-value {
+    font-weight: 600;
+    font-size: 1.1em;
+    background-color: var(--light-blue);
+    color: var(--dark-blue);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}@media (max-width: 768px) {
+
+    .navbar {
+        height: auto;
+        flex-direction: column;
+        padding: 10px 20px;
+    }
+
+    .navbar-logo {
+        margin-bottom: 10px; 
+    }
+
+
+    .navbar-links {
+        flex-direction: row;
+        flex-wrap: wrap;    
+        justify-content: center; 
+        width: 100%;
+        gap: 15px;
+    }
+
+    .navbar-links li {
+        width: auto; 
+        border-bottom: none; 
+        padding-bottom: 0;
+    }
+    
+ 
+    .navbar-links a {
+        font-size: 0.9em; 
+        padding: 5px;
+    }
+
+    body { padding-top: 0; }
+    .main-container { width: 95%; padding: 15px; margin: 20px auto; }
+    .form-wrapper { padding: 0; box-shadow: none; }
+    h1 { font-size: 1.5em; text-align: center; }
+    
+
+    .report-grid, .portfolio-grid { grid-template-columns: 1fr; display: grid; }
+    .portfolio-grid { justify-items: center; }
+    .table-responsive {
+        display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .data-table .col-acoes { display: flex; gap: 5px; justify-content: center; }
+    
+    .form-actions { flex-direction: column; gap: 10px; }
+    .form-actions .btn { width: 100%; }
+}

@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import '../styles/consulta.css'
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import PlacaInput from "../components/PlacaInput";
+
+import { validarPlaca } from "../utils/placaUtils";
 
 
 function Consulta(){
@@ -22,26 +28,51 @@ function Consulta(){
 		setToken(value);
 	}
 
+	function handlePlacaChange(e){
+		let value = e.target.value.toUpperCase();
+
+		value = value.replace(/[^A-Z0-9]/g, "");
+
+		value = value.slice(0, 7);
+
+		setPlaca(value);
+	}
+
+	function handleSubmit(e){
+		e.preventDefault();
+
+		if(token.length !== 6 ){
+			toast.error("Código inválido");
+			return;
+		}
+
+		if(!validarPlaca(placa)){
+			toast.error("Placa inválida");
+			return;
+		}
+
+		navigate(`/consulta?token=${token}&placa=${placa}`);
+	}
+
 	return(
 	<div>
 		<Header />
-		<main class="container mt-4">
-			<div class="form-wrapper">
+		<main className="container mt-4">
+			<div className="form-wrapper">
 				<h1>Acompanhamento do Serviço</h1>
-				<p class="form-description">
+				<p className="form-description">
 					Digite o código do serviço e a placa do veículo para ver o status.
 				</p>
-				<form id="formBusca" th:action="@{/consulta}" class="form" method="get">
-					<div class="form-group">
-						<label for="token">Código do Serviço</label>
-						<input type="text" class="form-control" name="token" id="token" placeholder="Ex: A1B2C3" required autocomplete="off"/>
+				<form className="form" id="formBusca" onSubmit={handleSubmit}>
+					<div className="form-group">
+						<label htmlFor="token">Código do Serviço</label>
+						<input type="text" className="form-control" name="token" id="token" placeholder="Ex: A1B2C3" autoComplete="off" value={token} onChange={handleTokenChange}/>
 					</div>
-					<div class="form-group">
-						<label for="placa">Placa do Veículo</label>
-						<input type="text" class="form-control" name="placa" id="placa" placeholder="ABC1234 ou ABC1D23" required autocomplete="off"/>
+					<div className="form-group">
+						<PlacaInput value={placa} onChange={setPlaca} required={true} />
 					</div>
-					<div class="form-actions">
-						<button type="submit" class="btn btn-primary">Buscar Serviço</button>
+					<div className="form-actions">
+						<button type="submit" className="btn btn-primary">Buscar Serviço</button>
 					</div>
 				</form>
 			</div>

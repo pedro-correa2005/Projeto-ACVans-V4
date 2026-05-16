@@ -7,52 +7,23 @@ function Inicio() {
 
   return (
     <div>
-
       <Header />
-
-      <main>
-
-        <div
-          className="
-            min-h-screen
-            flex
-            justify-center
-            items-center
-          "
-        >
-
+      <main className="container mt-4">
+        <div className="min-vh-100 d-flex justify-content-center align-items-center">
           <div className="text-center">
-
-            <h1 className="text-5xl font-bold mb-8">
-              Bem-vindo ao Sistema
-            </h1>
-
-            <div className="flex gap-4 justify-center flex-wrap">
-
-              <Link
-                to="/consultar-servico"
-                className="btn btn-primary"
-              >
-                Consultar Serviço
+            <h1 className="display-4 mb-4">Bem-vindo ao Sistema</h1>
+            <div className="d-grid gap-3 d-sm-block">
+              <Link to="/consultar-servico" className="btn btn-primary btn-lg">
+              Consultar Serviço
               </Link>
-
-              <Link
-                to="/cadastros"
-                className="btn btn-secondary"
-              >
-                Acessar Sistema
+              <Link to="/cadastros" className="btn btn-secondary btn-lg">
+              Acessar Sistema
               </Link>
-
             </div>
-
           </div>
-
-        </div>
-
+        </div>	
       </main>
-
       <Footer />
-
     </div>
   );
 }

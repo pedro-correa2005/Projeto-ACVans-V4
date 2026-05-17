@@ -42,10 +42,34 @@ public class AuditoriaService {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 		HttpServletRequest request = attr.getRequest();
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		Usuario usuario = (Usuario) authentication.getPrincipal();
+		Usuario usuario = null;
+		try {
+			usuario = (Usuario) authentication.getPrincipal();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		auditoria.setEnderecoIp(IpUtil.getClientIp(request));
 		auditoria.setDetalhes(detalhes);
+		auditoria.setUsuario(usuario);
+		if(usuario != null) auditoria.setOficina(usuario.getOficina());
+		
+		auditoriaRepository.save(auditoria);
+	}
+	public void registrarLogin(Authentication authentication) {
+		Usuario usuario = (Usuario) authentication.getPrincipal();
+		Auditoria auditoria = new Auditoria();
+		auditoria.setAcao(Acao.LOGIN);
+		auditoria.setEntidade(Entidade.USUARIO);
+		auditoria.setIdRegistro(usuario.getId());
+		auditoria.setTempo(new Timestamp(System.currentTimeMillis()));
+		
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = attr.getRequest();
+		
+		
+		auditoria.setEnderecoIp(IpUtil.getClientIp(request));
+		auditoria.setDetalhes(null);
 		auditoria.setUsuario(usuario);
 		if(usuario != null) auditoria.setOficina(usuario.getOficina());
 		

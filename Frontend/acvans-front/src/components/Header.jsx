@@ -1,6 +1,12 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/authContext";
 
 function Header() {
+  const {
+    authenticated,
+    user,
+    logout
+  } = useAuth();
   return (
     <header className="navbar">
 
@@ -30,19 +36,33 @@ function Header() {
             Home
           </Link>
         </li>
-
-        <li>
-          <Link to="/cadastros">
-            Sistema
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/login">
-            Login
-          </Link>
-        </li>
-
+        {
+          authenticated && (
+            <li>
+              <Link to="/cadastros">
+                Sistema
+              </Link>
+            </li>
+          )
+        }
+        {
+          !authenticated &&(
+            <li>
+              <Link to="/login">
+                Login
+              </Link>
+            </li>
+          )
+        }
+        {
+          authenticated && (
+            <li>
+              <Link to="/perfil">
+                Usuário
+              </Link>
+            </li>
+          )
+        }
       </ul>
 
     </header>

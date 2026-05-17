@@ -46,6 +46,7 @@ public class SecurityConfig {
 							"/api/auth/2fa/verificar",
 							"/api/auth/esqueci-a-senha",
 							"/api/auth/redefinir-senha",
+							"/api/auth/logout",
 							"/api/consulta",
 							"/api/atualizar-etapa/**",
 							"/v3/api-docs/**",

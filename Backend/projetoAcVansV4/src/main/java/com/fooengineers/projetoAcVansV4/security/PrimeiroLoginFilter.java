@@ -34,6 +34,7 @@ public class PrimeiroLoginFilter extends OncePerRequestFilter{
 		
 		if(ALLOWED_PATHS.contains(path)) {
 			filterChain.doFilter(request, response);
+			return;
 		}
 		
 		String token = jwtService.getTokenFromCookies(request, "access_token");

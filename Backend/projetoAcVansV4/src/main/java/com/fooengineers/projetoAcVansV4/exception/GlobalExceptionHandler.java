@@ -27,7 +27,9 @@ public class GlobalExceptionHandler {
 				ex.getMessage(),
 				request.getRequestURI()
 				);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(DataIntegrityViolationException.class)
@@ -38,7 +40,9 @@ public class GlobalExceptionHandler {
 				ex.getMessage(),
 				request.getRequestURI()
 				);
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,7 +59,9 @@ public class GlobalExceptionHandler {
 				mensagem,
 				request.getRequestURI()
 			);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(MissingServletRequestParameterException.class)
@@ -66,7 +72,9 @@ public class GlobalExceptionHandler {
 				"Parâmetros faltando: " + ex.getMessage(),
 				request.getRequestURI()
 			);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)
@@ -77,7 +85,9 @@ public class GlobalExceptionHandler {
 				ex.getMessage(),
 				request.getRequestURI()
 			);
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(RuntimeException.class)
@@ -99,7 +109,9 @@ public class GlobalExceptionHandler {
 				"Não encontrado: " + ex.getMessage(),
 				request.getRequestURI()
 		);
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 	
 	@ExceptionHandler(RedisConnectionFailureException.class)
@@ -110,7 +122,9 @@ public class GlobalExceptionHandler {
 				"Erro no servidor: conexão de Redis",
 				request.getRequestURI()
 		);
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(error);
 	}
 		
 	@ExceptionHandler(Exception.class)
@@ -122,6 +136,8 @@ public class GlobalExceptionHandler {
                 request.getRequestURI()
         );
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        		.contentType(MediaType.APPLICATION_JSON)
+        		.body(error);
 	}
 }

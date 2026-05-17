@@ -226,9 +226,12 @@ public class AuthController {
 		}
 		
 		return ResponseEntity.ok()
-				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("access_token").toString())
-				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("refresh_token").toString())
-				.header(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("csrf_token").toString())
+				.headers(
+					headers -> {
+						headers.add(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("access_token").toString());
+						headers.add(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("refresh_token").toString());
+						headers.add(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("csrf_token").toString());
+				})
 				.body("Você saiu da sua conta.");
 	}
 }

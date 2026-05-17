@@ -5,7 +5,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,7 @@ public class LoginSuccessListener {
 	
 	@EventListener
 	public void onSuccess(AuthenticationSuccessEvent event) {
-		auditoriaService.registrar(
-				Acao.LOGIN,
-				null,
-				null,
-				null);
+		
+		auditoriaService.registrarLogin(event.getAuthentication());
 	}
 }

@@ -21,6 +21,8 @@ import {
     useAuth
 } from "../context/authContext";
 
+import { getHomeByRole } from "../utils/roleUtils";
+
 function TwoFactor(){
     const navigate = useNavigate();
 
@@ -52,7 +54,7 @@ function TwoFactor(){
 
             const usuario = await me();
 
-            window.location.href="/cadastros";
+            window.location.href = getHomeByRole(response.data.usuario);
         } catch (error){
             console.error(error);
             toast.error(error.response?.data?.message || "Código inválido");

@@ -13,11 +13,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
@@ -26,10 +29,15 @@ public class SecurityConfig {
 	private JwtAuthenticationFilter jwtFilter;
 	@Autowired
 	private CsrfFilter csrfFilter;
+	@Value("${frontend.ip}") 
+	private String frontendIp;
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		return http
+				.cors(cors -> cors.configurationSource(
+						cosrConfigurationSource()
+				))
 				//Desativa csrf
 				.csrf(csrf -> csrf.disable())
 				//Stateless
@@ -64,6 +72,16 @@ public class SecurityConfig {
 					//Qualquer outro endpoint
 					.anyRequest().authenticated()
 				)
+				.exceptionHandling(ex -> ex
+						.authenticationEntryPoint(
+								(request, response, authException) -> {
+									
+									response.sendError(
+											HttpServletResponse.SC_UNAUTHORIZED
+											);
+								}
+								)
+						)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterAfter(csrfFilter, JwtAuthenticationFilter.class)
 				.build();
@@ -79,18 +97,42 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	
+	
 	@Bean
-	public WebMvcConfigurer corsConfigurer() {
-		return new WebMvcConfigurer() {
-			@Value("${frontend.ip}") 
-			String frontendIp;
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-						.allowedOrigins(frontendIp)
-						.allowedMethods("*")
-						.allowCredentials(true);
-			}
-		};
+	public CorsConfigurationSource cosrConfigurationSource() {
+		CorsConfiguration config =
+                new CorsConfiguration();
+
+        config.setAllowedOrigins(
+                List.of(frontendIp)
+        );
+
+        config.setAllowedMethods(
+                List.of(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "PATCH"
+                )
+        );
+
+        config.setAllowedHeaders(
+                List.of("*")
+        );
+
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource
+                source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                config
+        );
+
+        return source;
 	}
 	

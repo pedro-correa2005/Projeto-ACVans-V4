@@ -5,6 +5,22 @@ export async function login(email, senha){
         "/auth/login",
         {email, senha}
     );
+    if(response.status === 200){
+        sessionStorage.setItem("csrf_token", response.data.csrfToken);
+    }
+    return {
+        status: response.status,
+        data: response.data
+    };
+}
+
+export async function verificar2FA(tempToken, code){
+    const response = await api.post("/auth/2fa/verificar",
+        {
+            tempToken,
+            code
+        }
+    );
 
     sessionStorage.setItem("csrf_token", response.data.csrfToken);
 

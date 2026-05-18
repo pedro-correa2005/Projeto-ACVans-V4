@@ -16,7 +16,6 @@ function Login() {
     login,
     authenticated
   } = useAuth();
-  console.log(authenticated);
 
   const [email, setEmail] = useState("");
   
@@ -34,9 +33,17 @@ function Login() {
     e.preventDefault();
     try{
       setLoading(true);
-      await login(email, senha);
-      toast.success("Login realizado com sucesso!");
-      navigate("/cadastros");
+      const response = await login(email, senha);
+
+      if(response.status === 200){
+        toast.success("Login realizado com sucesso!");
+        navigate("/cadastros");
+      }
+
+      if(response.status === 202){
+        navigate("/2fa", {state: {tempToken: response.data.tempToken}});
+      }
+
     }catch(error){
       console.error(error);
       const mensagem = error.respones?.data?.message || "Erro ao realizar login";

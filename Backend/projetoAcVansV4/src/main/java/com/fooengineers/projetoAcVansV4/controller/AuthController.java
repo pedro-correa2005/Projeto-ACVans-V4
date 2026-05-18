@@ -119,9 +119,6 @@ public class AuthController {
 				.body("Token Renovado");
 	}
 	
-	@Auditavel(
-			acao = Acao.LOGIN, entidade = Entidade.USUARIO
-			)
 	@PostMapping("/2fa/verificar")
 	public ResponseEntity<?> verificar(@RequestBody Map<String, String> body, HttpServletRequest request){
 		String tempToken = body.get("tempToken");

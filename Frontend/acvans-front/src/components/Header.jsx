@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { hasRole } from "../utils/roleUtils";
 
 function Header() {
   const {
@@ -41,6 +42,24 @@ function Header() {
             <li>
               <Link to="/cadastros">
                 Sistema
+              </Link>
+            </li>
+          )
+        }
+        {
+          hasRole(user, "GERENTE") && (
+            <li>
+              <Link to="/relatorios">
+                Relatórios
+              </Link>
+            </li>
+          )
+        }
+        {
+          hasRole(user, "ADMIN") && (
+            <li>
+              <Link to="/admin/oficinas">
+                Admin
               </Link>
             </li>
           )

@@ -33,3 +33,16 @@ export function getHomeByRole(user){
 
     return "/";
 }
+
+export function getRoleLabel(role) {
+    switch(role){
+        case "ADMIN":
+            return "Administrador";
+        case "GERENTE":
+            return "Gerente";
+        case "FUNCIONARIO":
+            return "Funcionário";
+        default:
+            return role
+    }
+}

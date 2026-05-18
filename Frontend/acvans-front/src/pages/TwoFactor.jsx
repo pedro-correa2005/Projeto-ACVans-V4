@@ -54,7 +54,7 @@ function TwoFactor(){
 
             const usuario = await me();
 
-            window.location.href = getHomeByRole(response.data.usuario);
+            window.location.href = getHomeByRole(usuario);
         } catch (error){
             console.error(error);
             toast.error(error.response?.data?.message || "Código inválido");

@@ -17,6 +17,10 @@ public class CsrfFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		if(request.getMethod().equals("GET")) {
+		    filterChain.doFilter(request, response);
+		    return;
+		}
 		if(getCookieValue(request, "access_token") == null) {
 			filterChain.doFilter(request, response);
 			return;

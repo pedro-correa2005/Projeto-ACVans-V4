@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -69,6 +70,9 @@ function Login() {
               <div className="form-group">
                   <label htmlFor="password">Senha</label>
                   <input type="password" id="password" name="password" value={senha} onChange={(e) => {setSenha(e.target.value)}}/>
+              </div>
+              <div className="mt-3">
+                <Link to="/esqueci-a-senha">Esqueci a senha</Link>
               </div>
               <div className="form-actions">
                   <button type="submit" className="btn btn-primary" disabled={loading}>{loading?"Entrando...":"Entrar"}</button>

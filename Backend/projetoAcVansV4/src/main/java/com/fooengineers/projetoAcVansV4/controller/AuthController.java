@@ -9,22 +9,23 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.MudarSenhaDTO;
+import com.fooengineers.projetoAcVansV4.dto.PolicyDTO;
 import com.fooengineers.projetoAcVansV4.dto.RedefinirSenhaDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
 import com.fooengineers.projetoAcVansV4.service.AuthService;
+import com.fooengineers.projetoAcVansV4.service.PasswordPolicyService;
 import com.fooengineers.projetoAcVansV4.service.UsuarioService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,6 +42,8 @@ public class AuthController {
 	private MFAService mfaService;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private PasswordPolicyService passwordPolicyService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginReqDTO loginDto, HttpServletRequest request){
@@ -197,7 +200,7 @@ public class AuthController {
 		
 		Usuario usuario = authService.validarResetToken(token);
 		if(usuario == null) {
-			return ResponseEntity.status(401).body("Token inválido.");
+			return ResponseEntity.status(410).body("Token inválido ou expirado.");
 		}
 		
 		if(!novaSenha.equals(repetirNovaSenha)) {
@@ -212,6 +215,15 @@ public class AuthController {
 		usuarioService.alterarSenha(usuario, novaSenha);
 		
 		return ResponseEntity.ok("Senha alterada com sucesso.");
+	}
+	@GetMapping("/redefinir-senha/validar-token")
+	public ResponseEntity<PolicyDTO> validarToken(@RequestParam String token){
+		Usuario usuario = authService.validarResetToken(token);
+		if(usuario == null) {
+			return ResponseEntity.status(410).body(null);
+		}
+		PolicyDTO policy = new PolicyDTO(passwordPolicyService.getPolicy(usuario.getRoles()));
+		return ResponseEntity.ok(policy);
 	}
 	
 	@PostMapping("/logout")

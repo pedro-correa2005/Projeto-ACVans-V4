@@ -32,7 +32,7 @@ public class SmtpEmailService {
 	}
 	
 	public void enviarResetSenha(String email, String token){
-		String link = urlSite + "/auth/reset-senha?token=" + token;
+		String link = urlSite + "/redefinir-senha?token=" + token;
 		try {
 			sendTemplateEmail(email, "Redefinição de senha", "reset-senha-template.html", Map.of("LINK", link));
 		} catch (MessagingException | IOException e) {

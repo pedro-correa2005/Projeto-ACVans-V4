@@ -43,3 +43,18 @@ export async function me() {
         setUser(null);
     }
 }
+
+export async function forgotPassword(email){
+    const response = await api.post("/auth/esqueci-a-senha", {email});
+    return response.data;
+}
+
+export async function resetPassword(token, novaSenha, repetirNovaSenha){
+    const response = await api.post("/auth/redefinir-senha", {token, novaSenha, repetirNovaSenha});
+    return response.data;
+}
+
+export async function validarResetToken(token){
+    const response = await api.get("/auth/redefinir-senha/validar-token", {params: {token}});
+    return response;
+}

@@ -1,12 +1,16 @@
 package com.fooengineers.projetoAcVansV4.security;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.service.UsuarioService;
 
@@ -22,6 +26,8 @@ public class PrimeiroLoginFilter extends OncePerRequestFilter{
 	private JwtService jwtService;
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	private static final List<String> ALLOWED_PATHS = List.of(
 		"/api/auth/mudar-senha",
@@ -44,8 +50,16 @@ public class PrimeiroLoginFilter extends OncePerRequestFilter{
 			Usuario usuario = usuarioService.buscarPorEmail(email);
 			if(usuario.isPrimeiroLogin()) {
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-				response.getWriter().write("É necessário alterar a senha");
-				return;
+				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+				response.setCharacterEncoding("UTF-8");
+				Map<String, String> errorDetails = new HashMap<>();
+	            errorDetails.put("code", "PASSWORD_CHANGE_REQUIRED");
+	            errorDetails.put("message", "É necessário alterar a senha");
+
+	            String jsonResponse = objectMapper.writeValueAsString(errorDetails);
+	            response.getWriter().write(jsonResponse);
+	            
+	            return;
 			}
 		}
 		filterChain.doFilter(request, response);

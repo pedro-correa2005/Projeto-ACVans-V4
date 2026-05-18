@@ -148,7 +148,7 @@ public class JwtService {
 		return ResponseCookie.from("access_token", accessToken)
 				.httpOnly(true)
 				.secure(secure)
-				.sameSite("None")
+				.sameSite("Lax")
 				.path("/")
 				.maxAge(accessTime)
 				.build();
@@ -168,7 +168,7 @@ public class JwtService {
 				.httpOnly(true)
 				.path("/")
 				.secure(secure)
-				.sameSite("None")
+				.sameSite("Lax")
 				.maxAge(refreshTime)
 				.build();
 	}
@@ -178,7 +178,7 @@ public class JwtService {
 				.httpOnly(false)
 				.path("/")
 				.secure(secure)
-				.sameSite("None")
+				.sameSite("Lax")
 				.maxAge(refreshTime)
 				.build();
 	}

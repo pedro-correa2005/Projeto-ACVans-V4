@@ -23,8 +23,8 @@ export function AuthProvider({
     useEffect(() => {
         async function carregarUsuario(){
             try{
-                const usuairo = await me();
-                sutUser(usuario);
+                const usuario = await me();
+                setUser(usuario);
             } catch (error) {
                 setUser(null);
             } finally { 
@@ -35,9 +35,10 @@ export function AuthProvider({
     }, []);
 
     async function login(email, senha){
-        const data = await loginService(email, senha);
-        setUser(data.usuario);
-        return data;
+        await loginService(email, senha);
+        const usuario = await me();
+        setUser(usuario);
+        return usuario;
     }
 
     async function logout(){

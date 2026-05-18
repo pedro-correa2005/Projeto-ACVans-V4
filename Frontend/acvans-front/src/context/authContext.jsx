@@ -35,14 +35,19 @@ export function AuthProvider({
     }, []);
 
     async function login(email, senha){
-        await loginService(email, senha);
-        const usuario = await me();
-        setUser(usuario);
-        return usuario;
+        const response = await loginService(email, senha);
+
+        if(response.status === 200){
+            const usuario = await me();
+            setUser(usuario);
+            return usuario;
+        }
+
+        return response;
     }
 
     async function logout(){
-        await logoutSercice();
+        await logoutService();
         setUser(null);
     }
 

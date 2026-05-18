@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { hasAnyRole } from "../utils/roleUtils";
 
 function PrivateRoute({
     children,
@@ -25,16 +26,8 @@ function PrivateRoute({
         );
     }
 
-    if(roles.length > 0){
-        const possuiPermissao = roles.some(role =>
-            user.roles.includes(role)
-        );
-
-        if(!possuiPermissao){
-            return (
-                <Navigate to="/403" replace/>
-            );
-        }
+    if(roles.length > 0 && !hasAnyRole(user, roles)){
+        return (<Navigate to="/403" replace/>);
     }
 
     return children;

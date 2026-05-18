@@ -9,6 +9,8 @@ import {
   useAuth
 } from "../context/authContext";
 
+import { getHomeByRole } from "../utils/roleUtils";
+
 function Login() {
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ function Login() {
   
   if(authenticated){
     return(
-      <Navigate to="/cadastros" />
+      <Navigate to="/" />
     );
   }
 
@@ -37,7 +39,7 @@ function Login() {
 
       if(response.status === 200){
         toast.success("Login realizado com sucesso!");
-        navigate("/cadastros");
+        navigate(getHomeByRole(response.data.usuario));
       }
 
       if(response.status === 202){

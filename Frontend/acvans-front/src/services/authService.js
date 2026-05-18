@@ -20,7 +20,10 @@ export async function logout(){
 }
 
 export async function me() {
-    const response = await api.get("/auth/detalhes-usuario");
-
-    return response.data;
+    try{
+        const response = await api.get("/detalhes-usuario");
+        return response.data;
+    }catch(error){
+        setUser(null);
+    }
 }

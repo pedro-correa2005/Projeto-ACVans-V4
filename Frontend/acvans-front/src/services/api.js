@@ -63,7 +63,6 @@ api.interceptors.response.use(
       }
     }
     //Para qualquer outra url tenta refresh (access token expirado)
-    console.log(error.response);
     if (error.response?.status === 401 && error.response?.data.error === "TOKEN_EXPIRED" && !originalRequest._retry) {
       //Evitar loop infinito
       originalRequest._retry = true;

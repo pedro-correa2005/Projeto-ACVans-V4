@@ -31,7 +31,8 @@ public class PrimeiroLoginFilter extends OncePerRequestFilter{
 
 	private static final List<String> ALLOWED_PATHS = List.of(
 		"/api/auth/mudar-senha",
-		"/api/auth/logout"
+		"/api/auth/logout",
+		"/api/auth/me"
 	);
 	
 	@Override

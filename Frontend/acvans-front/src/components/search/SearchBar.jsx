@@ -4,8 +4,8 @@ function SearchBar({
     placeholder = "Pesquisar..."
 }){
     return(
-        <div className="mb-3">
-            <input type="text" className="form-control" placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)}/>
+        <div className="input-group">
+            <input type="text" id="searchInput" name="searchInput" className="form-control" placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)}/>
         </div>
     );
 }

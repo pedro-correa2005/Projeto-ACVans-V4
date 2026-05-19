@@ -15,7 +15,7 @@ export async function atualizarOficina(id, oficina) {
     return response.data;
 }
 
-export async function deletarOfician(id){
+export async function deletarOficina(id){
     const response = await api.delete(`/admin/oficinas/${id}`);
     return response.data;
 }

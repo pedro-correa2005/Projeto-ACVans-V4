@@ -34,8 +34,8 @@ public class AdminController {
 	UsuarioService usuarioService;
 	
 	@GetMapping("/oficinas")
-	public Page<OficinaResDTO> listar(@RequestParam(defaultValue="") String param, Pageable pageable){
-		return oficinaService.listar(param, pageable);
+	public Page<OficinaResDTO> listar(@RequestParam(defaultValue="") String termo, Pageable pageable){
+		return oficinaService.listar(termo, pageable);
 	}
 	
 	@PostMapping("/oficinas")

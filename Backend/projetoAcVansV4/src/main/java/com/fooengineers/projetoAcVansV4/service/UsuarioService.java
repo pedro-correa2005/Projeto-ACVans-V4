@@ -1,10 +1,12 @@
 package com.fooengineers.projetoAcVansV4.service;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,10 +39,8 @@ public class UsuarioService {
 	@Autowired
 	private SmtpEmailService emailService;
 	
-	public List<UsuarioResDTO> listarPorOficina(Long idOficina, String param){
-		return usuarioRepository.findAll(UsuarioSpecification.filtroGeral(idOficina, param)).stream()
-				.map(UsuarioResDTO::new)
-				.collect(Collectors.toList());
+	public Page<UsuarioResDTO> listarPorOficina(Long idOficina, String param, Pageable pageable){
+		return usuarioRepository.findAll(UsuarioSpecification.filtroGeral(idOficina, param), pageable).map(UsuarioResDTO::new);
 	}
 	
 	public UsuarioResDTO criar(Integer idOficina, UsuarioReqDTO dto) {
@@ -67,6 +67,24 @@ public class UsuarioService {
 		Usuario criado = usuarioRepository.save(usuario);
 		emailService.enviarSenhaInicial(email, senhaInicial);
 		return new UsuarioResDTO(criado);
+	}
+	
+	public void criarAdmin(String email) {
+		Usuario u = new Usuario();
+        u.setEmail(email);
+        if(usuarioRepository.existsByEmail(u.getEmail())) {
+        	return;
+        }
+        String senhaInicial = SenhaUtil.gerarSenha(12);
+        u.setSenha(passwordEncoder.encode(senhaInicial));
+        u.setPrimeiroLogin(true);
+        u.setDoisFatores(true);
+        Set<Role> roles = new HashSet<Role>();
+        roles.add(new Role(1, "ADMIN"));
+        u.setRoles(roles);
+
+        usuarioRepository.save(u);
+        emailService.enviarSenhaInicial(email, senhaInicial);
 	}
 	
 	public Usuario buscarPorEmail(String email) {

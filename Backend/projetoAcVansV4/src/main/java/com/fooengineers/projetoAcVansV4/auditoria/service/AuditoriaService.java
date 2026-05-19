@@ -19,6 +19,7 @@ import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.repository.AuditoriaRepository;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
+import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
 import com.fooengineers.projetoAcVansV4.util.IpUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuditoriaService {
 	@Autowired
 	AuditoriaRepository auditoriaRepository;
+	@Autowired
+	UsuarioRepository usuarioRepository; 
 	
 	public Page<AuditoriaDTO> consultar(Oficina oficina, Pageable pageable) {
 		return auditoriaRepository.findByOficinaOrderByTempoDesc(oficina, pageable).map(AuditoriaDTO::new);
@@ -62,6 +65,27 @@ public class AuditoriaService {
 		auditoria.setAcao(Acao.LOGIN);
 		auditoria.setEntidade(Entidade.USUARIO);
 		auditoria.setIdRegistro(usuario.getId());
+		auditoria.setTempo(new Timestamp(System.currentTimeMillis()));
+		
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = attr.getRequest();
+		
+		
+		auditoria.setEnderecoIp(IpUtil.getClientIp(request));
+		auditoria.setDetalhes(null);
+		auditoria.setUsuario(usuario);
+		if(usuario != null) auditoria.setOficina(usuario.getOficina());
+		
+		auditoriaRepository.save(auditoria);
+	}
+	public void registrarLoginFail(String email) {
+		Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(null);
+		if(usuario == null) {
+			return;
+		}
+		Auditoria auditoria = new Auditoria();
+		auditoria.setAcao(Acao.LOGIN);
+		auditoria.setEntidade(Entidade.USUARIO);
 		auditoria.setTempo(new Timestamp(System.currentTimeMillis()));
 		
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

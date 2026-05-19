@@ -10,8 +10,7 @@ import TwoFactor from "./pages/TwoFactor";
 import EsqueciASenha from "./pages/EsqueciASenha";
 import RedefinirSenha from"./pages/RedefinirSenha";
 import AlterarSenha from "./pages/AlterarSenha";
-//import Oficinas from "./pages/Oficinas";
-/*<Route path="/admin/oficinas" element={<PrivateRoute roles={["ADMIN"]}><Oficinas/></PrivateRoute>}/>*/
+import Oficinas from "./pages/admin/Oficinas.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -22,9 +21,10 @@ function App() {
         <Route path="/consulta" element={<RespostaConsulta />}/>
         <Route path="/perfil" element={<PrivateRoute><Perfil/></PrivateRoute>}/>
         <Route path="/2fa" element={<TwoFactor />}/>
-        <Route path="/esqueci-a-senha" element={<EsqueciASenha/>}></Route>
-        <Route path="/redefinir-senha" element={<RedefinirSenha/>}></Route>
+        <Route path="/esqueci-a-senha" element={<EsqueciASenha/>}/>
+        <Route path="/redefinir-senha" element={<RedefinirSenha/>}/>
         <Route path="/alterar-senha" element={<PrivateRoute><AlterarSenha/></PrivateRoute>}/>
+        <Route path="/admin/oficinas" element={<PrivateRoute roles={["ADMIN"]}><Oficinas/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

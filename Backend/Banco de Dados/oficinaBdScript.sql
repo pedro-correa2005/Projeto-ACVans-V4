@@ -42,7 +42,7 @@ CREATE TABLE auditoria(
     endereco_ip VARCHAR(45),
     detalhes JSON,
     fk_usuario BIGINT NOT NULL,
-    fk_oficina INT NOT NULL,
+    fk_oficina INT NULL,
     FOREIGN KEY (fk_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE,
     FOREIGN KEY (fk_oficina) REFERENCES oficina(id_oficina) ON DELETE CASCADE
 );

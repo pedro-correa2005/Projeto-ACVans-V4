@@ -457,6 +457,71 @@ body {
     height: 300px;
 }
 
+.table-wrapper {
+    background: #ffffff;
+    padding: 1.5rem; /* Um espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Sombra suave */
+    margin-top: 1.5rem;
+}
+
+/* 2. Estiliza o cabeçalho da tabela (thead)
+*/
+.data-table thead th {
+    background-color: #f8f9fa; /* Um cinza claro padrão do Bootstrap */
+    color: #343a40; /* Cor de texto mais escura */
+    font-weight: 600; /* Um pouco mais de "peso" na fonte */
+    text-transform: uppercase; /* Deixa o texto em maiúsculo */
+    letter-spacing: 0.5px; /* Um leve espaçamento entre as letras */
+    vertical-align: middle;
+    border-bottom-width: 2px; /* Linha inferior um pouco mais grossa */
+}
+
+/* 3. Classes para centralizar colunas específicas 
+*/
+.data-table .col-titulo,
+.data-table .col-dataFim,
+.data-table .col-acoes {
+    text-align: center;
+}
+
+/* 4. Garante que os botões de ação não quebrem linha
+*/
+.data-table .col-acoes {
+    white-space: nowrap;
+	width: 1%;
+}
+
+.no-wrap{
+	white-space: nowrap;
+}
+
+/* Spinner centralizado dentro da tabela */
+#tableSpinner {
+    display: none; /* inicialmente oculto */
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Linha de tabela vazia */
+.data-table tbody td[colspan] {
+    text-align: center;
+    font-style: italic;
+    color: #6c757d;
+}
+
+/* Datas com horário (que usam <br>) */
+.data-table td.no-wrap {
+    white-space: nowrap;
+}
+
+/* Hover na linha da tabela */
+.data-table tbody tr:hover {
+    background-color: #f1f3f5;
+    transition: background-color 0.2s ease;
+}
+
+
 .chart-container {
     position: relative;
     height: 300px;

@@ -1,8 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,10 +44,10 @@ public class VeiculoService {
 		return new VeiculoResDTO(veiculo);
 	}
 
-	public List<VeiculoResDTO> buscarPorCliente(Long idCliente, String termo) {
+	public Page<VeiculoResDTO> buscarPorCliente(Long idCliente, String termo, Pageable pageable) {
 		clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
-		List<Veiculo> veiculos = veiculoRepository.findAll(VeiculoSpecification.filtrarPorCliente(termo, idCliente));
-		return veiculos.stream().map(VeiculoResDTO::new).collect(Collectors.toList());
+		Page<Veiculo> veiculos = veiculoRepository.findAll(VeiculoSpecification.filtrarPorCliente(termo, idCliente), pageable);
+		return veiculos.map(VeiculoResDTO::new);
 	}
 	
 	public VeiculoResDTO criar(VeiculoReqDTO dto, Oficina oficina) {

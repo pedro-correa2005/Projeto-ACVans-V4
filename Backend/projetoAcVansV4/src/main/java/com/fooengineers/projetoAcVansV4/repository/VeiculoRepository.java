@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -14,6 +15,7 @@ import com.fooengineers.projetoAcVansV4.entity.Veiculo;
 public interface VeiculoRepository extends JpaRepository<Veiculo, Long>, JpaSpecificationExecutor<Veiculo>{
 	//Query para filtrar por cliente
 	Page<Veiculo> findByCliente(Cliente c ,Pageable pageable);
+	Page<Veiculo> findAll(Specification<Veiculo> specification, Pageable pageable);
 	
 	//Query para filtrar por placa e oficina
 	Optional<Veiculo> findByPlacaAndOficina(String placa, Oficina oficina);

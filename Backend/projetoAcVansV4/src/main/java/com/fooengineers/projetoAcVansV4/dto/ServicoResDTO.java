@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ServicoResDTO {
+	private Long id;
 	private String tokenConsulta;
 	private String receberNotificacao;
 	private String dataInicio;
@@ -20,6 +21,7 @@ public class ServicoResDTO {
 	
 	//Constructor a partir de entity.Servico
 	public ServicoResDTO(Servico servico) {
+		this.id = servico.getId();
 		this.tokenConsulta = servico.getTokenConsulta();
 		this.receberNotificacao = servico.getReceberNotificacao()?"Sim":"Não";
 		this.dataInicio = servico.getDataInicio().toString();

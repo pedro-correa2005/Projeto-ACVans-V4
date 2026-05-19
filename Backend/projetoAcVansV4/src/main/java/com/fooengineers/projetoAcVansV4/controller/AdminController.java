@@ -1,8 +1,8 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,18 +34,18 @@ public class AdminController {
 	UsuarioService usuarioService;
 	
 	@GetMapping("/oficinas")
-	public List<OficinaResDTO> listar(@RequestParam(defaultValue="") String param){
-		return oficinaService.listar(param);
+	public Page<OficinaResDTO> listar(@RequestParam(defaultValue="") String param, Pageable pageable){
+		return oficinaService.listar(param, pageable);
 	}
 	
 	@PostMapping("/oficinas")
-	public ResponseEntity<OficinaResDTO> criar(@ModelAttribute @Valid OficinaReqDTO dto){
+	public ResponseEntity<OficinaResDTO> criar(@RequestBody @Valid OficinaReqDTO dto){
 		OficinaResDTO criado = oficinaService.criar(dto);
 		return ResponseEntity.ok(criado);
 	}
 	
 	@PutMapping("/oficinas/{idOficina}")
-	public ResponseEntity<OficinaResDTO> atualizar(@ModelAttribute @Valid OficinaReqDTO dto, @PathVariable(required=true) Integer idOficina){
+	public ResponseEntity<OficinaResDTO> atualizar(@RequestBody @Valid OficinaReqDTO dto, @PathVariable(required=true) Integer idOficina){
 		OficinaResDTO atualizado = oficinaService.atualizar(dto, idOficina);
 		return ResponseEntity.ok(atualizado);
 	}
@@ -56,8 +57,8 @@ public class AdminController {
 	}
 	
 	@GetMapping("/oficinas/{idOficina}/usuarios")
-	public List<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String param){
-		return usuarioService.listarPorOficina(idOficina, param);
+	public Page<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String param, Pageable pageable){
+		return usuarioService.listarPorOficina(idOficina, param, pageable);
 	}
 	
 	@PostMapping("/oficinas/{idOficina}/usuarios")

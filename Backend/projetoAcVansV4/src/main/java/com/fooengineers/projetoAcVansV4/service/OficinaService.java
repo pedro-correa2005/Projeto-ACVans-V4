@@ -1,9 +1,8 @@
 package com.fooengineers.projetoAcVansV4.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
@@ -18,10 +17,8 @@ public class OficinaService {
 	@Autowired
 	OficinaRepository oficinaRepository;
 	
-	public List<OficinaResDTO> listar(String param){
-		return oficinaRepository.findAll(OficinaSpecification.filtroGeral(param)).stream()
-				.map(OficinaResDTO::new)
-				.collect(Collectors.toList());
+	public Page<OficinaResDTO> listar(String param, Pageable pageable){
+		return oficinaRepository.findAll(OficinaSpecification.filtroGeral(param), pageable).map(OficinaResDTO::new);
 		
 	}
 	

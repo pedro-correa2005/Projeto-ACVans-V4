@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.EmailDTO;
 import com.fooengineers.projetoAcVansV4.dto.LoginReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.MudarSenhaDTO;
 import com.fooengineers.projetoAcVansV4.dto.PolicyDTO;
 import com.fooengineers.projetoAcVansV4.dto.RedefinirSenhaDTO;
+import com.fooengineers.projetoAcVansV4.dto.meDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 import com.fooengineers.projetoAcVansV4.security.JwtService;
 import com.fooengineers.projetoAcVansV4.security.MFAService;
@@ -44,6 +46,8 @@ public class AuthController {
 	private UsuarioService usuarioService;
 	@Autowired
 	private PasswordPolicyService passwordPolicyService;
+	@Autowired
+	private AuditoriaService auditoriaService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid LoginReqDTO loginDto, HttpServletRequest request){
@@ -51,12 +55,14 @@ public class AuthController {
 		String email = loginDto.getEmail().toLowerCase();
 		
 		if(!authService.validarTentativas(request.getRemoteAddr(), email)) {
+			auditoriaService.registrarLoginFail(loginDto.getEmail());
 			return ResponseEntity.status(429).body("Muitas tentativas. Tente mais tarde.");
 		}
 		
 		Usuario usuario = authService.validarCredenciais(email, loginDto.getSenha());
 		
 		if(usuario == null) {
+			auditoriaService.registrarLoginFail(loginDto.getEmail());
 			return ResponseEntity.status(401).body("Email ou senha incorretos");
 		}
 		
@@ -93,17 +99,17 @@ public class AuthController {
 		
 		//Verifica se o token está no cookie
 		if(refreshToken == null) {
-			return ResponseEntity.status(401).body("Refresh token ausente");
+			return ResponseEntity.status(400).body("Refresh token ausente");
 		}
 		
 		//Verifica se a chave do token é válida e se o token já não expirou
 		if(!jwtService.isValid(refreshToken, "refresh_token")) {
-			return ResponseEntity.status(401).body("Refresh token inválido");
+			return ResponseEntity.status(400).body("Refresh token inválido");
 		}
 		
 		//Validação no redis, caso ambas validações tenham sido burladas
 		if(!jwtService.validarRedis(refreshToken)) {
-			return ResponseEntity.status(401).body("Refresh token revogado ou expirado");
+			return ResponseEntity.status(400).body("Refresh token revogado ou expirado");
 		}
 		
 		String username = jwtService.extrairUsername(refreshToken, "refresh_token");
@@ -242,5 +248,13 @@ public class AuthController {
 						headers.add(HttpHeaders.SET_COOKIE , jwtService.deletarCookie("csrf_token").toString());
 				})
 				.body("Você saiu da sua conta.");
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<meDTO> me(Authentication authentication) {
+		Usuario usuario = (Usuario) authentication.getPrincipal();
+		PolicyDTO policy = new PolicyDTO(passwordPolicyService.getPolicy(usuario.getRoles()));
+		meDTO dto = new meDTO(usuario, policy);
+		return ResponseEntity.ok(dto);
 	}
 }

@@ -7,8 +7,10 @@ import Pagination from "../../components/pagination/Pagination"
 
 import OficinaForm from "../../components/oficina/OficinaForm";
 
-import { listarOficinas, criarOficina, atualizarOficina } from "../../services/oficinaService";
+import { listarOficinas, criarOficina, atualizarOficina, deletarOficina } from "../../services/oficinaService";
 import { toast } from "react-toastify";
+
+import { Link } from "react-router-dom";
 
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -24,40 +26,52 @@ function Oficinas() {
         setTermo
     ] = useState("");
 
-    const [
-        loadingSave,
-        setLoadingSave
-    ] = useState(false);
-
+    
     const [
         nome,
         setNome
     ] = useState("");
-
+    
     const [
         ativo,
         setAtivo
     ] = useState(true);
-
+    
+    
+    const [
+        page,
+        setPage
+    ] = useState(null);
+    
+    const [
+        pageNumber,
+        setPageNumber
+    ] = useState(0);
+    
     const [
         showModal,
         setShowModal
     ] = useState(false);
 
     const [
-        page,
-        setPage
-    ] = useState(null);
-
-    const [
-        pageNumber,
-        setPageNumber
-    ] = useState(0);
+        loadingSave,
+        setLoadingSave
+    ] = useState(false);
 
     const [
         editingOficina,
         setEditingOfiicna
     ] = useState(null);
+
+    const[
+        deletingOficina,
+        setDeletingOficina
+    ] = useState(null);
+
+    const[
+        loadingDelete,
+        setLoadinDelete
+    ] = useState(false);
 
     async function carregar() {
         try {
@@ -119,6 +133,28 @@ function Oficinas() {
         setShowModal(true);
     }
 
+    function confirmarDeletar(oficina){
+        setDeletingOficina(oficina);
+    }
+
+    async function deletar() {
+        if(!deletingOficina){
+            return;
+        }
+        try {
+            setLoadinDelete(true);
+            await deletarOficina(deletingOficina.id);
+            toast.success("Oficina deletada com sucesso")
+            setDeletingOficina(null);
+            carregar();
+        } catch (error) {
+            console.error(error)
+            toast.error(error.response?.data?.message || "Erro ao excluir");
+        }finally{
+            setLoadinDelete(false);
+        }
+    }
+
     return (
         <>
             <Header />
@@ -143,7 +179,8 @@ function Oficinas() {
                     actions={(oficina) => (
                         <>
                             <button className="btn btn-sm btn-primary" onClick={() => editar(oficina)}>Editar</button>
-                            <button className="btn btn-sm btn-danger">Excluir</button>
+                            <Link to={`/admin/oficinas/${oficina.id}/usuarios`} className="btn btn-sm btn-secondary">Detalhes</Link>
+                            <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(oficina)}>Excluir</button>
                         </>
                     )}
                 />
@@ -169,6 +206,23 @@ function Oficinas() {
                         ativo={ativo}
                         setAtivo={setAtivo}
                     />
+                </CrudModal>
+                <CrudModal
+                    title="Confirmar exclusão"
+                    show={!!deletingOficina}
+                    onClose={() => setDeletingOficina(null)}
+                    footer={
+                        <>
+                            
+                            <button className="btn btn-secondary" onClick={() => setDeletingOficina(null)}>
+                                Cancelar
+                            </button>
+                            <button className="btn btn-danger" onClick={deletar} disabled={loadingDelete}>
+                                {loadingDelete ? "Deletando..." : "Deletar"}
+                            </button>
+                        </>
+                    }>
+                    <p className="mb-0">Tem certeza que deseja deletar oficina <strong>{deletingOficina?.nome}</strong>? Todos os usuários desta oficina também serão deletados. Esta ação não pode ser desfeita.</p>
                 </CrudModal>
             </main>
             <Footer />

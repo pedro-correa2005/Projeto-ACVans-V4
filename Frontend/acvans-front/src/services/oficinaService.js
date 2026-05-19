@@ -6,3 +6,10 @@ export async function listarOficinas({
     const response = await api.get("/admin/oficinas", {params: {termo}});
     return response.data;
 }
+
+export async function criarOficina({
+    oficina
+}){
+    const response = await api.post("/admin/oficinas", oficina);
+    return response.data;
+}

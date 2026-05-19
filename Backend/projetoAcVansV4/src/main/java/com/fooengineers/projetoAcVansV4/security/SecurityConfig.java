@@ -29,6 +29,8 @@ public class SecurityConfig {
 	private JwtAuthenticationFilter jwtFilter;
 	@Autowired
 	private CsrfFilter csrfFilter;
+	@Autowired
+	JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	@Value("${frontend.ip}") 
 	private String frontendIp;
 	
@@ -74,15 +76,8 @@ public class SecurityConfig {
 					.anyRequest().authenticated()
 				)
 				.exceptionHandling(ex -> ex
-						.authenticationEntryPoint(
-								(request, response, authException) -> {
-									
-									response.sendError(
-											HttpServletResponse.SC_UNAUTHORIZED
-											);
-								}
-								)
-						)
+						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.addFilterAfter(csrfFilter, JwtAuthenticationFilter.class)
 				.build();

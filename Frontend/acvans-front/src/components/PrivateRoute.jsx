@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { hasAnyRole } from "../utils/roleUtils";
+import { useLocation } from "react-router-dom";
 
 function PrivateRoute({
     children,
@@ -11,6 +12,8 @@ function PrivateRoute({
         loading,
         user
     } = useAuth();
+
+    const location = useLocation();
 
     if(loading){
         return (
@@ -28,6 +31,10 @@ function PrivateRoute({
 
     if(roles.length > 0 && !hasAnyRole(user, roles)){
         return (<Navigate to="/403" replace/>);
+    }
+
+    if(user?.primeiroLogin && location.pathname !== "/alterar-senha"){
+        return (<Navigate to="/alterar-senha" replace/>);
     }
 
     return children;

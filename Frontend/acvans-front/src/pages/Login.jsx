@@ -48,8 +48,8 @@ function Login() {
       }
 
     }catch(error){
-      console.error(error);
-      const mensagem = error.respones?.data?.message || "Erro ao realizar login";
+      console.error(error.response.data);
+      const mensagem = error.response?.data || "Erro ao realizar login";
       toast.error(mensagem);
     } finally {
       setLoading(false);
@@ -65,11 +65,11 @@ function Login() {
           <form className="form" onSubmit={handleSubmit}>
               <div className="form-group">
                   <label htmlFor="email">Email</label>
-                  <input type="email" id="email" name="email" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+                  <input type="email" id="email" name="email" value={email} onChange={(e) => {setEmail(e.target.value)}} disabled={loading}/>
               </div>
               <div className="form-group">
                   <label htmlFor="password">Senha</label>
-                  <input type="password" id="password" name="password" value={senha} onChange={(e) => {setSenha(e.target.value)}}/>
+                  <input type="password" id="password" name="password" value={senha} onChange={(e) => {setSenha(e.target.value)}} disabled={loading}/>
               </div>
               <div className="mt-3">
                 <Link to="/esqueci-a-senha">Esqueci a senha</Link>

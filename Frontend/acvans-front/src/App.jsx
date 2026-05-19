@@ -9,6 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import TwoFactor from "./pages/TwoFactor";
 import EsqueciASenha from "./pages/EsqueciASenha";
 import RedefinirSenha from"./pages/RedefinirSenha";
+import AlterarSenha from "./pages/AlterarSenha";
 //import Oficinas from "./pages/Oficinas";
 /*<Route path="/admin/oficinas" element={<PrivateRoute roles={["ADMIN"]}><Oficinas/></PrivateRoute>}/>*/
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/2fa" element={<TwoFactor />}/>
         <Route path="/esqueci-a-senha" element={<EsqueciASenha/>}></Route>
         <Route path="/redefinir-senha" element={<RedefinirSenha/>}></Route>
+        <Route path="/alterar-senha" element={<PrivateRoute><AlterarSenha/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

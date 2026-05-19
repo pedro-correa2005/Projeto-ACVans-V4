@@ -5,9 +5,6 @@ export async function login(email, senha){
         "/auth/login",
         {email, senha}
     );
-    if(response.status === 200){
-        sessionStorage.setItem("csrf_token", response.data.csrfToken);
-    }
     return {
         status: response.status,
         data: response.data
@@ -22,22 +19,16 @@ export async function verificar2FA(tempToken, code){
         }
     );
 
-    sessionStorage.setItem("csrf_token", response.data.csrfToken);
-
     return response.data;
 }
 
 export async function logout(){
-    try{
-        await api.post("/auth/logout");
-    }finally{
-        sessionStorage.removeItem("csrf-token");
-    }
+    await api.post("/auth/logout");
 }
 
 export async function me() {
     try{
-        const response = await api.get("/detalhes-usuario");
+        const response = await api.get("/auth/me");
         return response.data;
     }catch(error){
         setUser(null);
@@ -57,4 +48,23 @@ export async function resetPassword(token, novaSenha, repetirNovaSenha){
 export async function validarResetToken(token){
     const response = await api.get("/auth/redefinir-senha/validar-token", {params: {token}});
     return response;
+}
+
+export async function alterarSenha(senhaAtual, novaSenha, repetirNovaSenha){
+    const response = await api.post("/auth/mudar-senha", {
+        senhaAtual,
+        novaSenha,
+        repetirNovaSenha
+    });
+    return response;
+}
+
+export async function ativar2FA(){
+    const response = await api.post("/ativar-autenticacao");
+    return response.data;
+}
+
+export async function desativar2FA(){
+    const response = await api.post("/desativar-autenticacao");
+    return response.data;
 }

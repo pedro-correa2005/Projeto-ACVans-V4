@@ -47,8 +47,22 @@ export function AuthProvider({
     }
 
     async function logout(){
-        await logoutService();
-        setUser(null);
+        try{
+            await logoutService();
+        }catch(error){
+            console.error(error);
+        }finally{
+            setUser(null);
+        }
+    }
+
+    async function refreshUser(){
+        try {
+            const response = await me();
+            setUser(response);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     const authenticated = !!user;
@@ -57,6 +71,7 @@ export function AuthProvider({
         <AuthContext.Provider
             value={{
                 user,
+                refreshUser,
                 loading,
                 authenticated,
                 login,

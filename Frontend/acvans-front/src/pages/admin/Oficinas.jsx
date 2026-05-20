@@ -5,7 +5,7 @@ import SearchBar from "../../components/search/SearchBar";
 import CrudModal from "../../components/modal/CrudModal";
 import Pagination from "../../components/pagination/Pagination"
 
-import OficinaForm from "../../components/oficina/OficinaForm";
+import OficinaForm from "../../components/forms/OficinaForm";
 
 import { listarOficinas, criarOficina, atualizarOficina, deletarOficina } from "../../services/oficinaService";
 import { toast } from "react-toastify";

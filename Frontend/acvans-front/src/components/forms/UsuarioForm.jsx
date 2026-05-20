@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { listarRoles } from "../../services/usuarioService";
 
-function UsuarioForm({email, setEmail, doisFatores, setDoisFatores, roles, setRoles}){
+function UsuarioForm({email, setEmail, doisFatores, setDoisFatores, roles, setRoles, editing}){
     const [
         availableRoles,
         setAvailableRoles
@@ -39,25 +39,24 @@ function UsuarioForm({email, setEmail, doisFatores, setDoisFatores, roles, setRo
         <>
             <div className="mb-3">
                 <label className="form-label">Email:</label>
-                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} disabled={editing}/>
             </div>
             <div className="form-group">
                 <label className="form-label d-block">Autenticação de dois fatores</label>
                 <div className="btn-group" role="group">
-                    <input type="radio" className="btn-check" id="btnTrue" checked={doisFatores} name="doisFatores" value="true" onChange={(e) => (setDoisFatores(e.target.checked))} />
+                    <input type="radio" className="btn-check" id="btnTrue" checked={doisFatores} name="doisFatores" value="true" onChange={(e) => (setDoisFatores(e.target.checked))} disabled={editing}/>
                     <label className="btn btn-outline-primary" htmlFor="btnTrue">Ativada</label>
-                    <input type="radio" className="btn-check" id="btnFalse" checked={!doisFatores} name="ativo" value="false" onChange={(e) => (setDoisFatores(!e.target.checked))} />
+                    <input type="radio" className="btn-check" id="btnFalse" checked={!doisFatores} name="ativo" value="false" onChange={(e) => (setDoisFatores(!e.target.checked))} disabled={editing}/>
                     <label className="btn btn-outline-primary" htmlFor="btnFalse">Desativada</label>
                 </div>
             </div>
             <div className="form-group">
                 <label className="form-label d-block">Permissões de usuário</label>
-                <div class="btn-group" role="group">
+                <div className="btn-group" role="group">
                     {availableRoles.map((role) =>(
                         <div key={role.id}>
-                            <input type="checkbox" class="btn-check" id={`btn-${role.nome}`} name="roles" value={role.nome} checked={roles.includes(role.nome)}
-                            onChange={() => handleCheckboxChange(role.nome)}/>
-                            <label class="btn btn-outline-primary" htmlFor={`btn-${role.nome}`}>{role.nome.charAt(0) + role.nome.slice(1).toLowerCase()}</label>
+                            <input type="checkbox" className="btn-check" id={`btn-${role.name}`} name="roles" value={role.name} checked={roles.includes(role.name)} onChange={() => handleCheckboxChange(role.name)}/>
+                            <label className="btn btn-outline-primary" htmlFor={`btn-${role.name}`}>{role.name}</label>
                         </div>
                     ))}
                 </div>

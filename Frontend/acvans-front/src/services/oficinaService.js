@@ -1,7 +1,7 @@
 import api from "./api";
 
-export async function listarOficinas(termo, pagina, tamanho = 10){
-    const response = await api.get("/admin/oficinas", {params: {termo, page: pagina, size: tamanho}});
+export async function listarOficinas(termo, pagina, tamanho = 10, sort){
+    const response = await api.get("/admin/oficinas", {params: {termo, page: pagina, size: tamanho, sort: sort}});
     return response.data;
 }
 

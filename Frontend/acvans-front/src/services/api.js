@@ -35,6 +35,7 @@ api.interceptors.response.use(
   (response) => response,
   //Erro
   async (error) => {
+    
     const originalRequest = error.config; //Request original
     //Erro de rede
     if (!error.response) {
@@ -74,7 +75,10 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         //Erro: Sessão expirada
-        window.location.href="/login";
+        if(!(window.location.pathname === "/login")){
+          window.location.href = "/login";
+        }
+        console.log(refreshError.response)
         return Promise.reject(refreshError);
       }
     }

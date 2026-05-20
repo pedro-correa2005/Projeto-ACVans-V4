@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.dto.RolesDTO;
+import com.fooengineers.projetoAcVansV4.dto.RoleResDTO;
+import com.fooengineers.projetoAcVansV4.dto.RolesReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
@@ -108,7 +110,7 @@ public class UsuarioService {
 		usuarioRepository.save(usuario);
 	}
 
-	public UsuarioResDTO atualizarRoles(Long idUsuario, RolesDTO dto) {
+	public UsuarioResDTO atualizarRoles(Long idUsuario, RolesReqDTO dto) {
 		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNaoEncontradoException(idUsuario));
 		Set<Role> roles = dto.getRoles().stream()
 				.map(nome -> roleRepository.findByNome(nome)
@@ -122,5 +124,10 @@ public class UsuarioService {
 	public void deletar(Long idUsuario) {
 		Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new UsuarioNaoEncontradoException(idUsuario));
 		usuarioRepository.delete(usuario);
+	}
+
+	public List<RoleResDTO> listarRoles() {
+		List<RoleResDTO> dto = roleRepository.findAll().stream().map(RoleResDTO::new).collect(Collectors.toList());
+		return dto;
 	}
 }

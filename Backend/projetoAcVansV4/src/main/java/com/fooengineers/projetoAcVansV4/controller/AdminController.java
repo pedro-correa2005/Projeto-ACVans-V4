@@ -59,8 +59,8 @@ public class AdminController {
 	}
 	
 	@GetMapping("/oficinas/{idOficina}/usuarios")
-	public Page<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String param, Pageable pageable){
-		return usuarioService.listarPorOficina(idOficina, param, pageable);
+	public Page<UsuarioResDTO> listar(@PathVariable Long idOficina, @RequestParam(defaultValue="") String termo, Pageable pageable){
+		return usuarioService.listarPorOficina(idOficina, termo, pageable);
 	}
 	
 	@PostMapping("/oficinas/{idOficina}/usuarios")

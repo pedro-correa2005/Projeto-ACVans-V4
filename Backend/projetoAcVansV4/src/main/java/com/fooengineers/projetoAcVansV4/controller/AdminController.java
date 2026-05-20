@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fooengineers.projetoAcVansV4.dto.OficinaReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.OficinaResDTO;
-import com.fooengineers.projetoAcVansV4.dto.RolesDTO;
+import com.fooengineers.projetoAcVansV4.dto.RoleResDTO;
+import com.fooengineers.projetoAcVansV4.dto.RolesReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.UsuarioResDTO;
 import com.fooengineers.projetoAcVansV4.service.OficinaService;
@@ -68,7 +71,7 @@ public class AdminController {
 	}
 	
 	@PutMapping("/usuarios/{idUsuario}/atualizar-roles")
-	public ResponseEntity<UsuarioResDTO> atualizarRoles(@PathVariable Long idUsuario, @ModelAttribute @Valid RolesDTO dto){
+	public ResponseEntity<UsuarioResDTO> atualizarRoles(@PathVariable Long idUsuario, @ModelAttribute @Valid RolesReqDTO dto){
 		UsuarioResDTO atualizado = usuarioService.atualizarRoles(idUsuario, dto);
 		return ResponseEntity.ok(atualizado);
 	}
@@ -77,5 +80,10 @@ public class AdminController {
 	public ResponseEntity<?> deletarUsuario(@PathVariable(required=true) Long idUsuario){
 		usuarioService.deletar(idUsuario);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/roles")
+	public List<RoleResDTO> listarRoles(){
+		return usuarioService.listarRoles();
 	}
 }

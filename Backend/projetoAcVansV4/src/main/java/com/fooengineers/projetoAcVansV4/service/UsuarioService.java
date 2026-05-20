@@ -128,6 +128,7 @@ public class UsuarioService {
 
 	public List<RoleResDTO> listarRoles() {
 		List<RoleResDTO> dto = roleRepository.findAll().stream().map(RoleResDTO::new).collect(Collectors.toList());
+		dto.removeIf(role -> role.getName().equals("ADMIN"));
 		return dto;
 	}
 }

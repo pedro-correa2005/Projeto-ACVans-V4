@@ -65,13 +65,13 @@ public class AdminController {
 	}
 	
 	@PostMapping("/oficinas/{idOficina}/usuarios")
-	public ResponseEntity<UsuarioResDTO> criar(@PathVariable Integer idOficina, @ModelAttribute @Valid UsuarioReqDTO dto){
+	public ResponseEntity<UsuarioResDTO> criar(@PathVariable Integer idOficina, @RequestBody @Valid UsuarioReqDTO dto){
 		UsuarioResDTO criado = usuarioService.criar(idOficina, dto);
 		return ResponseEntity.ok(criado);
 	}
 	
 	@PutMapping("/usuarios/{idUsuario}/atualizar-roles")
-	public ResponseEntity<UsuarioResDTO> atualizarRoles(@PathVariable Long idUsuario, @ModelAttribute @Valid RolesReqDTO dto){
+	public ResponseEntity<UsuarioResDTO> atualizarRoles(@PathVariable Long idUsuario, @RequestBody @Valid RolesReqDTO dto){
 		UsuarioResDTO atualizado = usuarioService.atualizarRoles(idUsuario, dto);
 		return ResponseEntity.ok(atualizado);
 	}

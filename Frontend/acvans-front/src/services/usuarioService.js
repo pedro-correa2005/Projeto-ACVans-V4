@@ -6,7 +6,7 @@ export async function listarRoles(){
 }
 
 export async function listarUsuarios(idOficina, termo, pagina, tamanho = 10, sort) {
-    const response = await api.get(`/admin/oficinas/${idOficina}/usuarios`);
+    const response = await api.get(`/admin/oficinas/${idOficina}/usuarios`, {params: {termo, page: pagina, size: tamanho, sort: sort}});
     return response.data;
 }
 

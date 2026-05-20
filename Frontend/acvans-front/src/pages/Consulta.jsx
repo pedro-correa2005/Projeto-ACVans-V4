@@ -6,7 +6,7 @@ import '../styles/consulta.css'
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import PlacaInput from "../components/PlacaInput";
+import PlacaInput from "../components/input/PlacaInput";
 
 import { validarPlaca } from "../utils/placaUtils";
 

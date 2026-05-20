@@ -38,7 +38,7 @@ function Header() {
           </Link>
         </li>
         {
-          hasRole(user, "GERENTE") || hasRole(user, "FUNCIONARIO") && (
+          (hasRole(user, "GERENTE") || hasRole(user, "FUNCIONARIO")) && (
             <li>
               <Link to="/cadastros">
                 Sistema

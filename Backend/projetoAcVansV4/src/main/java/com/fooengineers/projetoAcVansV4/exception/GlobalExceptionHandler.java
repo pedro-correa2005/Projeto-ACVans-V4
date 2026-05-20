@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class GlobalExceptionHandler {
 	@ExceptionHandler(ErroAoEnviarEmailException.class)
 	public ResponseEntity<ErrorResponse> handleErroAoEnviarEmailException(ErroAoEnviarEmailException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
@@ -34,6 +35,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.CONFLICT.value(),
 				HttpStatus.CONFLICT.getReasonPhrase(),
@@ -47,6 +49,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		String mensagem = ex.getBindingResult()
 		            .getFieldErrors()
 		            .stream()
@@ -66,6 +69,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -79,6 +83,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.BAD_REQUEST.value(),
 				HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -92,6 +97,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.NOT_FOUND.value(),
 				HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -103,6 +109,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(NoResourceFoundException.class)
 	public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.NOT_FOUND.value(),
 				HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -116,6 +123,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(RedisConnectionFailureException.class)
 	public ResponseEntity<ErrorResponse> handleRedisConnectionFailureException(RedisConnectionFailureException ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
@@ -129,6 +137,7 @@ public class GlobalExceptionHandler {
 		
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, HttpServletRequest request){
+		ex.printStackTrace();
 		ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),

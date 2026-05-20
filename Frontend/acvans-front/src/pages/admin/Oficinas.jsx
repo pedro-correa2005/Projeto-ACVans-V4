@@ -118,7 +118,7 @@ function Oficinas() {
     }
 
     function abrirModal() {
-        setEditingOfiicna(null)
+        setEditingOfiicna(null);
         setNome("");
         setAtivo(true);
         setShowModal(true);
@@ -200,7 +200,7 @@ function Oficinas() {
                         <>
                             <button className="btn btn-sm btn-primary" onClick={() => editar(oficina)}>Editar</button>
                             <Link to={`/admin/oficinas/${oficina.id}/usuarios`} className="btn btn-sm btn-secondary">Detalhes</Link>
-                            <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(oficina)}>Excluir</button>
+                            <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(oficina)}>Deletar</button>
                         </>
                     )}
                     sortField={sortField}

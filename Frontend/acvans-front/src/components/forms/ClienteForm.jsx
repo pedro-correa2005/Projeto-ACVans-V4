@@ -9,8 +9,8 @@ function ClienteForm({nome, setNome, celular, setCelular}){
             </div>
             <div className="mb-3">
                 <CelularInput
-                    value={nome}
-                    onChange={setNome}
+                    value={celular}
+                    onChange={setCelular}
                     id={"celular"}
                     label={"Celular do cliente"} placeholder={"(##) 9########"}
                 />

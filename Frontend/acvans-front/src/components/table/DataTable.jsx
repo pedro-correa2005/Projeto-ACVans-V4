@@ -1,7 +1,10 @@
 function DataTable({
     page,
     columns = [],
-    actions
+    actions,
+    sortField,
+    sortDirection,
+    onSort
 }){
     return (
         <div className="table-wrapper">
@@ -11,8 +14,19 @@ function DataTable({
                         <tr>
                             {
                                 columns.map(column => (
-                                    <th key={column.key}>
+                                    <th key={column.key} 
+                                        syle={{cursor:"pointer"}}
+                                        onClick={() => onSort(column.key)}>
                                         {column.label}
+                                        {
+                                            sortField === column.key && (
+                                                <span className="ms-1">
+                                                    {
+                                                        sortDirection === "asc"?"↑":"↓"
+                                                    }
+                                                </span>
+                                            )
+                                        }
                                     </th>
                                 ))
                             }

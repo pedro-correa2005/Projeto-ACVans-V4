@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,14 +50,14 @@ public class ClienteController {
 	
 	@PostMapping
 	@Auditavel(acao = Acao.CREATE, entidade = Entidade.CLIENTE)
-	public ResponseEntity<ClienteResDTO> criar(@ModelAttribute @Valid ClienteReqDTO dto, Authentication authentication){
+	public ResponseEntity<ClienteResDTO> criar(@RequestBody @Valid ClienteReqDTO dto, Authentication authentication){
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		ClienteResDTO criado = clienteService.criar(dto, usuario.getOficina());
 		return ResponseEntity.ok().body(criado);
 	}
 	
 	@PutMapping("/{idCliente}")
-	public ResponseEntity<ClienteResDTO> atualizar(@ModelAttribute @Valid ClienteReqDTO dto,@PathVariable(required=true) Long idCliente){
+	public ResponseEntity<ClienteResDTO> atualizar(@RequestBody @Valid ClienteReqDTO dto,@PathVariable(required=true) Long idCliente){
 		ClienteResDTO atualizado = clienteService.atualizar(dto, idCliente);
 		return ResponseEntity.ok().body(atualizado);
 	}

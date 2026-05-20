@@ -73,9 +73,19 @@ function Oficinas() {
         setLoadinDelete
     ] = useState(false);
 
+    const [
+        sortField,
+        setSortField
+    ] = useState("id");
+
+    const [
+        sortDirection,
+        setSortDirection
+    ] = useState("desc");
+
     async function carregar() {
         try {
-            const data = await listarOficinas(termo, pageNumber);
+            const data = await listarOficinas(termo, pageNumber, 10,`${sortField},${sortDirection}`);
             setPage(data);
         } catch (error) {
             console.error(error);
@@ -84,7 +94,7 @@ function Oficinas() {
 
     useEffect(() => {
         carregar();
-    }, [termo, pageNumber]);
+    }, [termo, pageNumber, sortField, sortDirection]);
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -96,6 +106,16 @@ function Oficinas() {
             clearTimeout(timeout);
         };
     }, [termoInput]);
+
+    async function handleSort(field){
+        if(sortField === field){
+            setSortDirection(sortDirection === "asc"?"desc":"asc");
+        }else{
+            setSortField(field);
+            setSortDirection("asc");
+        }
+        setPageNumber(0);
+    }
 
     function abrirModal() {
         setEditingOfiicna(null)
@@ -183,6 +203,9 @@ function Oficinas() {
                             <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(oficina)}>Excluir</button>
                         </>
                     )}
+                    sortField={sortField}
+                    sortDirection={sortDirection}
+                    onSort={handleSort}
                 />
                 <button className="btn btn-primary" onClick={abrirModal}>Nova Oficina</button>
                 <Pagination page={page} onPageChange={setPageNumber}/>

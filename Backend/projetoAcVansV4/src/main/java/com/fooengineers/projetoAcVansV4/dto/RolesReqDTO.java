@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RolesDTO {
+public class RolesReqDTO {
 	@NotEmpty(message="Escolha ao menos um perfil de usuário")
 	private Set<String> roles;
 }

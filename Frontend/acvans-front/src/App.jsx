@@ -12,6 +12,8 @@ import RedefinirSenha from"./pages/RedefinirSenha";
 import AlterarSenha from "./pages/AlterarSenha";
 import Oficinas from "./pages/admin/Oficinas.jsx";
 import Usuarios from "./pages/admin/Usuarios.jsx";
+//import Cadastros from "./pages/Cadastros.jsx";
+import Clientes from "./pages/Clientes.jsx"
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +29,7 @@ function App() {
         <Route path="/alterar-senha" element={<PrivateRoute><AlterarSenha/></PrivateRoute>}/>
         <Route path="/admin/oficinas" element={<PrivateRoute roles={["ADMIN"]}><Oficinas/></PrivateRoute>}/>
         <Route path="/admin/oficinas/:idOficina/usuarios" element={<PrivateRoute roles={["ADMIN"]}><Usuarios/></PrivateRoute>}/>
+        <Route path="/clientes" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Clientes/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

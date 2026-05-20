@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -112,9 +113,16 @@ function AlterarSenha(){
                             <button type="submit" className="btn btn-primary" disabled={loading || !senhaValida || novaSenha !== repetirNovaSenha}>
                                 {loading? "Alterando..." : "Alterar senha"}
                             </button>
-                            <button className="btn btn-danger" onClick={handleLogout}>
-                            Sair da Conta
-                        </button>
+                            {user.primeroLogin && (
+                                <button className="btn btn-danger" onClick={handleLogout}>
+                                    Sair da Conta
+                                </button>
+                            )}
+                            {!user.primeiroLogin && (
+                                <Link to="/perfil" className="btn btn-secondary">
+                                    Voltar
+                                </Link>
+                            )}
                         </div>
                     </form>
                 </div>

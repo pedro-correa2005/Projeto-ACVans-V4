@@ -16,6 +16,7 @@ import Cadastros from "./pages/Cadastros.jsx";
 import Clientes from "./pages/Clientes.jsx"
 //import DetalhesCliente from "./pages/DetalhesCliente.jsx";
 import Veiculos from "./pages/Veiculos.jsx"
+import ConfigurarServicos from "./pages/ConfigurarServicos.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -35,6 +36,7 @@ function App() {
         <Route path="/clientes" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Clientes/></PrivateRoute>}/>
         {/*<Route path="/clientes/:idCliente" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><DetalhesCilente/></PrivateRoute>}/>*/}
         <Route path="/veiculos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Veiculos/></PrivateRoute>}/>
+        <Route path="/configurar-servicos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

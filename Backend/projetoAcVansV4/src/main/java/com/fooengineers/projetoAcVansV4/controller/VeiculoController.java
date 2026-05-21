@@ -9,10 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,14 +51,14 @@ public class VeiculoController {
 	
 	@PostMapping
 	@Auditavel(acao = Acao.CREATE, entidade = Entidade.VEICULO)
-	public ResponseEntity<VeiculoResDTO> criar(Authentication authentication, @ModelAttribute @Valid VeiculoReqDTO dto) {
+	public ResponseEntity<VeiculoResDTO> criar(Authentication authentication, @RequestBody @Valid VeiculoReqDTO dto) {
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		VeiculoResDTO criado = veiculoService.criar(dto, usuario.getOficina());
 		return ResponseEntity.ok(criado);
 	}
 	
 	@PutMapping("/{idVeiculo}")
-	public ResponseEntity<VeiculoResDTO> atualizar(@ModelAttribute @Valid VeiculoReqDTO dto, @PathVariable(required=true) Long idVeiculo) {
+	public ResponseEntity<VeiculoResDTO> atualizar(@RequestBody @Valid VeiculoReqDTO dto, @PathVariable(required=true) Long idVeiculo) {
 		VeiculoResDTO atualizado = veiculoService.atualizar(dto, idVeiculo);
 		return ResponseEntity.ok(atualizado);
 	}

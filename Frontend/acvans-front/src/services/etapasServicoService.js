@@ -19,3 +19,8 @@ export async function deletarEtapaServico(idEtapa){
     const response = await api.delete(`/etapas-servico/${idEtapa}`);
     return response.data;
 }
+
+export async function atualizarOrdemEtapa(idEtapa, payload){
+    const response = await api.patch(`/etapas-servico/${idEtapa}/atualizar-ordem`,payload);
+    return response.data;
+}

@@ -11,7 +11,7 @@ export async function criarVeiculo(veiculo) {
 }
 
 export async function atualizarVeiculo(id, veiculo){
-    const response = await api.put(`/veiculos/${id}`, veiculos);
+    const response = await api.put(`/veiculos/${id}`, veiculo);
     return response.data;
 }
 

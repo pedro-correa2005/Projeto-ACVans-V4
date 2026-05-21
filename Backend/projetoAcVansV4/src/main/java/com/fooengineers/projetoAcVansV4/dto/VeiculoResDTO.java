@@ -14,6 +14,7 @@ public class VeiculoResDTO {
 	private String placa;
 	private String marca;
 	private String modelo;
+	private ClienteResDTO cliente;
 	
 	//Constructor a partir de entity.Veiculo
 	public VeiculoResDTO(Veiculo veiculo) {
@@ -21,5 +22,6 @@ public class VeiculoResDTO {
 		this.placa = veiculo.getPlaca();
 		this.marca = veiculo.getMarca();
 		this.modelo = veiculo.getModelo();
+		this.cliente = new ClienteResDTO(veiculo.getCliente());
 	}
 }

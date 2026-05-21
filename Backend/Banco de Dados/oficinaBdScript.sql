@@ -92,7 +92,7 @@ CREATE TABLE etapa_servico (
 
 CREATE TABLE status_servico(
 	id_status_servico INT PRIMARY KEY AUTO_INCREMENT,
-	descricao VARCHAR(20) NOT NULL
+	descricao VARCHAR(20) NOT NULL UNIQUE
 );
 
 INSERT INTO status_servico (descricao) VALUES ('AGENDADO'), ('INICIADO'), ('FINALIZADO');

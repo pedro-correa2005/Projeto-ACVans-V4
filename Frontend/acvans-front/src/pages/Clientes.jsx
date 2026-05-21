@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-import { listarUsuarios } from "../services/usuarioService.js";
 
 function Clientes(){
     const [termoInput, setTermoInput] = useState("");
@@ -88,7 +87,7 @@ function Clientes(){
             carregar();
         } catch (error) {
             console.error(error);
-            toast.error("Erro ao salvar usuário: " + error.response?.data?.message);
+            toast.error("Erro ao salvar cliente: " + error.response?.data?.message);
         }finally{
             setLoadingSave(false);
         }

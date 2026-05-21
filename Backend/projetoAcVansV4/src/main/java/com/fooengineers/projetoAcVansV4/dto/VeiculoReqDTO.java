@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VeiculoReqDTO {
-	@NotBlank(message = "A placa é obriatória")
+	@NotBlank(message = "A placa é obrigatória")
 	@Size(min = 7, max = 7, message = "A placa deve ter 7 caracteres")
 	@Pattern(regexp = "^[A-Z]{3}[0-9]{1}[A-Z0-9]{1}[0-9]{2}$", message = "Placa Inválida")
 	private String placa;

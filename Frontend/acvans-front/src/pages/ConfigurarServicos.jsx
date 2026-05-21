@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
+import {arrayMove} from "@dnd-kit/sortable";
 
 import TiposServicoCard from "../components/card/TiposServicoCard";
 import TipoServicoForm from "../components/forms/TipoServicoForm.jsx"
@@ -10,8 +11,8 @@ import CrudModal from "../components/modal/CrudModal";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-import { listarTiposServico, criarTipoServico, atualizarTipoServico, deletarTipoServico } from "../services/tiposServico";
-import { listarEtapasServico, criarEtapaServico, atualizarEtapaServico, deletarEtapaServico } from "../services/etapasServico";
+import { listarTiposServico, criarTipoServico, atualizarTipoServico, deletarTipoServico } from "../services/tiposServicoService.js";
+import { listarEtapasServico, criarEtapaServico, atualizarEtapaServico, deletarEtapaServico, atualizarOrdemEtapa } from "../services/etapasServicoService.js";
 
 function ConfigurarServicos() {
     const [showModalTipo, setShowModalTipo] = useState(false);
@@ -29,7 +30,7 @@ function ConfigurarServicos() {
 
     const [tipoDescricao, setTipoDescricao] = useState("");
 
-    const [etapaTitulo, setEtapaTitulo]= useState("");
+    const [etapaTitulo, setEtapaTitulo] = useState("");
     const [etapaOrdem, setEtapaOrdem] = useState(null);
     const [etapaDescricao, setEtapaDescricao] = useState("");
     const [idTipoServico, setIdTipoServico] = useState(null)
@@ -53,15 +54,15 @@ function ConfigurarServicos() {
         carregar();
     }, [])
 
-    async function salvarTipo(){
+    async function salvarTipo() {
         try {
             setLoadingSave(true);
             const descricao = tipoDescricao;
-            const tipoServico ={descricao};
-            if(editingTipo){
+            const tipoServico = { descricao };
+            if (editingTipo) {
                 await atualizarTipoServico(editingTipo.id, tipoServico);
                 toast.success("Tipo de serviço atualizado com sucesso");
-            }else{
+            } else {
                 await criarTipoServico(tipoServico);
                 toast.success("Tipo de serviço criado com sucesso");
             }
@@ -69,22 +70,22 @@ function ConfigurarServicos() {
             carregar();
         } catch (error) {
             console.error(error);
-            toast.error("Erro ao salvar tipo de serviço: " +error.response?.data?.message);
-        }finally{
+            toast.error("Erro ao salvar tipo de serviço: " + error.response?.data?.message);
+        } finally {
             setLoadingSave(false);
         }
     }
 
-    async function salvarEtapa(){
+    async function salvarEtapa() {
         try {
             setLoadingSave(true);
             const titulo = etapaTitulo;
             const descricao = etapaDescricao;
-            const etapaServico ={titulo, descricao};
-            if(editingEtapa){
+            const etapaServico = { titulo, descricao };
+            if (editingEtapa) {
                 await atualizarEtapaServico(editingEtapa.id, etapaServico);
                 toast.success("Etapa de serviço atualizada com sucesso");
-            }else{
+            } else {
                 await criarEtapaServico(etapaServico, idTipoServico);
                 toast.success("Etapa de serviço criada com sucesso");
             }
@@ -92,19 +93,19 @@ function ConfigurarServicos() {
             carregar();
         } catch (error) {
             console.error(error);
-            toast.error("Erro ao salvar etapa de serviço: " +error.response?.data?.message);
-        }finally{
+            toast.error("Erro ao salvar etapa de serviço: " + error.response?.data?.message);
+        } finally {
             setLoadingSave(false);
         }
     }
 
-    function abrirModalTipo(){
+    function abrirModalTipo() {
         setEditingTipo(null);
         setTipoDescricao("");
         setShowModalTipo(true);
     }
-    
-    function abrirModalEtapa(tipo){
+
+    function abrirModalEtapa(tipo) {
         setEditingEtapa(null);
         setEtapaTitulo("");
         setEtapaDescricao("");
@@ -112,30 +113,30 @@ function ConfigurarServicos() {
         setIdTipoServico(tipo.id);
         setShowModalEtapa(true);
     }
-    
-    function editarTipo(tipo){
+
+    function editarTipo(tipo) {
         setEditingTipo(tipo);
         setTipoDescricao(tipo.descricao);
         setShowModalTipo(true);
     }
 
-    function editarEtapa(etapa){
+    function editarEtapa(etapa) {
         setEditingEtapa(etapa);
         setEtapaTitulo(etapa.titulo);
         setEtapaDescricao(etapa.descricao);
         setShowModalEtapa(true);
     }
-    
-    function confirmarDeletarTipo(tipo){
+
+    function confirmarDeletarTipo(tipo) {
         setDeletingTipo(tipo);
     }
 
-    function confirmarDeletarEtapa(etapa){
+    function confirmarDeletarEtapa(etapa) {
         setDeletingEtapa(etapa);
     }
 
     async function deletarTipo() {
-        if(!deletingTipo){
+        if (!deletingTipo) {
             return;
         }
         try {
@@ -147,13 +148,13 @@ function ConfigurarServicos() {
         } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.message || "Erro ao excluir");
-        }finally{
+        } finally {
             setLoadingDeleteTipo(false);
         }
     }
-    
-    async function deletarEtapa(){
-        if(!deletingEtapa){
+
+    async function deletarEtapa() {
+        if (!deletingEtapa) {
             return;
         }
         try {
@@ -162,11 +163,74 @@ function ConfigurarServicos() {
             toast.success("Etapa deletada com sucesso");
             setDeletingEtapa(false);
             carregar();
-        }catch (error){
+        } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.message || "Erro ao excluir");
-        }finally{
+        } finally {
             setLoadingDeleteEtapa(false);
+        }
+    }
+
+    async function moverEtapa(
+
+        tipoId,
+
+        oldIndex,
+
+        newIndex,
+
+        idEtapa,
+
+        ordemAnterior,
+
+        ordemProxima
+
+    ) {
+
+        // UPDATE OTIMISTA
+        setListaTipos(prev =>
+            prev.map(tipo => {
+
+                if (tipo.id !== tipoId) {
+                    return tipo;
+                }
+
+                return {
+
+                    ...tipo,
+
+                    etapas: arrayMove(
+                        tipo.etapas,
+                        oldIndex,
+                        newIndex
+                    )
+                };
+            })
+        );
+
+        try {
+
+            await atualizarOrdemEtapa(
+
+                idEtapa,
+
+                {
+                    ordemAnterior,
+                    ordemProxima
+                }
+            );
+
+            await carregar();
+
+        } catch (error) {
+
+            console.error(error);
+
+            toast.error(
+                "Erro ao mover etapa"
+            );
+
+            await carregar();
         }
     }
 
@@ -176,7 +240,7 @@ function ConfigurarServicos() {
             <main className="container mt-4">
                 <h1>Tipos de Serviço e Etapas</h1>
                 <div>
-                    <TiposServicoCard tipos={listaTipos} editarTipo={editarTipo} deletarTipo={confirmarDeletarTipo} adicionarEtapa={abrirModalEtapa} editarEtapa={editarEtapa} deletarEtapa={confirmarDeletarEtapa}/>
+                    <TiposServicoCard tipos={listaTipos} editarTipo={editarTipo} deletarTipo={confirmarDeletarTipo} adicionarEtapa={abrirModalEtapa} editarEtapa={editarEtapa} deletarEtapa={confirmarDeletarEtapa} moverEtapa={moverEtapa} />
                 </div>
                 <button className="btn btn-primary  " onClick={abrirModalTipo}><FaPlus></FaPlus> Adicionr Tipo</button>
                 <CrudModal

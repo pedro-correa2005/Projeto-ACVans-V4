@@ -3,9 +3,11 @@ import axios from "axios";
 import { getCookie } from "../utils/cookies";
 import { logout } from "./authService";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 //Criação da instância axios
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: `${apiUrl}/api`,
   withCredentials: true //Envia cookies automaticamente
 });
 

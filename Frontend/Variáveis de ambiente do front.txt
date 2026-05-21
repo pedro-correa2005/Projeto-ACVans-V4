@@ -1,0 +1,3 @@
+Configurar no .env:
+
+VITE_API_URL

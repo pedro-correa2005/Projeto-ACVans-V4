@@ -85,7 +85,6 @@ function Veiculos() {
         try {
             setLoadingSave(true);
             const idCliente = clienteSelecionado?.id;
-            console.log(clienteSelecionado.id);
             const veiculo = { placa, marca, modelo, idCliente };
             if (editingVeiculo) {
                 await atualizarVeiculo(editingVeiculo.id, veiculo);

@@ -6,6 +6,9 @@ function DataTable({
     sortDirection,
     onSort
 }){
+    function getNestedValue(obj, path){
+        return path.split(".").reduce((acc, part) => acc?.[part], obj);
+    }
     return (
         <div className="table-wrapper">
             <div className="table-responsive">
@@ -15,7 +18,7 @@ function DataTable({
                             {
                                 columns.map(column => (
                                     <th key={column.key} 
-                                        syle={{cursor:"pointer"}}
+                                        style={{cursor:"pointer"}}
                                         onClick={() => onSort(column.key)}>
                                         {column.label}
                                         {
@@ -54,13 +57,16 @@ function DataTable({
                                         columns.map(column => (
                                             <td key={column.key}>
                                                 {
-                                                    column.render
-                                                    ?
-                                                    column.render(
-                                                        item[column.key],
-                                                        item
-                                                    )
-                                                    :item[column.key]
+                                                    (() => {
+                                                        const value = getNestedValue(item, column.key);
+                                                        return column.render
+                                                        ?
+                                                        column.render(
+                                                            item[column.key],
+                                                            item
+                                                        )
+                                                        : value;
+                                                    })()
                                                 }
                                             </td>
                                         ))

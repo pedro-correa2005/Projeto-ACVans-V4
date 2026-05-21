@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Servico;
+import com.fooengineers.projetoAcVansV4.entity.StatusServico;
+import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 
 public interface ServicoRepository extends JpaRepository<Servico, Long>, JpaSpecificationExecutor<Servico>{
 	//Pesquisar por token de atualização
@@ -19,6 +21,9 @@ public interface ServicoRepository extends JpaRepository<Servico, Long>, JpaSpec
 	
 	//Contar serviços por veículo
 	int countByVeiculoPlacaAndOficina(String placa, Oficina oficina);
+	
+	//Contar serviços por tipo
+	int countByTipoServicoAndStatusServico(TipoServico tipo, StatusServico status);
 	//Filtrar por oficina e termo
 	Page<Servico> findAll(Specification<Servico> specification, Pageable pageable);
 	

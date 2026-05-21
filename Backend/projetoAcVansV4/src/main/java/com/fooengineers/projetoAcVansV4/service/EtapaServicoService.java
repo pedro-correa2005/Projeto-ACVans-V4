@@ -17,10 +17,15 @@ import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
 import com.fooengineers.projetoAcVansV4.dto.OrdemDTO;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
+import com.fooengineers.projetoAcVansV4.entity.StatusServico;
 import com.fooengineers.projetoAcVansV4.entity.TipoServico;
 import com.fooengineers.projetoAcVansV4.exception.EtapaServicoNaoEncontradaException;
+import com.fooengineers.projetoAcVansV4.exception.ReordenacaoNaoPermitidaException;
+import com.fooengineers.projetoAcVansV4.exception.StatusServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.exception.TipoServicoNaoEncontradoException;
 import com.fooengineers.projetoAcVansV4.repository.EtapaServicoRepository;
+import com.fooengineers.projetoAcVansV4.repository.ServicoRepository;
+import com.fooengineers.projetoAcVansV4.repository.StatusServicoRepository;
 import com.fooengineers.projetoAcVansV4.repository.TipoServicoRepository;
 
 @Service
@@ -29,6 +34,10 @@ public class EtapaServicoService {
 	private EtapaServicoRepository etapaServicoRepository;
 	@Autowired
 	private TipoServicoRepository tipoServicoRepository;
+	@Autowired
+	private ServicoRepository servicoRepository;
+	@Autowired
+	private StatusServicoRepository statusServicoRepository;
 	@Autowired
 	private AuditoriaService auditoriaService;
 	
@@ -97,6 +106,12 @@ public class EtapaServicoService {
 	
 	public EtapaServicoResDTO atualizarOrdem(OrdemDTO dto, Long idEtapaServico) {
 		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
+		TipoServico tipo = etapa.getTipoServico();
+		StatusServico status = statusServicoRepository.findByDescricao("INICIADO").orElseThrow(() -> new StatusServicoNaoEncontradoException("INICIADO")); 
+		int numServicos = servicoRepository.countByTipoServicoAndStatusServico(tipo, status);
+		if(numServicos > 0) {
+			throw new ReordenacaoNaoPermitidaException();
+		}
 		Map<String, Object> antes = 
 				objectMapper.convertValue(
 						new EtapaServicoResDTO(etapa),

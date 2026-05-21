@@ -9,4 +9,7 @@ public class StatusServicoNaoEncontradoException extends RuntimeException {
 	public StatusServicoNaoEncontradoException(Integer idStatus) {
 		super("Não foi possível encontrar status de serviço com id " + idStatus);
 	}
+	public StatusServicoNaoEncontradoException(String descricao) {
+		super("Não foi possível encontrar status de serviço com descricao " + descricao);
+	}
 }

@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import {arrayMove} from "@dnd-kit/sortable";
+
 
 import TiposServicoCard from "../components/card/TiposServicoCard";
 import TipoServicoForm from "../components/forms/TipoServicoForm.jsx"
@@ -243,6 +245,7 @@ function ConfigurarServicos() {
                     <TiposServicoCard tipos={listaTipos} editarTipo={editarTipo} deletarTipo={confirmarDeletarTipo} adicionarEtapa={abrirModalEtapa} editarEtapa={editarEtapa} deletarEtapa={confirmarDeletarEtapa} moverEtapa={moverEtapa} />
                 </div>
                 <button className="btn btn-primary  " onClick={abrirModalTipo}><FaPlus></FaPlus> Adicionr Tipo</button>
+                <Link to="/cadastros" className="btn btn-secondary">Voltar</Link>
                 <CrudModal
                     title={editingTipo ? "Editar Tipo" : "Cadastrar Tipo"}
                     show={showModalTipo}

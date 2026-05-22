@@ -47,7 +47,7 @@ public class ServicoController {
 	}
 	
 	@PutMapping("/{idServico}")
-	public ResponseEntity<ServicoResDTO> criar(@RequestBody @Valid ServicoReqDTO dto, @PathVariable(required=true) Long idServico){
+	public ResponseEntity<ServicoResDTO> atualizar(@RequestBody @Valid ServicoReqDTO dto, @PathVariable(required=true) Long idServico){
 		ServicoResDTO atualizado = servicoService.atualizar(dto, idServico);
 		return ResponseEntity.ok(atualizado);
 	}

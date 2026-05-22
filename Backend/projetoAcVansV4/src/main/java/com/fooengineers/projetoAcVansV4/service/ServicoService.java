@@ -112,13 +112,29 @@ public class ServicoService {
 						);
 		
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
-		servico.setStatusServico(status);
 		
-		if(status.getDescricao().equals("INICIADO")) {
+		//Se mudou status
+		if(servico.getStatusServico().getId() != status.getId()) {
+			servico.setStatusServico(status);
 			TipoServico tipo = servico.getTipoServico();
-			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
-			servico.setEtapaServico(etapa);
+			if(status.getDescricao().equals("INICIADO")) {
+				//Seleciona a primeira etapa
+				EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
+				servico.setDataFim(null);
+				servico.setEtapaServico(etapa);
+				//TODO notifica cliente
+			}else if(status.getDescricao().equals("FINALIZADO")){
+				//Seleciona última etapa caso finalizado
+				EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemDesc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
+				servico.setDataFim(new Timestamp(System.currentTimeMillis()));
+				servico.setEtapaServico(etapa);
+			}else {
+				//Remove etapa caso mude para "AGENDADO"
+				servico.setDataFim(null);
+				servico.setEtapaServico(null);				
+			}			
 		}
+		
 		Servico atualizado = servicoRepository.save(servico);
 		Map<String, Object> depois =
 				objectMapper.convertValue(

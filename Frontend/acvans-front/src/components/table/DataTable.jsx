@@ -10,7 +10,7 @@ function DataTable({
         return path.split(".").reduce((acc, part) => acc?.[part], obj);
     }
     return (
-        <div className="table-wrapper">
+        <div className="table-wrapper mt-0">
             <div className="table-responsive">
                 <table className="table table-striped table-hover align-middle data-table">
                     <thead>
@@ -52,7 +52,7 @@ function DataTable({
                         }
                         {
                             page?.content?.map(item => (
-                                <tr key={item.id}>
+                                <tr key={item?.id || ""}>
                                     {
                                         columns.map(column => (
                                             <td key={column.key}>

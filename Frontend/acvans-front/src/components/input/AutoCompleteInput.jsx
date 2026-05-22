@@ -27,7 +27,7 @@ function AutoCompleteInput({
     }, [value, disabled, searchFunction]);
     return(
         <div className="position-relative">
-            <input type="text" className="form-control" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} disabled={disabled}/>
+            <input type="text" className="form-control" value={value !== null? value:""} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} disabled={disabled}/>
             {
                 loading && (
                     <div className="small mt-1">Buscando...</div>

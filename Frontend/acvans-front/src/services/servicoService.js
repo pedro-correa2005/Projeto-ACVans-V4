@@ -20,3 +20,8 @@ export async function deletarServico(id) {
     const response = await api.delete(`/servicos/${id}`);
     return response.data;
 }
+
+export async function baixarQrCode(servico){
+    const response = await api.get(`/servicos/baixar-qrcode?idServico=${servico.idServico}`, {responseType: "blob"});
+    return response.data;
+}

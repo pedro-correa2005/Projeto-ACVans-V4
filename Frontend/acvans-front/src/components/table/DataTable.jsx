@@ -5,72 +5,109 @@ function DataTable({
     sortField,
     sortDirection,
     onSort
-}){
-    function getNestedValue(obj, path){
-        return path.split(".").reduce((acc, part) => acc?.[part], obj);
+}) {
+
+    function getNestedValue(obj, path) {
+        return path
+            .split(".")
+            .reduce((acc, part) => acc?.[part], obj);
     }
+
+    // Se vier Page => usa content
+    // Se vier array => usa diretamente
+    const data = Array.isArray(page)
+        ? page
+        : page?.content || [];
+
     return (
         <div className="table-wrapper mt-0">
             <div className="table-responsive">
+
                 <table className="table table-striped table-hover align-middle data-table">
+
                     <thead>
                         <tr>
+
                             {
                                 columns.map(column => (
-                                    <th key={column.key} 
-                                        style={{cursor:"pointer"}}
-                                        onClick={() => onSort(column.key)}>
+                                    <th
+                                        key={column.key}
+                                        style={{
+                                            cursor: onSort ? "pointer" : "default"
+                                        }}
+                                        onClick={() => onSort?.(column.key)}
+                                    >
+
                                         {column.label}
+
                                         {
                                             sortField === column.key && (
                                                 <span className="ms-1">
                                                     {
-                                                        sortDirection === "asc"?"↑":"↓"
+                                                        sortDirection === "asc"
+                                                            ? "↑"
+                                                            : "↓"
                                                     }
                                                 </span>
                                             )
                                         }
+
                                     </th>
                                 ))
                             }
+
                             {
                                 actions && (
-                                    <th className="col-acoes">Ações</th>
+                                    <th className="col-acoes">
+                                        Ações
+                                    </th>
                                 )
                             }
+
                         </tr>
                     </thead>
+
                     <tbody>
+
                         {
-                            page?.content?.length === 0 && (
+                            data.length === 0 && (
                                 <tr>
-                                    <td colSpan={columns.length + 1} className="text-center">
+                                    <td
+                                        colSpan={columns.length + (actions ? 1 : 0)}
+                                        className="text-center"
+                                    >
                                         Nenhum registro encontrado.
                                     </td>
                                 </tr>
                             )
                         }
+
                         {
-                            page?.content?.map(item => (
-                                <tr key={item?.id || ""}>
+                            data.map(item => (
+                                <tr key={item?.id || Math.random()}>
+
                                     {
-                                        columns.map(column => (
-                                            <td key={column.key}>
-                                                {
-                                                    (() => {
-                                                        const value = getNestedValue(item, column.key);
-                                                        return column.render
-                                                        ?
-                                                        column.render(
-                                                            item[column.key],
-                                                            item
-                                                        )
-                                                        : value;
-                                                    })()
-                                                }
-                                            </td>
-                                        ))
+                                        columns.map(column => {
+
+                                            const value = getNestedValue(
+                                                item,
+                                                column.key
+                                            );
+
+                                            return (
+                                                <td key={column.key}>
+
+                                                    {
+                                                        column.render
+                                                            ? column.render(value, item)
+                                                            : value
+                                                    }
+
+                                                </td>
+                                            );
+                                        })
                                     }
+
                                     {
                                         actions && (
                                             <td className="col-acoes">
@@ -80,11 +117,15 @@ function DataTable({
                                             </td>
                                         )
                                     }
+
                                 </tr>
                             ))
                         }
+
                     </tbody>
+
                 </table>
+
             </div>
         </div>
     );

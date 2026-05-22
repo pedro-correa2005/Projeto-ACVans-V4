@@ -56,6 +56,15 @@ function Header() {
           )
         }
         {
+          hasRole(user, "GERENTE") && (
+            <li>
+              <Link to="/auditoria">
+                Auditoria
+              </Link>
+            </li>
+          )
+        }
+        {
           hasRole(user, "ADMIN") && (
             <li>
               <Link to="/admin/oficinas">

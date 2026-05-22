@@ -32,7 +32,7 @@ public class AuditoriaService {
 	UsuarioRepository usuarioRepository; 
 	
 	public Page<AuditoriaDTO> consultar(Oficina oficina, Pageable pageable) {
-		return auditoriaRepository.findByOficinaOrderByTempoDesc(oficina, pageable).map(AuditoriaDTO::new);
+		return auditoriaRepository.findByOficina(oficina, pageable).map(AuditoriaDTO::new);
 	}
 	
 	public void registrar(Acao acao, Entidade entidade, Long idRegistro, Detalhes detalhes) {
@@ -84,7 +84,7 @@ public class AuditoriaService {
 			return;
 		}
 		Auditoria auditoria = new Auditoria();
-		auditoria.setAcao(Acao.LOGIN);
+		auditoria.setAcao(Acao.LOGIN_FAIL);
 		auditoria.setEntidade(Entidade.USUARIO);
 		auditoria.setTempo(new Timestamp(System.currentTimeMillis()));
 		

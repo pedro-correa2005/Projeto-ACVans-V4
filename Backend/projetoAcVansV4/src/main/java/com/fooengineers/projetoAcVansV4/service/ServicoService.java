@@ -86,7 +86,6 @@ public class ServicoService {
 		Servico servico = new Servico();
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
 		servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
-		servico.setDataFim(dto.getDataFim());
 		servico.setTokenAtualizacao(UUID.randomUUID().toString().replace("-",""));
 		servico.setTokenConsulta(TokenUtil.gerarCodigo(6));
 		
@@ -113,7 +112,6 @@ public class ServicoService {
 						);
 		
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
-		servico.setDataFim(dto.getDataFim());
 		servico.setStatusServico(status);
 		
 		if(status.getDescricao().equals("INICIADO")) {
@@ -181,6 +179,15 @@ public class ServicoService {
 		
 		System.out.println(etapaNova);
 		servico.setEtapaServico(etapaNova);
+		
+		EtapaServico ultima = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemDesc(servico.getTipoServico())
+				.orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa cadastrada"));
+		
+		if(etapaNova.getId() == ultima.getId()) {
+			servico.setDataFim(new Timestamp(System.currentTimeMillis()));
+			servico.setStatusServico(statusServicoRepository.findByDescricao("FINALIZADO").orElseThrow(() -> new StatusServicoNaoEncontradoException("FINALIZADO")));
+		}
+		
 		Servico atualizado = servicoRepository.save(servico);
 		
 		Map<String, Object> depois =

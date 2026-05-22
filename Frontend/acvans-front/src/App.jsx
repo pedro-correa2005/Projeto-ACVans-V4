@@ -10,13 +10,14 @@ import TwoFactor from "./pages/TwoFactor";
 import EsqueciASenha from "./pages/EsqueciASenha";
 import RedefinirSenha from"./pages/RedefinirSenha";
 import AlterarSenha from "./pages/AlterarSenha";
-import Oficinas from "./pages/admin/Oficinas.jsx";
-import Usuarios from "./pages/admin/Usuarios.jsx";
-import Cadastros from "./pages/Cadastros.jsx";
-import Clientes from "./pages/Clientes.jsx"
+import Oficinas from "./pages/admin/Oficinas";
+import Usuarios from "./pages/admin/Usuarios";
+import Cadastros from "./pages/Cadastros";
+import Clientes from "./pages/Clientes"
 //import DetalhesCliente from "./pages/DetalhesCliente.jsx";
 import Veiculos from "./pages/Veiculos.jsx"
-import ConfigurarServicos from "./pages/ConfigurarServicos.jsx";
+import Relatorios from "./pages/gerente/Relatorios";
+import ConfigurarServicos from "./pages/gerente/ConfigurarServicos";
 function App() {
   return (
     <BrowserRouter>
@@ -36,7 +37,8 @@ function App() {
         <Route path="/clientes" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Clientes/></PrivateRoute>}/>
         {/*<Route path="/clientes/:idCliente" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><DetalhesCilente/></PrivateRoute>}/>*/}
         <Route path="/veiculos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Veiculos/></PrivateRoute>}/>
-        <Route path="/configurar-servicos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
+        <Route path="/configurar-servicos" element={<PrivateRoute roles={["GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
+        <Route path="/relatorios" element={<PrivateRoute roles={["GERENTE"]}><Relatorios/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

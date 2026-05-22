@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
@@ -32,9 +32,7 @@ public class VeiculoService {
 	ClienteRepository clienteRepository;
 	@Autowired
 	private AuditoriaService auditoriaService;
-	
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	
+		
 	public Page<VeiculoResDTO> listar(Integer idOficina, String termo, Pageable pageable) {
 		return veiculoRepository.findAll(VeiculoSpecification.filtroGeral(termo, idOficina), pageable).map(VeiculoResDTO::new);
 	}
@@ -63,11 +61,7 @@ public class VeiculoService {
 	}
 	public VeiculoResDTO atualizar(VeiculoReqDTO dto, Long idVeiculo) {
 		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
-		Map<String, Object> antes =
-				objectMapper.convertValue(
-						new VeiculoResDTO(veiculo),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> antes = AuditoriaFormatter.formatarVeiculo(veiculo);
 		
 		veiculo.setPlaca(dto.getPlaca());
 		veiculo.setMarca(dto.getMarca());
@@ -75,13 +69,12 @@ public class VeiculoService {
 		
 		Veiculo salvo = veiculoRepository.save(veiculo);
 
-		Map<String, Object> depois =
-				objectMapper.convertValue(
-						new VeiculoResDTO(salvo),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> depois = AuditoriaFormatter.formatarVeiculo(salvo);
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		Detalhes detalhes = new Detalhes(alteracoes);
 		
-		Detalhes detalhes = new Detalhes(antes, depois);
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.VEICULO,

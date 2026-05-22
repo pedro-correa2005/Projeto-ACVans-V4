@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.ClienteReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ClienteResDTO;
@@ -27,9 +27,7 @@ public class ClienteService {
 	private ClienteRepository clienteRepository;
 	@Autowired
 	private AuditoriaService auditoriaService;
-	
-	private final ObjectMapper objectMapper = new ObjectMapper();
-	
+		
 	public Page<ClienteResDTO> listar(Oficina oficina, Pageable pageable){
 		return clienteRepository.findByOficina(oficina, pageable).map(ClienteResDTO::new);
 	}
@@ -56,24 +54,21 @@ public class ClienteService {
 	public ClienteResDTO atualizar(ClienteReqDTO dto, Long idCliente) {
 		Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
 		
-		Map<String, Object> antes =
-				objectMapper.convertValue(
-						new ClienteResDTO(cliente),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> antes = AuditoriaFormatter.formatarCliente(cliente);
 
 		cliente.setNome(dto.getNome());
 		cliente.setCelular(dto.getCelular());
 		
 		Cliente salvo = clienteRepository.save(cliente);
 		
-		Map<String, Object> depois =
-		        objectMapper.convertValue(
-		                new ClienteResDTO(salvo),
-		                new TypeReference<Map<String, Object>>() {}
-		        );
+		Map<String, Object> depois = AuditoriaFormatter.formatarCliente(salvo);
 		
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+ 		
+		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,

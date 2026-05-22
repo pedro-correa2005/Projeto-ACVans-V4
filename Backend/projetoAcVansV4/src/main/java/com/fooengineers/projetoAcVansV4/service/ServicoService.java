@@ -2,6 +2,7 @@ package com.fooengineers.projetoAcVansV4.service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -13,11 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
@@ -66,8 +66,6 @@ public class ServicoService {
 	
 	@Autowired
 	private AuditoriaService auditoriaService;
-	
-	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public Page<ServicoResDTO> listar(Oficina oficina, Pageable pageable) {
 		return servicoRepository.findByOficina(oficina, pageable).map(ServicoResDTO::new);
@@ -105,11 +103,7 @@ public class ServicoService {
 		Servico servico = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException(idServico)); 
 		StatusServico status = statusServicoRepository.findById(dto.getIdStatusServico()).orElseThrow(() -> new StatusServicoNaoEncontradoException(dto.getIdStatusServico()));
 		
-		Map<String, Object> antes =
-				objectMapper.convertValue(
-						new ServicoResDTO(servico),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> antes = AuditoriaFormatter.formatarServico(servico);
 		
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
 		
@@ -136,13 +130,11 @@ public class ServicoService {
 		}
 		
 		Servico atualizado = servicoRepository.save(servico);
-		Map<String, Object> depois =
-				objectMapper.convertValue(
-						new ServicoResDTO(atualizado),
-						new TypeReference<Map<String, Object>>() {}
-						);
-		
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> depois = AuditoriaFormatter.formatarServico(atualizado);
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
@@ -181,11 +173,7 @@ public class ServicoService {
 			return;
 		}
 		
-		Map<String, Object> antes =
-				objectMapper.convertValue(
-						new ServicoResDTO(servico),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> antes = AuditoriaFormatter.formatarServico(servico);
 		
 		EtapaServico etapaAtual = servico.getEtapaServico();
 		EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
@@ -206,13 +194,11 @@ public class ServicoService {
 		
 		Servico atualizado = servicoRepository.save(servico);
 		
-		Map<String, Object> depois =
-				objectMapper.convertValue(
-						new ServicoResDTO(atualizado),
-						new TypeReference<Map<String, Object>>() {}
-						);
-		
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> depois = AuditoriaFormatter.formatarServico(atualizado);
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,

@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -7,11 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.TipoServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.TipoServicoResDTO;
@@ -26,8 +26,6 @@ public class TipoServicoService {
 	TipoServicoRepository tipoServicoRepository;
 	@Autowired
 	private AuditoriaService auditoriaService;
-	
-	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	public List<TipoServicoResDTO> listar(Oficina oficina){
 		return tipoServicoRepository.findByOficina(oficina).stream()
@@ -46,22 +44,18 @@ public class TipoServicoService {
 	public TipoServicoResDTO atualizar(TipoServicoReqDTO dto, Long idTipoServico) {
 		TipoServico tipo = tipoServicoRepository.findById(idTipoServico).orElseThrow(() -> new TipoServicoNaoEncontradoException(idTipoServico));
 		
-		Map<String, Object> antes =
-				objectMapper.convertValue(
-						new TipoServicoResDTO(tipo),
-						new TypeReference<Map<String, Object>>() {}
-						);
+		Map<String, Object> antes = AuditoriaFormatter.formatarTipo(tipo);
 
 		
 		tipo.setDescricao(dto.getDescricao());
 		TipoServico atualizado = tipoServicoRepository.save(tipo);
 		
-		Map<String, Object> depois =
-		        objectMapper.convertValue(
-		                new TipoServicoResDTO(atualizado),
-		                new TypeReference<Map<String, Object>>() {}
-		        );
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> depois = AuditoriaFormatter.formatarTipo(atualizado);
+		
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,

@@ -1,5 +1,6 @@
 package com.fooengineers.projetoAcVansV4.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -7,11 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
+import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
@@ -40,9 +40,6 @@ public class EtapaServicoService {
 	private StatusServicoRepository statusServicoRepository;
 	@Autowired
 	private AuditoriaService auditoriaService;
-	
-	
-	private final ObjectMapper objectMapper = new ObjectMapper();
 	
 	public List<EtapaServicoResDTO> listarPorTipo(TipoServico tipo){
 		return etapaServicoRepository.findByTipoServico(tipo)
@@ -78,23 +75,18 @@ public class EtapaServicoService {
 	public EtapaServicoResDTO atualizar(EtapaServicoReqDTO dto, Long idEtapaServico) {
 		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
 		
-		Map<String, Object> antes = 
-				objectMapper.convertValue(
-						new EtapaServicoResDTO(etapa),
-						new TypeReference<Map<String, Object>> () {}
-				);
+		Map<String, Object> antes = AuditoriaFormatter.formatarEtapa(etapa);
 		
 		etapa.setTitulo(dto.getTitulo());
 		etapa.setDescricao(dto.getDescricao());
 		EtapaServico atualizado = etapaServicoRepository.save(etapa);
 		
-		Map<String, Object> depois =
-				objectMapper.convertValue(
-						new EtapaServicoResDTO(atualizado),
-						new TypeReference<Map<String, Object>> () {}
-				);
-
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> depois = AuditoriaFormatter.formatarEtapa(atualizado);
+		
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		Detalhes detalhes = new Detalhes(alteracoes);
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.ETAPA_SERVICO,
@@ -112,11 +104,7 @@ public class EtapaServicoService {
 		if(numServicos > 0) {
 			throw new ReordenacaoNaoPermitidaException();
 		}
-		Map<String, Object> antes = 
-				objectMapper.convertValue(
-						new EtapaServicoResDTO(etapa),
-						new TypeReference<Map<String, Object>> () {}
-				);
+		Map<String, Object> antes = AuditoriaFormatter.formatarEtapa(etapa);
 		
 		Integer novaOrdem;
 		if(dto.getOrdemAnterior() == null) {
@@ -135,13 +123,13 @@ public class EtapaServicoService {
 		
 		EtapaServico atualizada = etapaServicoRepository.save(etapa);
 		
-		Map<String, Object> depois = 
-				objectMapper.convertValue(
-						new EtapaServicoResDTO(atualizada),
-						new TypeReference<Map<String, Object>> () {}
-				);
+		Map<String, Object> depois = AuditoriaFormatter.formatarEtapa(atualizada);
 		
-		Detalhes detalhes = new Detalhes(antes, depois);
+		Map<String, Object> alteracoes = new LinkedHashMap<>();
+		alteracoes.put("antes", antes);
+		alteracoes.put("depois", depois);
+		
+		Detalhes detalhes = new Detalhes(alteracoes);
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.ETAPA_SERVICO,

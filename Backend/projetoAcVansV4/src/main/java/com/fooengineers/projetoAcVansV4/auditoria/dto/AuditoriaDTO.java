@@ -10,16 +10,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuditoriaDTO {
+	private Long id;
 	private String acao;
 	private String entidade;
 	private Long idRegistro;
 	private String tempo;
 	private String enderecoIp;
 	private Detalhes detalhes;
-	private String email;
+	private String usuario;
 	
 	//Constructor a partir de entity.Auditoria
 	public AuditoriaDTO(Auditoria auditoria) {
+		this.id = auditoria.getId();
+		
 		this.acao = auditoria.getAcao().getDescricao();
 		
 		this.entidade = auditoria.getEntidade() != null? auditoria.getEntidade().getDescricao() : null;
@@ -34,6 +37,6 @@ public class AuditoriaDTO {
 			this.detalhes = auditoria.getDetalhes();
 		
 		if(auditoria.getUsuario() != null)
-			this.email = auditoria.getUsuario().getEmail();
+			this.usuario = auditoria.getUsuario().getEmail();
 	}
 }

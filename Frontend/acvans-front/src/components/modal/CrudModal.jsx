@@ -3,15 +3,22 @@ function CrudModal({
     show,
     onClose,
     children,
-    footer
+    footer,
+    size = "md"
 }){
     if(!show){
         return null;
     }
+     const sizeClass = {
+        sm: "modal-sm",
+        md: "",
+        lg: "modal-lg",
+        xl: "modal-xl"
+    };
 
     return (
         <div className="modal fade show" style={{display:"block"}}>
-            <div className="modal-dialog">
+            <div className={`modal-dialog ${sizeClass[size]}`}>
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">{title}</h5>

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Detalhes {
-	private Map<String, Object> antes;
-	private Map<String, Object> depois;
+	private Map<String, Object> dados;
 }

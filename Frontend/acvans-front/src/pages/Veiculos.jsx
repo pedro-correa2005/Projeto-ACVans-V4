@@ -167,7 +167,7 @@ function Veiculos() {
                     ]}
                     actions={(veiculo) => (
                         <>
-                            <button className="btn btn-sm btn-primary" onClick={() => editar(veiculo)}>Editar</button>
+                            <button className="btn btn-sm btn-primary " onClick={() => editar(veiculo)}>Editar</button>
                             <Link to={`/veiculos/${veiculo.id}`} className="btn btn-sm btn-secondary">Detalhes</Link>
                             <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(veiculo)}>Deletar</button>
                         </>
@@ -176,8 +176,10 @@ function Veiculos() {
                     sortDirection={sortDirection}
                     onSort={handleSort}
                 />
-                <button className="btn btn-primary" onClick={abrirModal}>Adicionar Veículo</button>
-                <Link to="/cadastros" className="btn btn-secondary">Voltar</Link>
+                <div className="mt-3">
+                    <button className="btn btn-primary" onClick={abrirModal}>Adicionar Veículo</button>
+                    <Link to="/cadastros" className="btn btn-secondary ms-3">Voltar</Link>
+                </div>
                 <Pagination page={page} onPageChange={setPageNumber} />
                 <CrudModal
                     title={editingVeiculo ? "Editar Veículo" : "Cadastrar Veículo"}

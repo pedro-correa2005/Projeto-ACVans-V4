@@ -6,8 +6,10 @@ import CrudModal from "../components/modal/CrudModal";
 import Pagination from "../components/pagination/Pagination";
 
 import { listarCadastros } from "../services/cadastrosService";
-import { criarServico, atualizarServico, deletarServico } from "../services/servicoService"
+import { criarServico, atualizarServico, deletarServico, baixarQrCode } from "../services/servicoService"
 import ServicoForm from "../components/forms/ServicoForm.jsx";
+
+import { FaEdit, FaTrash, FaQrcode } from "react-icons/fa";
 
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
@@ -46,7 +48,6 @@ function Cadastros() {
     }
 
     useEffect(() => {
-        console.log(filtroStatus);
         carregar();
     }, [termo, pageNumber, sortField, sortDirection, filtroStatus]);
 
@@ -142,16 +143,22 @@ function Cadastros() {
         }
     }
 
-    <ServicoForm
-        tipoServico={tipoServico}
-        setTipoServico={setTipoServico}
-        receberNotificacao={receberNotificacao}
-        setReceberNotificacao={setReceberNotificacao}
-        statusServico={statusServico}
-        setStatusServico={setStatusServico}
-        veiculoInput={veiculoInput}
-        setVeiculoInput={setVeiculoInput}
-    />
+    async function handleDownloadQrCode(servico) {
+        try {
+            const blob = await baixarQrCode(servico);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `qrcode-servico-${servico.idServico}.png`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error(error);
+            toast.error("Erro ao baixar QR Code");
+        }
+    }
     return (
         <>
             <Header />
@@ -167,7 +174,7 @@ function Cadastros() {
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         <button
-                            className={`nav-link ${filtroStatus === 1 ? "active": ""}`}
+                            className={`nav-link ${filtroStatus === 1 ? "active" : ""}`}
                             onClick={() => setFiltroStatus(1)}
                         >
                             Agendados
@@ -176,8 +183,8 @@ function Cadastros() {
                     <li className="nav-item">
                         <button
                             className={`nav-link ${filtroStatus === 2
-                                    ? "active"
-                                    : ""
+                                ? "active"
+                                : ""
                                 }`}
                             onClick={() =>
                                 setFiltroStatus(2)
@@ -193,8 +200,8 @@ function Cadastros() {
                         <button
 
                             className={`nav-link ${filtroStatus === 3
-                                    ? "active"
-                                    : ""
+                                ? "active"
+                                : ""
                                 }`}
 
                             onClick={() =>
@@ -249,7 +256,8 @@ function Cadastros() {
                         },
                         {
                             key: "etapaTitulo",
-                            label: "Etapa Atual"
+                            label: "Etapa Atual",
+                            render: (value) => value ? value : "Não iniciado"
                         },
                         {
                             key: "dataFim",
@@ -268,15 +276,21 @@ function Cadastros() {
                     ]}
                     actions={(servico) => (
                         <>
-                            <button className="btn btn-sm btn-primary" onClick={() => editar(servico)}>Editar</button>
-                            <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(servico)}>Deletar</button>
+                            <button className="btn btn-sm btn-primary" onClick={() => editar(servico)}><FaEdit /></button>
+                            <button className="btn btn-sm btn-secondary" onClick={() => handleDownloadQrCode(servico)}><FaQrcode /></button>
+                            <button className="btn btn-sm btn-danger" onClick={() => confirmarDeletar(servico)}><FaTrash /></button>
                         </>
                     )}
                     sortField={sortField}
                     sortDirection={sortDirection}
                     onSort={handleSort}
                 />
-                <button className="btn btn-primary" onClick={abrirModal}>Novo Serviço</button>
+                <div className="mt-3">
+                    <button className="btn btn-primary" onClick={abrirModal}>Novo Serviço</button>
+                    <Link to="/clientes" className="btn btn-secondary ms-3">Ver Clientes</Link>
+                    <Link to="/veiculos" className="btn btn-secondary ms-3">Ver veículos</Link>
+                    <Link to="/configurar-servicos" className="btn btn-secondary ms-3">Configurar Serviços</Link>
+                </div>
                 <Pagination page={page} onPageChange={setPageNumber} />
                 <CrudModal
                     title={editingServico ? "Editar Servico" : "Cadastrar Servico"}

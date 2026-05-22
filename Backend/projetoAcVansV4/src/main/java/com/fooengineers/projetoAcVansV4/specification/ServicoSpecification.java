@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import com.fooengineers.projetoAcVansV4.entity.Cliente;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
 import com.fooengineers.projetoAcVansV4.entity.Servico;
 import com.fooengineers.projetoAcVansV4.entity.StatusServico;
@@ -21,7 +22,7 @@ public class ServicoSpecification {
 			query.distinct(true);
 			
 			Join<Servico, Veiculo> veiculo = root.join("veiculo");
-			veiculo.join("cliente");
+			Join<Veiculo, Cliente> cliente = veiculo.join("cliente");
 			
 			root.join("tipoServico");
 			root.join("etapaServico", JoinType.LEFT);
@@ -49,7 +50,7 @@ public class ServicoSpecification {
 						like
 				);
 				Predicate porNomeCliente = cb.like(
-						cb.lower(veiculo.get("nome")),
+						cb.lower(cliente.get("nome")),
 						like
 				);
 				predicates.add(

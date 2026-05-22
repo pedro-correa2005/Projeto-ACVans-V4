@@ -1,7 +1,5 @@
 package com.fooengineers.projetoAcVansV4.dto;
 
-import java.sql.Timestamp;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +13,8 @@ public class ServicoReqDTO {
 	private Long idTipoServico;
 	@NotNull(message = "Receber Notificação: Selecione uma opção")
 	private boolean receberNotificacao;
-	@NotNull(message = "Tipo de serviço é obrigatório")
+	@NotNull(message = "Status de serviço é obrigatório")
 	private Integer idStatusServico;
-	@NotNull(message = "Data de fim prevista é obrigatória")
-	private Timestamp dataFim;
 	@NotNull(message = "Veículo é obrigatório")
 	private Long idVeiculo;
 }

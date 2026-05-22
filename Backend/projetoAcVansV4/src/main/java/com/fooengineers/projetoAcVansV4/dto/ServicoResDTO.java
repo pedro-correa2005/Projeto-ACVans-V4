@@ -25,7 +25,7 @@ public class ServicoResDTO {
 		this.tokenConsulta = servico.getTokenConsulta();
 		this.receberNotificacao = servico.getReceberNotificacao()?"Sim":"Não";
 		this.dataInicio = servico.getDataInicio().toString();
-		this.dataFIm = servico.getDataFim().toString();
+		this.dataFIm = servico.getDataFim() != null? servico.getDataFim().toString():null;
 		this.tipoServico = servico.getTipoServico().getDescricao();
 		this.statusServico = servico.getStatusServico().getDescricao();
 		this.etapaServico = servico.getEtapaServico() != null ? servico.getEtapaServico().getTitulo():null;

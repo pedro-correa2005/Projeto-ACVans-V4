@@ -155,8 +155,10 @@ function Clientes(){
                     sortDirection={sortDirection}
                     onSort={handleSort}
                 />
-                <button className="btn btn-primary" onClick={abrirModal}>Adicionar Cliente</button>
-                <Link to="/cadastros" className="btn btn-secondary">Voltar</Link>
+                <div className="mt-3">
+                    <button className="btn btn-primary" onClick={abrirModal}>Adicionar Cliente</button>
+                    <Link to="/cadastros" className="btn btn-secondary ms-3">Voltar</Link>
+                </div>
                 <Pagination page={page} onPageChange={setPageNumber}/>
                 <CrudModal
                     title={editingCliente?"Editar Cliente":"Cadastrar Cliente"}

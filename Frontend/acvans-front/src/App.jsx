@@ -40,7 +40,7 @@ function App() {
         <Route path="/veiculos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Veiculos/></PrivateRoute>}/>
         <Route path="/configurar-servicos" element={<PrivateRoute roles={["GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
         <Route path="/relatorios" element={<PrivateRoute roles={["GERENTE"]}><Relatorios/></PrivateRoute>}/>
-        <Route path="/relatorios" element={<PrivateRoute roles={["GERENTE"]}><Auditoria/></PrivateRoute>}/>
+        <Route path="/auditoria" element={<PrivateRoute roles={["GERENTE"]}><Auditoria/></PrivateRoute>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

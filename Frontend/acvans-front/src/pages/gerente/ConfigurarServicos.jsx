@@ -5,16 +5,16 @@ import { toast } from "react-toastify";
 import {arrayMove} from "@dnd-kit/sortable";
 
 
-import TiposServicoCard from "../components/card/TiposServicoCard";
-import TipoServicoForm from "../components/forms/TipoServicoForm.jsx"
-import EtapaServicoForm from "../components/forms/EtapaServicoForm.jsx"
-import CrudModal from "../components/modal/CrudModal";
+import TiposServicoCard from "../../components/card/TiposServicoCard.jsx";
+import TipoServicoForm from "../../components/forms/TipoServicoForm.jsx"
+import EtapaServicoForm from "../../components/forms/EtapaServicoForm.jsx"
+import CrudModal from "../../components/modal/CrudModal.jsx";
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../../components/Header.jsx";
+import Footer from "../../components/Footer.jsx";
 
-import { listarTiposServico, criarTipoServico, atualizarTipoServico, deletarTipoServico } from "../services/tiposServicoService.js";
-import { listarEtapasServico, criarEtapaServico, atualizarEtapaServico, deletarEtapaServico, atualizarOrdemEtapa } from "../services/etapasServicoService.js";
+import { listarTiposServico, criarTipoServico, atualizarTipoServico, deletarTipoServico } from "../../services/tiposServicoService.js";
+import { listarEtapasServico, criarEtapaServico, atualizarEtapaServico, deletarEtapaServico, atualizarOrdemEtapa } from "../../services/etapasServicoService.js";
 
 function ConfigurarServicos() {
     const [showModalTipo, setShowModalTipo] = useState(false);

@@ -24,3 +24,8 @@ link da api
 EMAIL_USERNAME
 EMAIL_PASSWORD
 email e senha para envio de emails
+
+Z-API_CLIENT_TOKEN
+Z-API_INSTANCE_ID
+Z-API_INSTANCE_TOKEN
+Tokens da z-api

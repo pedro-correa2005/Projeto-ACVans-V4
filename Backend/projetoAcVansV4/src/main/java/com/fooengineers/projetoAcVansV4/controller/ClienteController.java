@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.ClienteReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ClienteResDTO;
 import com.fooengineers.projetoAcVansV4.dto.VeiculoResDTO;
@@ -49,7 +46,6 @@ public class ClienteController {
 	}
 	
 	@PostMapping
-	@Auditavel(acao = Acao.CREATE, entidade = Entidade.CLIENTE)
 	public ResponseEntity<ClienteResDTO> criar(@RequestBody @Valid ClienteReqDTO dto, Authentication authentication){
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		ClienteResDTO criado = clienteService.criar(dto, usuario.getOficina());
@@ -63,7 +59,6 @@ public class ClienteController {
 	}
 
 	@DeleteMapping("/{idCliente}")
-	@Auditavel(acao = Acao.DELETE, entidade = Entidade.CLIENTE)
 	public ResponseEntity<ClienteResDTO> deletar(@PathVariable(required=true) Long idCliente){
 		clienteService.deletar(idCliente);
 		return ResponseEntity.ok().build();

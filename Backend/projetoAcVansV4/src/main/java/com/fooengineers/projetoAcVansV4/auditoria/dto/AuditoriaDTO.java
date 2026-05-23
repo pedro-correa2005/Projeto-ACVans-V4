@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.auditoria.dto;
 
+import java.util.Map;
+
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Auditoria;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +18,7 @@ public class AuditoriaDTO {
 	private Long idRegistro;
 	private String tempo;
 	private String enderecoIp;
-	private Detalhes detalhes;
+	private Map<String, Object> detalhes;
 	private String usuario;
 	
 	//Constructor a partir de entity.Auditoria

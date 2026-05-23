@@ -1,6 +1,7 @@
 package com.fooengineers.projetoAcVansV4.auditoria.service;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.fooengineers.projetoAcVansV4.auditoria.dto.AuditoriaDTO;
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Auditoria;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
@@ -35,7 +35,7 @@ public class AuditoriaService {
 		return auditoriaRepository.findByOficina(oficina, pageable).map(AuditoriaDTO::new);
 	}
 	
-	public void registrar(Acao acao, Entidade entidade, Long idRegistro, Detalhes detalhes) {
+	public void registrar(Acao acao, Entidade entidade, Long idRegistro, Map<String, Object> detalhes) {
 		Auditoria auditoria = new Auditoria();
 		auditoria.setAcao(acao);
 		auditoria.setEntidade(entidade);

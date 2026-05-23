@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
@@ -48,6 +47,13 @@ public class ClienteService {
 		cliente.setCelular(dto.getCelular());
 		cliente.setOficina(oficina);
 		Cliente salvo = clienteRepository.save(cliente);
+		
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarCliente(cliente);
+		auditoriaService.registrar(
+				Acao.CREATE,
+				Entidade.CLIENTE,
+				cliente.getId(),
+				detalhes);
 		return new ClienteResDTO(salvo);
 	}
 
@@ -67,19 +73,23 @@ public class ClienteService {
 		
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
- 		
-		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.CLIENTE,
 				idCliente,
-				detalhes);
+				alteracoes);
 		
 		return new ClienteResDTO(salvo);
 	}
 	public void deletar(Long idCliente) {
 		Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNaoEncontradoExcepiton(idCliente));
 		clienteRepository.delete(cliente);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarCliente(cliente);
+		auditoriaService.registrar(
+				Acao.DELETE,
+				Entidade.CLIENTE,
+				cliente.getId(),
+				detalhes);
 	}
 }

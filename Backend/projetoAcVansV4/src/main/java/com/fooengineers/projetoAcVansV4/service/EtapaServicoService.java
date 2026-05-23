@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
@@ -69,6 +68,13 @@ public class EtapaServicoService {
 		
 		EtapaServico criado = etapaServicoRepository.save(etapa);
 		
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarEtapa(etapa);
+		auditoriaService.registrar(
+				Acao.CREATE,
+				Entidade.ETAPA_SERVICO,
+				etapa.getId(),
+				detalhes);
+		
 		return new EtapaServicoResDTO(criado);
 	}
 	
@@ -86,12 +92,11 @@ public class EtapaServicoService {
 		Map<String, Object> alteracoes = new LinkedHashMap<>();
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
-		Detalhes detalhes = new Detalhes(alteracoes);
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.ETAPA_SERVICO,
 				idEtapaServico,
-				detalhes);
+				alteracoes);
 		
 		return new EtapaServicoResDTO(atualizado);
 	}
@@ -129,12 +134,11 @@ public class EtapaServicoService {
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
 		
-		Detalhes detalhes = new Detalhes(alteracoes);
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.ETAPA_SERVICO,
 				idEtapaServico,
-				detalhes);
+				alteracoes);
 		return new EtapaServicoResDTO(atualizada);
 	}
 	
@@ -154,7 +158,13 @@ public class EtapaServicoService {
 	}
 	
 	public void deletar(Long idEtapaServico) {
-		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));		
+		EtapaServico etapa = etapaServicoRepository.findById(idEtapaServico).orElseThrow(() -> new EtapaServicoNaoEncontradaException(idEtapaServico));
 		etapaServicoRepository.delete(etapa);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarEtapa(etapa);
+		auditoriaService.registrar(
+				Acao.DELETE,
+				Entidade.ETAPA_SERVICO,
+				etapa.getId(),
+				detalhes);
 	}
 }

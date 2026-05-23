@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
@@ -39,7 +38,6 @@ public class ServicoController {
 	}
 	
 	@PostMapping
-	@Auditavel(acao = Acao.CREATE, entidade = Entidade.SERVICO)
 	public ResponseEntity<ServicoResDTO> criar(@RequestBody @Valid ServicoReqDTO dto, Authentication authentication){
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		ServicoResDTO criado = servicoService.criar(dto, usuario.getOficina().getId());
@@ -53,7 +51,6 @@ public class ServicoController {
 	}
 	
 	@DeleteMapping("/{idServico}")
-	@Auditavel(acao = Acao.DELETE, entidade = Entidade.SERVICO)
 	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idServico){
 		servicoService.deletar(idServico);
 		return ResponseEntity.ok().build();
@@ -70,4 +67,12 @@ public class ServicoController {
 		return ResponseEntity.ok().build();
 	}
 	
+	@GetMapping("/atualizar-etapa/validar-token")
+	public ResponseEntity<?> validarToken(@RequestParam String token){
+		Map<String, Object> dto = servicoService.validarTokenAtualizacao(token);
+		if(dto == null) {
+			return ResponseEntity.status(410).body(null);
+		}
+		return ResponseEntity.ok(dto);
+	}
 }

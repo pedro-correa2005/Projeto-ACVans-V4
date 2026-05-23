@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
@@ -38,6 +37,12 @@ public class TipoServicoService {
 		tipo.setDescricao(dto.getDescricao());
 		tipo.setOficina(oficina);
 		TipoServico criado = tipoServicoRepository.save(tipo);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarTipo(criado);
+		auditoriaService.registrar(
+				Acao.CREATE,
+				Entidade.TIPO_SERVICO,
+				criado.getId(),
+				detalhes);
 		return new TipoServicoResDTO(criado);
 	}
 	
@@ -55,19 +60,24 @@ public class TipoServicoService {
 		Map<String, Object> alteracoes = new LinkedHashMap<>();
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
-		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.TIPO_SERVICO,
 				idTipoServico,
-				detalhes);
+				alteracoes);
 		
 		return new TipoServicoResDTO(atualizado);
 	}
 	
 	public void deletar(Long idTipoServico) {
 		TipoServico tipo = tipoServicoRepository.findById(idTipoServico).orElseThrow(() -> new TipoServicoNaoEncontradoException(idTipoServico));
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarTipo(tipo);
+		auditoriaService.registrar(
+				Acao.DELETE,
+				Entidade.TIPO_SERVICO,
+				tipo.getId(),
+				detalhes);
 		tipoServicoRepository.delete(tipo);
 	}
 }

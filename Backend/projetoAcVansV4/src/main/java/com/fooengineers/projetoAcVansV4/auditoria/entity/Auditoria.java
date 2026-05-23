@@ -1,9 +1,9 @@
 package com.fooengineers.projetoAcVansV4.auditoria.entity;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
-import com.fooengineers.projetoAcVansV4.auditoria.converter.DetalhesConverter;
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
+import com.fooengineers.projetoAcVansV4.auditoria.converter.JsonMapConverter;
 import com.fooengineers.projetoAcVansV4.entity.Oficina;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
 
@@ -48,9 +48,9 @@ public class Auditoria {
 	@Column(name = "enderecoIp")
 	private String enderecoIp;
 	
-	@Convert(converter = DetalhesConverter.class)
+	@Convert(converter = JsonMapConverter.class)
 	@Column(columnDefinition = "json")
-	private Detalhes detalhes;
+	private Map<String, Object> detalhes;
 	
 	@ManyToOne
 	@JoinColumn(name = "fk_usuario")

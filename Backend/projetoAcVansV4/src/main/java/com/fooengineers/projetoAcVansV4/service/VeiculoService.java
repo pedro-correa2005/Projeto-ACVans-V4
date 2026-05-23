@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
@@ -56,8 +55,14 @@ public class VeiculoService {
 		veiculo.setModelo(dto.getModelo());
 		veiculo.setCliente(cliente);
 		veiculo.setOficina(oficina);
-		
-		return new VeiculoResDTO(veiculoRepository.save(veiculo));
+		Veiculo salvo = veiculoRepository.save(veiculo);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarVeiculo(salvo);
+		auditoriaService.registrar(
+				Acao.CREATE,
+				Entidade.VEICULO,
+				salvo.getId(),
+				detalhes);
+		return new VeiculoResDTO(salvo);
 	}
 	public VeiculoResDTO atualizar(VeiculoReqDTO dto, Long idVeiculo) {
 		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
@@ -73,18 +78,23 @@ public class VeiculoService {
 		Map<String, Object> alteracoes = new LinkedHashMap<>();
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
-		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.VEICULO,
 				idVeiculo,
-				detalhes);
+				alteracoes);
 		
 		return new VeiculoResDTO(salvo);
 	}
 	public void deletar(Long idVeiculo) {
 		Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new VeiculoNaoEncontradoException(idVeiculo));
 		veiculoRepository.delete(veiculo);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarVeiculo(veiculo);
+		auditoriaService.registrar(
+				Acao.DELETE,
+				Entidade.VEICULO,
+				veiculo.getId(),
+				detalhes);
 	}
 }

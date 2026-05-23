@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fooengineers.projetoAcVansV4.auditoria.annotation.Auditavel;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
-import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.dto.TipoServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.TipoServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.Usuario;
@@ -37,7 +34,6 @@ public class TipoServicoController {
 	}
 	
 	@PostMapping
-	@Auditavel(acao = Acao.CREATE, entidade = Entidade.TIPO_SERVICO)
 	public ResponseEntity<TipoServicoResDTO> criar(@RequestBody @Valid TipoServicoReqDTO dto, Authentication authentication) {
 		Usuario usuario = (Usuario) authentication.getPrincipal();
 		TipoServicoResDTO criado = tipoServicoService.criar(dto, usuario.getOficina());
@@ -51,7 +47,6 @@ public class TipoServicoController {
 	}
 	
 	@DeleteMapping("/{idTipoServico}")
-	@Auditavel(acao = Acao.DELETE, entidade = Entidade.TIPO_SERVICO)
 	public ResponseEntity<?> deletar(@PathVariable(required=true) Long idTipoServico){
 		tipoServicoService.deletar(idTipoServico);
 		return ResponseEntity.ok().build();

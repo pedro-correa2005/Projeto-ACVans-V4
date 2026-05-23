@@ -18,6 +18,7 @@ function Auditoria() {
     const [sortField, setSortField] = useState("tempo");
     const [sortDirection, setSortDirection] = useState("desc");
     const [showModal, setShowModal] = useState(false);
+    const [detalhes, setDetalhes] = useState([]);
     const [detalhesAntes, setDetalhesAntes] = useState([]);
     const [detalhesDepois, setDetalhesDepois] = useState([]);
     const [colunasModal, setColunasModal] = useState(null);
@@ -47,10 +48,24 @@ function Auditoria() {
     }
 
     function verDetalhes(detalhes) {
-        setColunasModal(Object.keys(detalhes.antes).map(chave => ({ key: chave, label:chave })));
-        setDetalhesAntes([detalhes.antes]);
-        setDetalhesDepois([detalhes.depois]);
-        setShowModal(true);
+        if(detalhes.antes != null && detalhes.depois != null){
+            setColunasModal(Object.keys(detalhes.antes).map(chave => ({ key: chave, label:chave })));
+            setDetalhesAntes([detalhes.antes]);
+            setDetalhesDepois([detalhes.depois]);
+            setShowModal(true);
+        }else{
+            setDetalhes([detalhes]);
+            setColunasModal(Object.keys(detalhes).map(chave => ({key: chave, label: chave})));
+            setShowModal(true);
+        }
+    }
+
+    function handleClose(){
+        setColunasModal(null);
+        setDetalhes([]);
+        setDetalhesAntes([]);
+        setDetalhesDepois([]);
+        setShowModal(false);
     }
 
     return (
@@ -93,8 +108,8 @@ function Auditoria() {
                         }
                     ]}
                     actions={(linha) => (
-                        (linha.detalhes != null) && (
-                            <button className="btn btn-sm btn-secondary" onClick={() => verDetalhes(linha.detalhes)}>Detalhes</button>)
+                        (linha?.detalhes) && (Object.keys(linha.detalhes).length >  0) && (
+                            <button className="btn btn-sm btn-secondary" onClick={() => verDetalhes(linha.detalhes)}>Ver Detalhes</button>)
                     )}
                     sortField={sortField}
                     sortDirection={sortDirection}
@@ -105,19 +120,31 @@ function Auditoria() {
                 <CrudModal
                     title="Detalhes"
                     show={showModal}
-                    onClose={() => setShowModal(false)}
+                    onClose={() => handleClose()}
                     size={"xl"}
                 >
-                    <h3>Antes:</h3>
-                    <DataTable
-                        page={detalhesAntes}
-                        columns={colunasModal}
+                    {detalhesAntes.length > 0 && detalhesDepois.length > 0 ? (
+                    <>
+                        <h3>Antes:</h3>
+                        <DataTable
+                            page={detalhesAntes}
+                            columns={colunasModal}
+                            />
+                        <h3>Depois:</h3>
+                        <DataTable
+                            page={detalhesDepois}
+                            columns={colunasModal}
                         />
-                    <h3>Depois:</h3>
-                    <DataTable
-                        page={detalhesDepois}
-                        columns={colunasModal}
-                    />
+                    </>
+                    ):(
+                        <>
+                            <h3>Detalhes:</h3>
+                            <DataTable
+                            page={detalhes}
+                            columns={colunasModal}
+                            />
+                        </>
+                    )}
                 </CrudModal>
             </main>
             <Footer />

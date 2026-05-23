@@ -2,6 +2,7 @@ package com.fooengineers.projetoAcVansV4.service;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fooengineers.projetoAcVansV4.auditoria.dto.Detalhes;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Acao;
 import com.fooengineers.projetoAcVansV4.auditoria.entity.Entidade;
 import com.fooengineers.projetoAcVansV4.auditoria.formatter.AuditoriaFormatter;
 import com.fooengineers.projetoAcVansV4.auditoria.service.AuditoriaService;
+import com.fooengineers.projetoAcVansV4.dto.CadastroResDTO;
+import com.fooengineers.projetoAcVansV4.dto.EtapaServicoResDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoReqDTO;
 import com.fooengineers.projetoAcVansV4.dto.ServicoResDTO;
 import com.fooengineers.projetoAcVansV4.entity.EtapaServico;
@@ -95,8 +97,14 @@ public class ServicoService {
 			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
 			servico.setEtapaServico(etapa);
 		}
-		
-		return new ServicoResDTO(servicoRepository.save(servico));
+		Servico salvo = servicoRepository.save(servico);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarServico(salvo);
+		auditoriaService.registrar(
+				Acao.CREATE,
+				Entidade.SERVICO,
+				salvo.getId(),
+				detalhes);
+		return new ServicoResDTO(salvo);
 	}
 	
 	public ServicoResDTO atualizar(ServicoReqDTO dto, Long idServico) {
@@ -134,13 +142,12 @@ public class ServicoService {
 		Map<String, Object> alteracoes = new LinkedHashMap<>();
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
-		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.SERVICO,
 				idServico,
-				detalhes);
+				alteracoes);
 		
 		return new ServicoResDTO(atualizado);
 	}
@@ -148,12 +155,18 @@ public class ServicoService {
 	public void deletar(Long idServico) {
 		Servico servico = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException(idServico));
 		servicoRepository.delete(servico);
+		Map<String, Object> detalhes = AuditoriaFormatter.formatarServico(servico);
+		auditoriaService.registrar(
+				Acao.DELETE,
+				Entidade.SERVICO,
+				servico.getId(),
+				detalhes);
 	}
 	
 	public byte[] gerarQrCode(Long idServico) {
 		Servico s = servicoRepository.findById(idServico).orElseThrow(() -> new ServicoNaoEncontradoException());
 		
-		String url = baseUrl + "/servicos/atualizar-status?token=" + s.getTokenAtualizacao();
+		String url = baseUrl + "/servicos/atualizar-etapa?token=" + s.getTokenAtualizacao();
 		try {
 			return QrCodeUtil.gerarQrCode(url);
 		} catch (WriterException | IOException e) {
@@ -198,16 +211,28 @@ public class ServicoService {
 		Map<String, Object> alteracoes = new LinkedHashMap<>();
 		alteracoes.put("antes", antes);
 		alteracoes.put("depois", depois);
-		Detalhes detalhes = new Detalhes(alteracoes);
 		
 		auditoriaService.registrar(
 				Acao.UPDATE,
 				Entidade.SERVICO,
 				servico.getId(),
-				detalhes);
+				alteracoes);
 		
 		if(servico.getReceberNotificacao()) {
 			//TODO notificar cliente
 		}
+	}
+
+	public Map<String, Object> validarTokenAtualizacao(String token) {
+		Servico servico = servicoRepository.findByTokenAtualizacao(token).orElseThrow(() -> new ServicoNaoEncontradoException(token));
+		EtapaServico etapaAtual = servico.getEtapaServico();
+		EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
+				servico.getTipoServico(),
+				etapaAtual.getOrdem()
+		).orElseThrow(() -> new OrdemEtapaNaoEncontradoException(etapaAtual.getOrdem(), etapaAtual.getTipoServico().getDescricao()));
+		Map<String, Object> dto = new HashMap<>();
+		dto.put("servico", new CadastroResDTO(servico));
+		dto.put("proximaEtapa", new EtapaServicoResDTO(etapaNova));
+		return dto;
 	}
 }

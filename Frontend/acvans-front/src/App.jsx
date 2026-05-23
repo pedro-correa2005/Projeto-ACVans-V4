@@ -14,7 +14,7 @@ import Oficinas from "./pages/admin/Oficinas";
 import Usuarios from "./pages/admin/Usuarios";
 import Cadastros from "./pages/Cadastros";
 import Clientes from "./pages/Clientes"
-//import DetalhesCliente from "./pages/DetalhesCliente.jsx";
+import DetalhesCliente from "./pages/DetalhesCliente";
 import Veiculos from "./pages/Veiculos.jsx"
 import Relatorios from "./pages/gerente/Relatorios";
 import ConfigurarServicos from "./pages/gerente/ConfigurarServicos";
@@ -37,7 +37,7 @@ function App() {
         <Route path="/admin/oficinas/:idOficina/usuarios" element={<PrivateRoute roles={["ADMIN"]}><Usuarios/></PrivateRoute>}/>
         <Route path="/cadastros" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Cadastros/></PrivateRoute>}/>
         <Route path="/clientes" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Clientes/></PrivateRoute>}/>
-        {/*<Route path="/clientes/:idCliente" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><DetalhesCilente/></PrivateRoute>}/>*/}
+        {<Route path="/clientes/:idCliente" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><DetalhesCliente/></PrivateRoute>}/>}
         <Route path="/veiculos" element={<PrivateRoute roles={["FUNCIONARIO", "GERENTE"]}><Veiculos/></PrivateRoute>}/>
         <Route path="/configurar-servicos" element={<PrivateRoute roles={["GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
         <Route path="/relatorios" element={<PrivateRoute roles={["GERENTE"]}><Relatorios/></PrivateRoute>}/>

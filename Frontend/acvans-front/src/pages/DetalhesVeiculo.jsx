@@ -244,7 +244,7 @@ function DetalhesVeiculo() {
                         {
                             key: "etapaServico.titulo",
                             label: "Etapa Atual",
-                            render: (value) => value ? value : "Não iniciado"
+                            render: (value) => value ? value : "-"
                         },
                         {
                             key: "dataFIm",

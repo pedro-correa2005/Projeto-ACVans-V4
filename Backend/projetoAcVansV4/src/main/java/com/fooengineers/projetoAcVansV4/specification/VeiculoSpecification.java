@@ -26,7 +26,7 @@ public class VeiculoSpecification {
 	public static Specification<Veiculo> filtrarPorCliente(String termo, Long idCliente){
 		return (root, query, cb) -> {
 			if(termo == null || termo.isBlank()) {
-				return cb.equal(root.get("oficina").get("id"), idCliente);
+				return cb.equal(root.get("cliente").get("id"), idCliente);
 			}
 			String like = "%" + termo.toLowerCase() + "%";
 			
@@ -34,9 +34,9 @@ public class VeiculoSpecification {
 			Predicate porMarca = cb.like(cb.lower(root.get("marca")), like);
 			Predicate porModelo = cb.like(cb.lower(root.get("modelo")), like);
 			
-			Predicate porOficina = cb.equal(root.get("oficina").get("id"), idCliente);
+			Predicate porCliente = cb.equal(root.get("cliente").get("id"), idCliente);
 			
-			return cb.and(porOficina, cb.or(porPlaca, porMarca, porModelo));
+			return cb.and(porCliente, cb.or(porPlaca, porMarca, porModelo));
 		};
 	}
 }

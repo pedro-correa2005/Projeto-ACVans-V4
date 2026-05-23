@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,9 +71,8 @@ public class ServicoService {
 		return servicoRepository.findByOficina(oficina, pageable).map(ServicoResDTO::new);
 	}
 	
-	public List<ServicoResDTO> buscarPorVeiculo(Long idVeiculo, String termo){
-		return servicoRepository.findAll(ServicoSpecification.filtrarPorVeiculo(termo, idVeiculo))
-				.stream().map(ServicoResDTO::new).collect(Collectors.toList());
+	public Page<ServicoResDTO> buscarPorVeiculo(Long idVeiculo, String termo, Pageable pageable){
+		return servicoRepository.findAll(ServicoSpecification.filtrarPorVeiculo(termo, idVeiculo), pageable).map(ServicoResDTO::new);
 	}
 	
 	public ServicoResDTO criar(ServicoReqDTO dto, Integer idOficina) {

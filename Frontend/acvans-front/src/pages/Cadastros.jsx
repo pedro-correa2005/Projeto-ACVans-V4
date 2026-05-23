@@ -89,7 +89,6 @@ function Cadastros() {
         try {
             setLoadingSave(true);
             const idVeiculo = veiculoSelecionado?.id;
-            console.log(idVeiculo);
             const idTipoServico = tipoServico.id;
             const idStatusServico = statusServico.id;
             const servico = { idTipoServico, receberNotificacao, idStatusServico, idVeiculo };
@@ -113,8 +112,7 @@ function Cadastros() {
     function editar(servico) {
         setEditingServico(servico);
         setReceberNotificacao(true);
-        setTipoServico(servico.tipo)
-        console.log(servico.descricaoTipoServico);
+        setTipoServico(servico.tipo);
         setStatusServico(servico.status);
         setVeiculoSelecionado(servico.veiculo)
         setVeiculoInput(servico.veiculo.placa);
@@ -145,7 +143,7 @@ function Cadastros() {
 
     async function handleDownloadQrCode(servico) {
         try {
-            const blob = await baixarQrCode(servico);
+            const blob = await baixarQrCode(servico.idServico);
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;

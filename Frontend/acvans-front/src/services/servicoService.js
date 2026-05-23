@@ -30,7 +30,7 @@ export async function deletarServico(id) {
     return response.data;
 }
 
-export async function baixarQrCode(servico){
-    const response = await api.get(`/servicos/baixar-qrcode?idServico=${servico.idServico}`, {responseType: "blob"});
+export async function baixarQrCode(id){
+    const response = await api.get(`/servicos/baixar-qrcode?idServico=${id}`, {responseType: "blob"});
     return response.data;
 }

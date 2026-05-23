@@ -1,5 +1,10 @@
 import api from "./api";
 
+export async function buscarVeiculo(id, veiculo){
+    const response = await api.get(`/veiculos/${id}`, veiculo);
+    return response.data;
+}
+
 export async function listarVeiculos(termo, pagina, tamanho = 10, sort){
     const response = await api.get(`/veiculos`, {params: {termo, page: pagina, size: tamanho, sort: sort}});
     return response.data;
@@ -17,5 +22,11 @@ export async function atualizarVeiculo(id, veiculo){
 
 export async function deletarVeiculo(id){
     const response = await api.delete(`/veiculos/${id}`);
+    return response.data;
+}
+
+export async function listarServicoPorVeiculo(id, termo, pagina, tamanho = 10, sort){
+    console.log(pagina);
+    const response = await api.get(`/veiculos/${id}/servicos`, {params: {termo, page: pagina, size: tamanho, sort: sort}});
     return response.data;
 }

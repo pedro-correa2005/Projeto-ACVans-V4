@@ -26,10 +26,10 @@ public class Servico {
 	@Column(name = "receber_notificacao")
 	private Boolean receberNotificacao = true;
 	
-	@Column(name = "data_inicio", nullable = false)
+	@Column(name = "data_inicio", nullable = true)
 	private Timestamp dataInicio;
 	
-	@Column(name = "data_fim")
+	@Column(name = "data_fim", nullable = true)
 	private Timestamp dataFim;
 	
 	@Column(name = "token_atualizacao", unique = true, nullable = false)

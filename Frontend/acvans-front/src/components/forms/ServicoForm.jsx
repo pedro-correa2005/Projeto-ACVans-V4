@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { listarTiposServico } from "../../services/tiposServicoService";
 import { listarStatusServico } from "../../services/statusServicoService"
 
-function ServicoForm({ tipoServico, setTipoServico, receberNotificacao, setReceberNotificacao, statusServico, setStatusServico, veiculoInput, setVeiculoInput, setVeiculoSelecionado, editing = false}) {
+function ServicoForm({ tipoServico, setTipoServico, receberNotificacao, setReceberNotificacao, statusServico, setStatusServico, veiculoInput, setVeiculoInput, setVeiculoSelecionado, veiculoInputDisabled=false, editing = false}) {
     const [tipos, setTipos] = useState([]);
     const [status, setStatus] = useState([]);
 
@@ -82,7 +82,7 @@ function ServicoForm({ tipoServico, setTipoServico, receberNotificacao, setReceb
                     searchFunction={listarVeiculos}
                     displayField="placa"
                     placeholder="Buscar veículo..."
-                    disabled={editing}
+                    disabled={editing || veiculoInputDisabled}
                 />
             </div>
         </>

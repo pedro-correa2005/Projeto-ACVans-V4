@@ -63,7 +63,7 @@ function AtualizarEtapa(){
             <p>Confirme nova etapa para o serviço: {servico?.tipo?.descricao}. Veículo: {servico?.veiculo?.marca}, {servico?.veiculo?.modelo}, {servico?.veiculo?.placa}</p>
             <div className="form-group">
                 <label htmlFor="etapa">Nova etapa:</label>
-                <input type="text" className="form-control" value={etapa != null? etapa?.titulo : ""}
+                <input type="text" className="form-control" value={etapa != null? (etapa.titulo != null? etapa.titulo: etapa) : ""}
                 readOnly/>
             </div>
             <div className="form-actions">

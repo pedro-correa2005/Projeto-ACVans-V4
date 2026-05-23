@@ -126,10 +126,8 @@ public class ServicoService {
 				servico.setEtapaServico(etapa);
 				//TODO notifica cliente
 			}else if(status.getDescricao().equals("FINALIZADO")){
-				//Seleciona última etapa caso finalizado
-				EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemDesc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
 				servico.setDataFim(new Timestamp(System.currentTimeMillis()));
-				servico.setEtapaServico(etapa);
+				servico.setEtapaServico(null);
 			}else {
 				//Remove etapa caso mude para "AGENDADO"
 				servico.setDataFim(null);

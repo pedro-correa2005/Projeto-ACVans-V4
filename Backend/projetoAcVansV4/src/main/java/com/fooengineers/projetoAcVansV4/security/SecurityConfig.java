@@ -59,7 +59,8 @@ public class SecurityConfig {
 							"/api/auth/redefinir-senha/validar-token",
 							"/api/auth/logout",
 							"/api/consulta",
-							"/api/atualizar-etapa/**",
+							"/api/servicos/atualizar-etapa",
+							"/api/servicos/atualizar-etapa/**",
 							"/v3/api-docs/**",
 						    "/swagger-ui/**",
 						    "/swagger-ui.html").permitAll()

@@ -41,10 +41,8 @@ function DetalhesCliente() {
         try {
             const veiculosData = await listarVeiculoPorCliente(idCliente, termo, pageNumber, 10, `${sortField},${sortDirection}`);
             setPage(veiculosData);
-            console.log(veiculosData);
             const clienteData = await buscarCliente(idCliente);
             setCliente(clienteData);
-            console.log(clienteData);
         } catch (error) {
             console.error(error);
         }

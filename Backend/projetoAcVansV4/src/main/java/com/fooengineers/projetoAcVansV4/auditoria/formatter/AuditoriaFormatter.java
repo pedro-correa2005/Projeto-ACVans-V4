@@ -50,7 +50,7 @@ public class AuditoriaFormatter {
 		map.put("Data de fim", servico.getDataFim() != null?formatarData(servico.getDataFim()): "Não finalizado");
 		map.put("Tipo de serviço", servico.getTipoServico().getDescricao());
 		map.put("Status de serviço", servico.getStatusServico().getDescricao());
-		map.put("Etapa de Serviço",servico.getEtapaServico() != null? servico.getEtapaServico().getTitulo() : "Não iniciado");
+		map.put("Etapa de Serviço",servico.getEtapaServico() != null? servico.getEtapaServico().getTitulo() : "-");
         return map;
 	}
 	

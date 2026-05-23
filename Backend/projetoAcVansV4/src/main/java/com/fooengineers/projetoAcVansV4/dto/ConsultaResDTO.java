@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class ConsultaResDTO {
 	private String tipoServicoDescricao;
 	private List<EtapaServicoResDTO> etapas;
+	private boolean finalizado;
 	private Long idEtapaServico;
 }

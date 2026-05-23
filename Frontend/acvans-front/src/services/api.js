@@ -54,6 +54,7 @@ api.interceptors.response.use(
       "/auth/esqueci-a-senha",
       "/auth/2fa/verificar",
       "/auth/redefinir-senha/validar-token",
+      "/servicos/atualizar-etapa"
     ];
     const shouldIgnore = ignoredRoutes.some(route => url?.includes(route));
     if (shouldIgnore) {

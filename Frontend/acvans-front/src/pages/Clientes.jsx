@@ -188,7 +188,7 @@ function Clientes(){
                             <button className="btn btn-secondary" onClick={() => setDeletingCliente(null)}>
                                 Cancelar
                             </button>
-                            <button className="btn btn-danger" onClick={deletar} diabled={loadingDelete}>
+                            <button className="btn btn-danger" onClick={deletar} disabled={loadingDelete}>
                                 {loadingDelete?"Deletando...":"Deletar"}
                             </button>
                         </>

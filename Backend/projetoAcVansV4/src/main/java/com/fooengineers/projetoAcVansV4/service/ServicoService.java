@@ -82,7 +82,6 @@ public class ServicoService {
 		StatusServico status = statusServicoRepository.findById(dto.getIdStatusServico()).orElseThrow(() -> new StatusServicoNaoEncontradoException(dto.getIdStatusServico()));
 		Servico servico = new Servico();
 		servico.setReceberNotificacao(dto.isReceberNotificacao());
-		servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
 		servico.setTokenAtualizacao(UUID.randomUUID().toString().replace("-",""));
 		servico.setTokenConsulta(TokenUtil.gerarCodigo(6));
 		
@@ -93,6 +92,7 @@ public class ServicoService {
 		if(status.getDescricao().equals("INICIADO")) {
 			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
 			servico.setEtapaServico(etapa);
+			servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
 		}
 		Servico salvo = servicoRepository.save(servico);
 		Map<String, Object> detalhes = AuditoriaFormatter.formatarServico(salvo);

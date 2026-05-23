@@ -12,22 +12,22 @@ import lombok.NoArgsConstructor;
 public class ServicoResDTO {
 	private Long id;
 	private String tokenConsulta;
-	private String receberNotificacao;
+	private boolean receberNotificacao;
 	private String dataInicio;
 	private String dataFIm;
-	private String tipoServico;
-	private String statusServico;
-	private String etapaServico;
+	private TipoServicoResDTO tipoServico;
+	private StatusServicoDTO statusServico;
+	private EtapaServicoResDTO etapaServico;
 	
 	//Constructor a partir de entity.Servico
 	public ServicoResDTO(Servico servico) {
 		this.id = servico.getId();
 		this.tokenConsulta = servico.getTokenConsulta();
-		this.receberNotificacao = servico.getReceberNotificacao()?"Ativada":"Desativada";
+		this.receberNotificacao = servico.getReceberNotificacao();
 		this.dataInicio = servico.getDataInicio().toString();
 		this.dataFIm = servico.getDataFim() != null? servico.getDataFim().toString():null;
-		this.tipoServico = servico.getTipoServico().getDescricao();
-		this.statusServico = servico.getStatusServico().getDescricao();
-		this.etapaServico = servico.getEtapaServico() != null ? servico.getEtapaServico().getTitulo():null;
+		this.tipoServico = new TipoServicoResDTO(servico.getTipoServico());
+		this.statusServico = new StatusServicoDTO(servico.getStatusServico());
+		this.etapaServico = servico.getEtapaServico() != null ? new EtapaServicoResDTO(servico.getEtapaServico()): null;
 	}
 }

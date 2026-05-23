@@ -230,6 +230,9 @@ function DetalhesVeiculo() {
                             key: "dataInicio",
                             label: "Data de início",
                             render: (value) => {
+                                if (value === null) {
+                                    return "Não finalizado";
+                                }
                                 const data = new Date(value);
                                 return new Intl.DateTimeFormat('pt-BR', {
                                     dateStyle: 'short',

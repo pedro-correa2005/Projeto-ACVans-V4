@@ -19,6 +19,7 @@ import Veiculos from "./pages/Veiculos.jsx"
 import Relatorios from "./pages/gerente/Relatorios";
 import ConfigurarServicos from "./pages/gerente/ConfigurarServicos";
 import Auditoria from "./pages/gerente/Auditoria";
+import AtualizarEtapa from "./pages/AtualizarEtapa";
 function App() {
   return (
     <BrowserRouter>
@@ -41,6 +42,7 @@ function App() {
         <Route path="/configurar-servicos" element={<PrivateRoute roles={["GERENTE"]}><ConfigurarServicos/></PrivateRoute>}/>
         <Route path="/relatorios" element={<PrivateRoute roles={["GERENTE"]}><Relatorios/></PrivateRoute>}/>
         <Route path="/auditoria" element={<PrivateRoute roles={["GERENTE"]}><Auditoria/></PrivateRoute>}/>
+        <Route path="/servicos/atualizar-etapa" element={<AtualizarEtapa/>}/>
       </Routes>
 
       <ToastContainer position="top-right autoClose={300}"/>

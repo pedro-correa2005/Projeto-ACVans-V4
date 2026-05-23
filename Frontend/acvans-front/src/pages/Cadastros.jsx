@@ -244,6 +244,9 @@ function Cadastros() {
                             key: "dataInicio",
                             label: "Data de início",
                             render: (value) => {
+                                if (value === null) {
+                                    return "Não iniciado";
+                                }
                                 const data = new Date(value);
                                 return new Intl.DateTimeFormat('pt-BR', {
                                     dateStyle: 'short',
@@ -255,7 +258,7 @@ function Cadastros() {
                         {
                             key: "etapaTitulo",
                             label: "Etapa Atual",
-                            render: (value) => value ? value : "Não iniciado"
+                            render: (value) => value ? value : "-"
                         },
                         {
                             key: "dataFim",

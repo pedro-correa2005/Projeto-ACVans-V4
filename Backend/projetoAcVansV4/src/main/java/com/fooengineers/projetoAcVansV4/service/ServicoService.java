@@ -61,6 +61,8 @@ public class ServicoService {
 	private OficinaRepository oficinaRepository;
 	@Autowired
 	private VeiculoRepository veiculoRepository;
+	@Autowired
+	private HistoricoEtapaService historicoEtapaService;
 	@Value("${app.base-url}")
 	private String baseUrl;
 	
@@ -185,25 +187,22 @@ public class ServicoService {
 			return;
 		}
 		
-		Map<String, Object> antes = AuditoriaFormatter.formatarServico(servico);
-		
+		Map<String, Object> antes = AuditoriaFormatter.formatarServico(servico);		
 		EtapaServico etapaAtual = servico.getEtapaServico();
-		EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
-				servico.getTipoServico(),
-				etapaAtual.getOrdem()
-		).orElseThrow(() -> new OrdemEtapaNaoEncontradoException(etapaAtual.getOrdem(), etapaAtual.getTipoServico().getDescricao()));
-		
-		System.out.println(etapaNova);
-		servico.setEtapaServico(etapaNova);
-		
 		EtapaServico ultima = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemDesc(servico.getTipoServico())
 				.orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa cadastrada"));
 		
-		if(etapaNova.getId() == ultima.getId()) {
+		if(etapaAtual.getId() == ultima.getId()) {
 			servico.setDataFim(new Timestamp(System.currentTimeMillis()));
 			servico.setStatusServico(statusServicoRepository.findByDescricao("FINALIZADO").orElseThrow(() -> new StatusServicoNaoEncontradoException("FINALIZADO")));
+			servico.setEtapaServico(null);
+		}else {			
+			EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
+					servico.getTipoServico(),
+					etapaAtual.getOrdem()
+					).orElseThrow(() -> new OrdemEtapaNaoEncontradoException(etapaAtual.getOrdem(), etapaAtual.getTipoServico().getDescricao()));
+			servico.setEtapaServico(etapaNova);
 		}
-		
 		Servico atualizado = servicoRepository.save(servico);
 		
 		Map<String, Object> depois = AuditoriaFormatter.formatarServico(atualizado);
@@ -217,6 +216,8 @@ public class ServicoService {
 				servico.getId(),
 				alteracoes);
 		
+		historicoEtapaService.criar(atualizado, etapaAtual);
+		
 		if(servico.getReceberNotificacao()) {
 			//TODO notificar cliente
 		}
@@ -224,13 +225,26 @@ public class ServicoService {
 
 	public Map<String, Object> validarTokenAtualizacao(String token) {
 		Servico servico = servicoRepository.findByTokenAtualizacao(token).orElseThrow(() -> new ServicoNaoEncontradoException(token));
+		if(!servico.getStatusServico().getDescricao().equals("INICIADO")) {
+			throw new EtapaServicoNaoEncontradaException("Servico não iniciado ou finalizado");
+		}
+		
+		Map<String, Object> dto = new HashMap<>();
+		dto.put("servico", new CadastroResDTO(servico));
+		
+		
 		EtapaServico etapaAtual = servico.getEtapaServico();
+		EtapaServico ultima = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemDesc(servico.getTipoServico())
+				.orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa cadastrada"));	
+		if(etapaAtual.getId().equals(ultima.getId())) {
+			dto.put("proximaEtapa", "FINALIZADO");
+			return dto;
+		}
+		
 		EtapaServico etapaNova = etapaServicoRepository.findFirstByTipoServicoAndOrdemGreaterThanOrderByOrdemAsc(
 				servico.getTipoServico(),
 				etapaAtual.getOrdem()
 		).orElseThrow(() -> new OrdemEtapaNaoEncontradoException(etapaAtual.getOrdem(), etapaAtual.getTipoServico().getDescricao()));
-		Map<String, Object> dto = new HashMap<>();
-		dto.put("servico", new CadastroResDTO(servico));
 		dto.put("proximaEtapa", new EtapaServicoResDTO(etapaNova));
 		return dto;
 	}

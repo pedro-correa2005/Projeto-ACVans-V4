@@ -119,6 +119,7 @@ public class ServicoService {
 			if(status.getDescricao().equals("INICIADO")) {
 				//Seleciona a primeira etapa
 				EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
+				servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
 				servico.setDataFim(null);
 				servico.setEtapaServico(etapa);
 				//TODO notifica cliente
@@ -130,6 +131,7 @@ public class ServicoService {
 			}else {
 				//Remove etapa caso mude para "AGENDADO"
 				servico.setDataFim(null);
+				servico.setDataInicio(null);
 				servico.setEtapaServico(null);				
 			}			
 		}

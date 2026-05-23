@@ -1,7 +1,5 @@
 package com.fooengineers.projetoAcVansV4.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +64,7 @@ public class VeiculoController {
 	}
 	
 	@GetMapping("/{idVeiculo}/servicos")
-	public List<ServicoResDTO> buscar(@PathVariable(required=true) Long idVeiculo, @RequestParam(defaultValue="") String termo){
-		return servicoService.buscarPorVeiculo(idVeiculo, termo);
+	public Page<ServicoResDTO> buscar(@PathVariable(required=true) Long idVeiculo, @RequestParam(defaultValue="") String termo, Pageable pageable){
+		return servicoService.buscarPorVeiculo(idVeiculo, termo, pageable);
 	}
 }

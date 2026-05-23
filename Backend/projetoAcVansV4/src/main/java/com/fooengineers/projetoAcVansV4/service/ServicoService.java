@@ -43,6 +43,7 @@ import com.fooengineers.projetoAcVansV4.repository.StatusServicoRepository;
 import com.fooengineers.projetoAcVansV4.repository.TipoServicoRepository;
 import com.fooengineers.projetoAcVansV4.repository.VeiculoRepository;
 import com.fooengineers.projetoAcVansV4.specification.ServicoSpecification;
+import com.fooengineers.projetoAcVansV4.util.NotificacaoUtil;
 import com.fooengineers.projetoAcVansV4.util.QrCodeUtil;
 import com.fooengineers.projetoAcVansV4.util.TokenUtil;
 import com.google.zxing.WriterException;
@@ -63,6 +64,8 @@ public class ServicoService {
 	private VeiculoRepository veiculoRepository;
 	@Autowired
 	private HistoricoEtapaService historicoEtapaService;
+	@Autowired
+	private NotificacaoUtil notificacaoUtil;
 	@Value("${app.base-url}")
 	private String baseUrl;
 	
@@ -95,6 +98,13 @@ public class ServicoService {
 			EtapaServico etapa = etapaServicoRepository.findFirstByTipoServicoOrderByOrdemAsc(tipo).orElseThrow(() -> new EtapaServicoNaoEncontradaException("Nenhuma etapa encontrada para o serviço: " + tipo.getDescricao()));
 			servico.setEtapaServico(etapa);
 			servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
+			if(servico.getReceberNotificacao()) {				
+				notificacaoUtil.notificarCliente(servico, "Seu veículo foi cadastrado e seu serviço já foi iniciado na " + oficina.getNome());
+			}
+		}else if(status.getDescricao().equals("AGENDADO")) {
+			if(servico.getReceberNotificacao()) {				
+				notificacaoUtil.notificarCliente(servico, "Seu veículo foi cadastrado e seu serviço foi agendado na " + oficina.getNome());
+			}			
 		}
 		Servico salvo = servicoRepository.save(servico);
 		Map<String, Object> detalhes = AuditoriaFormatter.formatarServico(salvo);
@@ -124,10 +134,15 @@ public class ServicoService {
 				servico.setDataInicio(new Timestamp(System.currentTimeMillis()));
 				servico.setDataFim(null);
 				servico.setEtapaServico(etapa);
-				//TODO notifica cliente
+				if(servico.getReceberNotificacao()) {				
+					notificacaoUtil.notificarCliente(servico, "Seu serviço foi iniciado, e está na etapa: " + servico.getEtapaServico().getTitulo() + ": " + servico.getEtapaServico().getDescricao());
+				}
 			}else if(status.getDescricao().equals("FINALIZADO")){
 				servico.setDataFim(new Timestamp(System.currentTimeMillis()));
 				servico.setEtapaServico(null);
+				if(servico.getReceberNotificacao()) {				
+					notificacaoUtil.notificarCliente(servico, "Seu serviço já foi finalizado!");
+				}
 			}else {
 				//Remove etapa caso mude para "AGENDADO"
 				servico.setDataFim(null);
@@ -217,7 +232,11 @@ public class ServicoService {
 		historicoEtapaService.criar(atualizado, etapaAtual);
 		
 		if(servico.getReceberNotificacao()) {
-			//TODO notificar cliente
+			if(servico.getStatusServico().getDescricao().equals("FINALIZADO")) {				
+				notificacaoUtil.notificarCliente(servico, "Seu serviço já foi finalizado!");
+			}else {
+				notificacaoUtil.notificarCliente(servico, "Seu serviço passou para a etapa " + atualizado.getEtapaServico().getTitulo() + ": " + atualizado.getEtapaServico().getDescricao());
+			}
 		}
 	}
 

@@ -140,6 +140,7 @@ function RespostaConsulta() {
           etapaAtualId={
             servico.idEtapaServico
           }
+          finalizado={servico.finalizado}
         />
 
         <div className="form-actions">

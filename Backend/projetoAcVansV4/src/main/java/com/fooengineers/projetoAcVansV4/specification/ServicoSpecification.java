@@ -64,7 +64,7 @@ public class ServicoSpecification {
 		return(root, query, cb) -> {
 			query.distinct(true);
 			Join<Servico, TipoServico> tipoServico = root.join("tipoServico");
-			Join<Servico, EtapaServico> etapaServico = root.join("etapaServico");
+			Join<Servico, EtapaServico> etapaServico = root.join("etapaServico", JoinType.LEFT);
 			Join<Servico, StatusServico> statusServico = root.join("statusServico");
 			
 			if(termo == null || termo.isBlank()) {

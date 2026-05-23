@@ -27,7 +27,12 @@ public class ConsultaService {
 		ConsultaResDTO dto = new ConsultaResDTO();
 		dto.setTipoServicoDescricao(tipo.getDescricao());
 		dto.setEtapas(etapaServicoRepository.findByTipoServico(tipo).stream().map(EtapaServicoResDTO::new).collect(Collectors.toList()));
-		dto.setIdEtapaServico(servico.getEtapaServico().getId());
+		dto.setIdEtapaServico(servico.getEtapaServico() != null? servico.getEtapaServico().getId(): null);
+		if(servico.getStatusServico().getDescricao().equals("FINALIZADO")) {
+			dto.setFinalizado(true);
+		}else {
+			dto.setFinalizado(false);
+		}
 		return dto;
 	}
 	public ConsultaResDTO consultar (String tokenLongo) {

@@ -53,7 +53,7 @@ public class Auditoria {
 	private Map<String, Object> detalhes;
 	
 	@ManyToOne
-	@JoinColumn(name = "fk_usuario")
+	@JoinColumn(name = "fk_usuario", nullable = true)
 	private Usuario usuario;
 	
 	@ManyToOne

@@ -32,7 +32,7 @@ function RedefinirSenha(){
                 const response = await validarResetToken(token);
                 setPolicy(response.data);
             } catch (error) {
-                console.log(error);
+                console.err(error);
                 toast.error(error.response?.data?.message || "Link inválido");
                 navigate("/login");
             }finally{
@@ -72,7 +72,7 @@ function RedefinirSenha(){
             toast.success(response);
             navigate("/login");
         } catch (error) {
-            console.log(error.response.data);
+            console.err(error.response.data);
             if (error.response?.status === 410) {
                 toast.error("Link expirado");
                 navigate("/login");

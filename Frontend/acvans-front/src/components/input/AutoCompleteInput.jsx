@@ -7,7 +7,14 @@ function AutoCompleteInput({
 
     const [loading, setLoading] = useState(false);
 
+    const [selectedByClick, setSelectedByClick] = useState(false);
+
     useEffect(() => {
+        if(selectedByClick) {
+            setSelectedByClick(false);
+            return;
+        }
+
         if(!value || value.length < 2 || disabled){
             setOptions([]);
             return;
@@ -38,7 +45,12 @@ function AutoCompleteInput({
                     <ul className="list-group position-absolute w-100 z-3">
                         {
                             options.map(option => (
-                                <li key={option.id} className="list-group-item list-group-item-action" onClick={() => {onSelect(option); onChange(option[displayField]); setOptions([]);}}> 
+                                <li key={option.id} className="list-group-item list-group-item-action" onClick={() => {
+                                    setSelectedByClick(true);
+                                    onSelect(option); 
+                                    onChange(option[displayField]); 
+                                    setOptions([]);
+                                }}> 
                                     {
                                         option[displayField]
                                     }

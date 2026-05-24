@@ -81,7 +81,7 @@ api.interceptors.response.use(
         if(!(window.location.pathname === "/login")){
           window.location.href = "/login";
         }
-        console.log(refreshError.response)
+        console.err(refreshError.response)
         return Promise.reject(refreshError);
       }
     }

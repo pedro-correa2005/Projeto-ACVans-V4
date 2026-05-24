@@ -335,7 +335,7 @@ function Cadastros() {
                             </button>
                         </>
                     }>
-                    <p className="mb-0">Tem certeza que deseja deletar servico <strong>{deletingServico?.nome}</strong>? Todos os usuários desta servico também serão deletados. Esta ação não pode ser desfeita.</p>
+                    <p className="mb-0">Tem certeza que deseja deletar servico <strong>{deletingServico?.nome}</strong>? Todos os registros de auditoria e de relatórios deste servico também serão deletados. Esta ação não pode ser desfeita.</p>
                 </CrudModal>
             </main>
             <Footer />

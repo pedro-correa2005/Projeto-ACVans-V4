@@ -7,7 +7,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 //Criação da instância axios
 const api = axios.create({
-  baseURL: `${apiUrl}/api`,
+  baseURL: `${apiUrl}`,
   withCredentials: true //Envia cookies automaticamente
 });
 

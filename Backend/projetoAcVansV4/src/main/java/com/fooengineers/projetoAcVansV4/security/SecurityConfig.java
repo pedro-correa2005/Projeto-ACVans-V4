@@ -1,5 +1,7 @@
 package com.fooengineers.projetoAcVansV4.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -17,10 +19,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.fooengineers.projetoAcVansV4.entity.Usuario;
-import com.fooengineers.projetoAcVansV4.repository.UsuarioRepository;
-
-import jakarta.servlet.http.HttpServletResponse;
+import com.fooengineers.projetoAcVansV4.service.UsuarioService;
 
 @Configuration
 public class SecurityConfig {
@@ -111,7 +110,8 @@ public class SecurityConfig {
                         "POST",
                         "PUT",
                         "DELETE",
-                        "PATCH"
+                        "PATCH",
+                        "OPTIONS"
                 )
         );
 

@@ -319,7 +319,7 @@ function DetalhesVeiculo() {
                             </button>
                         </>
                     }>
-                    <p className="mb-0">Tem certeza que deseja deletar servico <strong>{deletingServico?.nome}</strong>? Todos os usuários desta servico também serão deletados. Esta ação não pode ser desfeita.</p>
+                    <p className="mb-0">Tem certeza que deseja deletar servico <strong>{deletingServico?.tipoServico?.descricao}</strong> para veiculo <strong>{veiculo?.placa} {veiculo?.marca} {veiculo?.modelo}</strong>? Todos os registros de auditoria e de relatórios associados a este servico também serão deletados. Esta ação não pode ser desfeita.</p>
                 </CrudModal>
             </main>
             <Footer />

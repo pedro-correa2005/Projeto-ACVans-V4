@@ -26,7 +26,6 @@ export async function deletarVeiculo(id){
 }
 
 export async function listarServicoPorVeiculo(id, termo, pagina, tamanho = 10, sort){
-    console.log(pagina);
     const response = await api.get(`/veiculos/${id}/servicos`, {params: {termo, page: pagina, size: tamanho, sort: sort}});
     return response.data;
 }

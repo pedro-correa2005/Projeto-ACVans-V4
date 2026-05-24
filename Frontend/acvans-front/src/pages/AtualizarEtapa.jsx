@@ -32,7 +32,7 @@ function AtualizarEtapa(){
                 setEtapa(response.proximaEtapa);
                 setLoading(false);
             }catch(error){
-                console.log(error);
+                console.err(error);
                 toast.error(error?.data?.message || "Link inválido");
                 navigate("/");
             }finally{
@@ -49,7 +49,7 @@ function AtualizarEtapa(){
             toast.success("Etapa atualizada com sucesso");
             navigate("/");
         } catch (error) {
-            console.log(error);
+            console.err(error);
                 toast.error(error?.data?.message || "Erro ao atualizar");
                 navigate("/");
         }

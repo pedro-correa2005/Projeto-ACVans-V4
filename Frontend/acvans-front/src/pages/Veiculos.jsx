@@ -221,7 +221,7 @@ function Veiculos() {
                             </button>
                         </>
                     }>
-                    <p className="mb-0">Tem certeza que deseja deletar veiculo <strong>{deletingVeiculo?.placa + deletingVeiculo?.marca + deletingVeiculo?.modelo}</strong>? Todos os serviços cadastrados para este veiculo serão apagados. Esta ação não pode ser desfeita.</p>
+                    <p className="mb-0">Tem certeza que deseja deletar veiculo <strong>{deletingVeiculo?.placa} {deletingVeiculo?.marca} {deletingVeiculo?.modelo}</strong>? Todos os serviços cadastrados para este veiculo serão apagados. Esta ação não pode ser desfeita.</p>
                 </CrudModal>
             </main>
             <Footer />

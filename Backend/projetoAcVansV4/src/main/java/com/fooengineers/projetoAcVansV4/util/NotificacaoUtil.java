@@ -33,7 +33,7 @@ public class NotificacaoUtil {
 				"""
 				{
 					"phone": "%s",
-					"message":" %s
+					"message":"%s"
 				}
 				"""
 				, "55" + celular.replace("(", "").replace(")", "").replaceAll("\\s", ""), formularMensagem(nome, servico.getTokenConsulta(), servico.getVeiculo().getPlaca(), mensagem)

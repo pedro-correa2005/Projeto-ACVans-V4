@@ -21,6 +21,6 @@ export async function atualizarRoles(id, roles){
 }
 
 export async function deletarUsuario(id){
-    const response = await api.delete(`/admin/usuario/${id}`);
+    const response = await api.delete(`/admin/usuarios/${id}`);
     return response.data;
 }

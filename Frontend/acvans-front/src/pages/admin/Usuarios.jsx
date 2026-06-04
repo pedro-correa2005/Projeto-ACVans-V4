@@ -131,7 +131,7 @@ function Usuarios(){
         <>
             <Header/>
             <main className="container mt-4">
-                <h1 className="mb-4">Usuarios</h1>
+                <h1 className="mb-4">Usuários</h1>
                 <form action="" className="mb-3">
                     <SearchBar value={termoInput} onChange={setTermoInput} placeholder="Pesquisar por email..."/>
                 </form>

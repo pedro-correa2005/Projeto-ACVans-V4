@@ -14,7 +14,7 @@ import Footer from "../components/Footer";
 
 import StatusTracker from "../components/StatusTracker";
 
-function RespostaConsulta() {
+function  RespostaConsulta() {
     const [searchParams] = useSearchParams();
 
     const token = searchParams.get("token");

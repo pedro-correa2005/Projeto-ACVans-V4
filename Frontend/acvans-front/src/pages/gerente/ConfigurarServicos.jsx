@@ -244,7 +244,7 @@ function ConfigurarServicos() {
                 <div>
                     <TiposServicoCard tipos={listaTipos} editarTipo={editarTipo} deletarTipo={confirmarDeletarTipo} adicionarEtapa={abrirModalEtapa} editarEtapa={editarEtapa} deletarEtapa={confirmarDeletarEtapa} moverEtapa={moverEtapa} />
                 </div>
-                <button className="btn btn-primary  " onClick={abrirModalTipo}><FaPlus></FaPlus> Adicionr Tipo</button>
+                <button className="btn btn-primary  " onClick={abrirModalTipo}><FaPlus></FaPlus> Adicionar Tipo</button>
                 <Link to="/cadastros" className="btn btn-secondary ms-3">Voltar</Link>
                 <CrudModal
                     title={editingTipo ? "Editar Tipo" : "Cadastrar Tipo"}

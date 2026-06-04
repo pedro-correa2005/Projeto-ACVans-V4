@@ -3,7 +3,7 @@ import axios from "axios";
 import { getCookie } from "../utils/cookies";
 import { logout } from "./authService";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = "https://fooengineers.xyz/api";
 
 //Criação da instância axios
 const api = axios.create({
